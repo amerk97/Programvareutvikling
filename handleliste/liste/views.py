@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("Handlelisten går her.")
+    return render(request, 'liste/liste.html')
 
 
 
