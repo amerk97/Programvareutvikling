@@ -1,21 +1,23 @@
 
 {% extends "users/base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
 
-	<form action="/action_page.php" style="width:25%">
+	<form style="width:25%">
 		<fieldset>
 			<legend>My shopping lists</legend>
 			<ul style="list-style-type:none;">  			<!-- Dummy data -->
   				<li><a>Taco</a></li>
   				<li><a>Roadtrip</a></li>
   				<li><a>Party</a></li>
+				{{form|crispy}}
 			</ul>
 		</fieldset>
 		<fieldset>
 			<legend>Create new list</legend>
 			Name your list: <br>
 			<input type="text" name="listname">				<!-- connect to the button/function -->
-			<button onclick="">Create List</button>  		<!-- connect to the create list function -->
+			<button type="submit" onclick="">Create List</button>  		<!-- connect to the create list function -->
 		</fieldset>
 	</form>
 
