@@ -1,16 +1,21 @@
 
 {% extends "users/base.html" %}
-{% load crispy_forms_tags %}
 {% block content %}
 
-	<form style="width:25%">
+
+	<form style="width:25%" method="CREATELIST">
 		<fieldset>
 			<legend>My shopping lists</legend>
-			<ul style="list-style-type:none;">  			<!-- Dummy data -->
-  				<li><a>Taco</a></li>
-  				<li><a>Roadtrip</a></li>
-  				<li><a>Party</a></li>
-				{{form|crispy}}
+			<ul style="list-style-type:none;">
+  				{% for lists in new_list %}									<!-- loops through current lists -->
+					<li class="list-group-item">{{lists.title}}</li>		<!-- displays each list with title -->
+				{% endfor %}												<!-- this is not working yet though... :(-->
+
+
+				<!-- Dummy data -->
+				<li><a href="taco">Taco</a></li>
+  				<li><a href="roadtrip">Roadtrip</a></li>
+  				<li><a href="party">Party</a></li>
 			</ul>
 		</fieldset>
 		<fieldset>
@@ -20,6 +25,8 @@
 			<button type="submit" onclick="">Create List</button>  		<!-- connect to the create list function -->
 		</fieldset>
 	</form>
+
+
 
 {% endblock content %}
 
