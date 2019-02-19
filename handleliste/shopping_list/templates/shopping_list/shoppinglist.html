@@ -1,0 +1,38 @@
+{% extends 'shopping_list/index.html' %}
+
+{% block content %}
+    <h1>{{ shopping_list.title }}</h1>
+    <form action="{% url 'delete-shopping-list' shopping_list.id %}" method='POST'>
+        {%  csrf_token %}
+        <button type="submit">DELETE SHOPPING LIST</button>
+    </form>
+
+    <table style='width:50%'>
+        {% for item in item_list %}
+            <tr>
+                {% if item.bought %}
+                    <td class="item-bought"><a href="{% url 'not-bought' item.id %}">{{ item.name }}</a></td>
+                    <td class="item-bought"><a href="{% url 'not-bought' item.id %}">{{ item.amount }}</a></td>
+                {% else %}
+                    <td><a href="{% url 'bought' item.id %}">{{ item.name }}</a></td>
+                    <td><a href="{% url 'bought' item.id %}">{{ item.amount }}</a></td>
+
+                {% endif %}
+                    <td>
+                        <form action="{% url 'delete-item' item.id %}" method='POST'>
+                            {%  csrf_token %}
+                            <button type="submit">DELETE ITEM</button>
+                        </form>
+                    </td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <form action="{% url 'add' shopping_list.id %}" method='POST'>
+                    {% csrf_token %}
+                    <td>{{ item_form.name }}</td>
+                    <td>{{ item_form.amount }}</td>
+                    <td><button type="submit">ADD</button></td>
+                </form>
+            </tr>
+    </table>
+{% endblock %}
