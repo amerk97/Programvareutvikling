@@ -8,23 +8,29 @@
     <link rel="stylesheet" type="text/css" href="{% static 'liste/main.css' %}">
     <title></title>
 </head>
-<body>
+<script>
 
-<div class="">
-    {% block content %}{% endblock %}
-</div>
+    function hide() {
+        var x = document.getElementById("participants");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        }
+        else {
+            x.style.display = "none";
+        }
+    }
+
+</script>
+<body>
 
 
 
 <div id="container">
-    <div id="user">
-        <div id="profile">
-            {% block profile %}{% endblock %}
-        </div>
-        <div id="userlists">
-            {% block userlists %}{% endblock %}
-        </div>
+
+    <div id="profile">
+        {% block profile %}{% endblock %}
     </div>
+
     <div id="list">
         {% block list %}{% endblock %}
     </div>
