@@ -1,0 +1,43 @@
+
+body{
+    background-color: grey;
+    font-family: "Calibri";
+}
+
+#container{
+    background-color: white;
+    padding: 5%;
+    overflow: auto;
+
+}
+
+#user{
+    float: left;
+    width:20%;
+    
+}
+
+#profile{
+
+}
+
+#userlists{
+
+}
+
+#list{
+    float: left;
+    width:50%;
+    min-height: 400px;
+
+
+}
+
+#participants{
+    float: left;
+    width: 15%;
+}
+
+ul{
+    list-style-type: none;
+}

@@ -1,13 +1,36 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'liste/main.css' %}">
     <title></title>
 </head>
 <body>
 
-<div class="container">
+<div class="">
     {% block content %}{% endblock %}
+</div>
+
+
+
+<div id="container">
+    <div id="user">
+        <div id="profile">
+            {% block profile %}{% endblock %}
+        </div>
+        <div id="userlists">
+            {% block userlists %}{% endblock %}
+        </div>
+    </div>
+    <div id="list">
+        {% block list %}{% endblock %}
+    </div>
+    <div id="participants">
+        {% block participants %}{% endblock %}
+    </div>
 </div>
 
 

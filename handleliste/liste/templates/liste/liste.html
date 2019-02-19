@@ -1,23 +1,71 @@
 
-{% extends "users/base.html" %}
-{% block content %}
+{% extends "liste/base.html" %}
+{% block profile %}
+	<fieldset>
 
-	<form action="/action_page.php" style="width:25%">
-		<fieldset>
-			<legend>My shopping lists</legend>
-			<ul style="list-style-type:none;">  			<!-- Dummy data -->
+			<h1>PICTURE</h1>
+			<p>Sign Out</p>
+		</fieldset>
+{% endblock profile %}
+
+
+{% block userlists %}
+	<fieldset>
+
+			<ul>  			<!-- Dummy data -->
   				<li><a>Taco</a></li>
   				<li><a>Roadtrip</a></li>
   				<li><a>Party</a></li>
 			</ul>
 		</fieldset>
 		<fieldset>
-			<legend>Create new list</legend>
-			Name your list: <br>
-			<input type="text" name="listname">				<!-- connect to the button/function -->
-			<button onclick="">Create List</button>  		<!-- connect to the create list function -->
+			<br>
+			<input type="text" placeholder="Enter name of list">				<!-- connect to the button/function -->
+			<button onclick="">Create shopping list</button>  					<!-- connect to the create list function -->
 		</fieldset>
-	</form>
+{% endblock userlists %}
 
-{% endblock content %}
+
+
+{% block list %}
+	<fieldset>
+
+		<h1>TACO KVELD</h1>
+		<small>Created by USER</small>
+		<ul>
+			<li><input type="checkbox">ost</li>
+			<li><input type="checkbox">tacolefser</li>
+		</ul>
+		<div>
+			<input type="text" placeholder="Enter name of item">
+			<input type="text" placeholder="Amount">
+			<input type="button" value="ADD">
+		</div>
+	</fieldset>
+{% endblock list %}
+
+
+{% block participants %}
+	<fieldset>
+
+		<ul>
+			<li>Ola</li>
+			<li>Kari</li>
+			<li>Frank</li>
+		</ul>
+		<input type="text" placeholder="USERNAME"><input type="submit" value="Share">
+	</fieldset>
+{% endblock participants %}
+
+
+
+
+
+
+
+
+
+
+
+
 
