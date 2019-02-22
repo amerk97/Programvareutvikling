@@ -2,27 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My shopping lists</title>
+    <title>Shopping list website</title>
     <style>
-        .item-bought {
-	        text-decoration: line-through;
-        }
-
         a {
             color: black;
             text-decoration: none;
-
         }
-
+        .item-bought {
+	        text-decoration: line-through;
+            -webkit-text-fill-color: darkgray;
+            color: darkgrey;
+        }
     </style>
 </head>
 <body>
-    <a href="{% url 'index' %}"><h1>My shopping lists</h1></a>
+    <p>Currently logged in as: {{ user.username }}</p>
+    <a href="{% url 'index' %}"><h1>All shopping lists</h1></a>
     <ul>
     {% for shopping_list in shopping_lists %}
         <li><a href="{% url 'detail' shopping_list.id %}">{{ shopping_list.title }}</a></li>
     {% endfor %}
     </ul>
+
+    <h1>My shopping lists</h1>
+    <ul>
+    {% for shopping_list in my_shopping_lists %}
+        <li><a href="{% url 'detail' shopping_list.id %}">{{ shopping_list.title }}</a></li>
+    {% endfor %}
+    </ul>
+
+    <h1>Other shopping lists</h1>
+    <ul>
+    {% for shopping_list in other_shopping_lists %}
+        <li><a href="{% url 'detail' shopping_list.id %}">{{ shopping_list.title }}</a></li>
+    {% endfor %}
+    </ul>
+
     <form action="{% url 'create-list' %}" method='POST'>
         {% csrf_token %}
         {{ shopping_list_form.title }}

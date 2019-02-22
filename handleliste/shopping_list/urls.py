@@ -9,5 +9,6 @@ urlpatterns = [
     path('delete-item/<item_id>', views.delete_item, name='delete-item'),
     path('create-list/', views.create_list, name='create-list'),
     path('shopping-lists/<shopping_list_id>', views.shopping_list_details, name='detail'),
-    path('delete-list/<shopping_list_id>', views.delete_shopping_list, name='delete-shopping-list')
+    path('delete-list/<shopping_list_id>', views.delete_shopping_list, name='delete-shopping-list'),
+    path('share-list/<shopping_list_id>', views.share_shopping_list, name='share-shopping-list')
 ]

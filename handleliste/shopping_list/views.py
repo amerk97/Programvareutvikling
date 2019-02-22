@@ -2,21 +2,35 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
 from .models import Item, ShoppingList
-from .forms import ItemForm, ShoppingListForm
-# Create your views here.
+from .forms import ItemForm, ShoppingListForm, ShareForm
+from django.contrib.auth import get_user_model
 
+# Create your views here.
+User = get_user_model()
 app_name = "shopping_list"
 
 
+"""
+def get_participant(user):
+    qs = Participant.objects.filter(user=user)
+    if qs.exists():
+        return qs[0]
+    return None
+"""
+
+
 def index(request):
-    item_list = Item.objects.order_by('id')  # will be cronological
     shopping_lists = ShoppingList.objects.order_by('id')
+    user = request.user
+    my_shopping_lists = ShoppingList.objects.filter(owner=user)
+    other_shopping_lists = ShoppingList.objects.filter(participants=user)
     shopping_list_form = ShoppingListForm()
 
     context = {
-        'item_list': item_list,
-        'shopping_lists': shopping_lists,
-        'shopping_list_form': shopping_list_form
+        'shopping_lists': shopping_lists,           # List of ShoppingList objects
+        'shopping_list_form': shopping_list_form,
+        'my_shopping_lists': my_shopping_lists,
+        'other_shopping_lists': other_shopping_lists
     }
 
     return render(request, 'shopping_list/index.html', context)
@@ -26,21 +40,20 @@ def index(request):
 def add_item(request, shopping_list_id):
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
     form = ItemForm(request.POST)
-
-    # to see in terminal if the input is sent
-    print(request.POST['name'])
-    print(request.POST['amount'])
+    creator = request.user
 
     if form.is_valid():
         new_item = Item(
             name=request.POST['name'],
             amount=request.POST['amount'],
-            shopping_list=shopping_list
+            shopping_list=shopping_list,
+            creator=creator
         )
         new_item.save()
-
-    shopping_list_id = new_item.shopping_list.id
-    return shopping_list_details(request, shopping_list_id)
+        shopping_list_id = new_item.shopping_list.id
+        return redirect('detail', shopping_list_id)
+    else:
+        return redirect('index')
 
 
 def bought_item(request, item_id):
@@ -48,7 +61,8 @@ def bought_item(request, item_id):
     item.bought = True
     item.save()
     shopping_list_id = item.shopping_list.id
-    return shopping_list_details(request, shopping_list_id)
+
+    return redirect('detail', shopping_list_id)
 
 
 def not_bought_item(request, item_id):
@@ -56,33 +70,33 @@ def not_bought_item(request, item_id):
     item.bought = False
     item.save()
     shopping_list_id = item.shopping_list.id
-    return shopping_list_details(request, shopping_list_id)
+
+    return redirect('detail', shopping_list_id)
 
 
 @require_POST
 def delete_item(request, item_id):
-    # item = Item.objects.filter(id__exact=item_id)
     item = Item.objects.get(pk=item_id)
     shopping_list_id = item.shopping_list.id
     item.delete()
 
-    return shopping_list_details(request, shopping_list_id)
+    return redirect('detail', shopping_list_id)
 
 
 @require_POST
 def create_list(request):
     shopping_list_form = ShoppingListForm(request.POST)
-
-    # to see in terminal if the input is sent
-    print(request.POST['title'])
+    owner = request.user
 
     if shopping_list_form.is_valid():
         new_shopping_list = ShoppingList(
-            title=request.POST['title']
+            title=request.POST['title'],
+            owner=owner
         )
         new_shopping_list.save()
-
-    return shopping_list_details(request, new_shopping_list.id)
+        return redirect('detail', new_shopping_list.id)
+    else:
+        return redirect('index')
 
 
 def shopping_list_details(request, shopping_list_id):
@@ -91,13 +105,20 @@ def shopping_list_details(request, shopping_list_id):
     shopping_list_form = ShoppingListForm()
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
     item_form = ItemForm()
+    share_form = ShareForm()
+    user = request.user
+    my_shopping_lists = ShoppingList.objects.filter(owner=user)
+    other_shopping_lists = ShoppingList.objects.filter(participants=user)
 
     context = {
-        'shopping_list': shopping_list,
-        'shopping_lists': shopping_lists,
+        'shopping_list': shopping_list,             # ShoppingList which is being inspected by user
+        'shopping_lists': shopping_lists,           # List of ShoppingList objects
         'shopping_list_form': shopping_list_form,
-        'item_list': item_list,
-        'item_form': item_form
+        'item_list': item_list,                     # List of Item objects in the inspected ShoppingList
+        'item_form': item_form,
+        'share_form': share_form,
+        'my_shopping_lists': my_shopping_lists,
+        'other_shopping_lists': other_shopping_lists
     }
 
     return render(request, 'shopping_list/shoppinglist.html', context)
@@ -107,3 +128,18 @@ def delete_shopping_list(request, shopping_list_id):
     ShoppingList.objects.filter(pk=shopping_list_id).delete()
 
     return redirect('index')
+
+
+@require_POST
+def share_shopping_list(request, shopping_list_id):
+    shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
+    share_form = ShareForm(request.POST)
+
+    if share_form.is_valid():
+        username = request.POST['username']
+        user = User.objects.get(username=username)
+        shopping_list.participants.add(user)
+        return redirect('detail', shopping_list_id)
+    else:
+        return redirect('index')
+
