@@ -3,10 +3,6 @@
 {% block content %}
     <h1>{{ shopping_list.title }}</h1>
     <p>Created by {{ shopping_list.owner }}</p>
-    <form action="{% url 'delete-shopping-list' shopping_list.id %}" method='POST'>
-        {% csrf_token %}
-        <button type="submit">DELETE SHOPPING LIST</button>
-    </form>
 
     <h3>Participants</h3>
     <ul>

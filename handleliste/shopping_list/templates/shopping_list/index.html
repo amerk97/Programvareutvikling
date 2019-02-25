@@ -17,23 +17,11 @@
 </head>
 <body>
     <p>Currently logged in as: {{ user.username }}</p>
-    <a href="{% url 'index' %}"><h1>All shopping lists</h1></a>
-    <ul>
-    {% for shopping_list in shopping_lists %}
-        <li><a href="{% url 'detail' shopping_list.id %}">{{ shopping_list.title }}</a></li>
-    {% endfor %}
-    </ul>
 
+    <!-- The shopping list the user participates in -->
     <h1>My shopping lists</h1>
     <ul>
     {% for shopping_list in my_shopping_lists %}
-        <li><a href="{% url 'detail' shopping_list.id %}">{{ shopping_list.title }}</a></li>
-    {% endfor %}
-    </ul>
-
-    <h1>Other shopping lists</h1>
-    <ul>
-    {% for shopping_list in other_shopping_lists %}
         <li><a href="{% url 'detail' shopping_list.id %}">{{ shopping_list.title }}</a></li>
     {% endfor %}
     </ul>
