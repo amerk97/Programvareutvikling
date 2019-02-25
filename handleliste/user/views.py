@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
+from shopping_list import views
 # Create your views here.
 
 
@@ -53,7 +54,8 @@ def login_request(request):
 			if user is not None:
 				login(request, user)
 				messages.success(request, f"Successfully logged in as: {username}")
-				return redirect("user:home")
+
+				return redirect("index")
 			else:
 				messages.error(request, "Invalid username or password")
 		else:

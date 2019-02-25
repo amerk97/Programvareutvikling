@@ -5,13 +5,14 @@ from .models import Item, ShoppingList
 from .forms import ItemForm, ShoppingListForm, ShareForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from user import views, urls
 
 # Create your views here.
 User = get_user_model()
 app_name = "shopping_list"
 
 
-@login_required(login_url='')                     # TODO: add url
+@login_required(login_url='')                           # TODO: add url
 def index(request):
     user = request.user                                 # TODO: check if it is logged in and if the user exists
     owned_shopping_lists = ShoppingList.objects.filter(owner=user)
@@ -27,6 +28,7 @@ def index(request):
     return render(request, 'shopping_list/index.html', context)
 
 
+@login_required(login_url='')
 @require_POST
 def add_item(request, shopping_list_id):
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
@@ -74,6 +76,7 @@ def delete_item(request, item_id):
     return redirect('detail', shopping_list_id)
 
 
+@login_required(login_url='')
 @require_POST
 def create_list(request):
     shopping_list_form = ShoppingListForm(request.POST)
@@ -90,6 +93,7 @@ def create_list(request):
         return redirect('index')
 
 
+@login_required(login_url='')
 def shopping_list_details(request, shopping_list_id):
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
     shopping_lists = ShoppingList.objects.order_by('id')
@@ -115,12 +119,14 @@ def shopping_list_details(request, shopping_list_id):
     return render(request, 'shopping_list/shoppinglist.html', context)
 
 
+@login_required(login_url='')
 def delete_shopping_list(request, shopping_list_id):
     ShoppingList.objects.filter(pk=shopping_list_id).delete()
 
     return redirect('index')
 
 
+@login_required(login_url='')
 @require_POST
 def share_shopping_list(request, shopping_list_id):
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
