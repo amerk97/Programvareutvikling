@@ -1,24 +1,33 @@
+{% extends 'users/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
 
-{% csrf_token %}
+	<div style="border: solid black 1px; padding: 15px; border-radius: 5px; margin: 0 auto;" class="col-4">
+		{% csrf_token %}
 
-{% if messages %}
+		{% if messages %}
 
-{% for message in messages %}
+		{% for message in messages %}
 
-{{message}}
+		{{message}}
 
-{% endfor %}
-{% endif %}
+		{% endfor %}
+		{% endif %}
 
+		{% if user.is_authenticated %}
+		<p>You are logged in.</p>
+			<a href="/main">Go to main page</a><br>
+			<a href="/logout">Log out</a>
 
-{% if user.is_authenticated %}
-	You are logged in.
-	<a href="/logout">Log out</a>
+		{% else %}
+		<p>You are logged out.</p>
+			<a href="/login">Log in</a><br>
+			<a href="http://localhost:8000">Register</a>
 
-{% else %}
-	You are logged out.
-	<a href="/login">Log in</a>	
-	<a href="http://localhost:8000">Register</a>
+		{% endif %}
+	</div>
+{% endblock %}
 
-{% endif %}
-
+{% block navbar %}
+	successfully logged out
+{% endblock %}

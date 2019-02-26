@@ -1,13 +1,20 @@
+{% extends 'users/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+	<form method="POST">
+
+		{% csrf_token %}
+		{{form|crispy}}
+
+		<button type="submit" class="btn btn-success">Log in</button>
+	</form>
 
 
+	Don't have an account? <a href="http://localhost:8000">Register</a> here.
 
-<form method="POST">
-	
-	{% csrf_token %}
-	{{form}}
+{% endblock %}
 
-	<button type="submit">Log in</button>
-</form>
-
-
-Don't have an account? <a href="http://localhost:8000">Register</a> here. 
+{% block navbar %}
+	Please log in
+{% endblock %}

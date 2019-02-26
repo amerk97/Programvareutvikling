@@ -1,14 +1,23 @@
+{% extends 'users/base.html' %}
+{% load crispy_forms_tags %}
 
-You are registered!
+{% block content %}
+    You are registered!
 
 
-{% if messages %}
+    {% if messages %}
 
-{% for message in messages %}
+    {% for message in messages %}
 
-{{message}}
+    {{message}}
 
-{% endfor %}
-{% endif %}
+    {% endfor %}
+    {% endif %}
 
-<a href="/home">Home</a>
+    <a href="/main">Go to your shopping lists</a>
+{% endblock %}
+
+
+{% block navbar %}
+	successfully registered
+{% endblock %}
