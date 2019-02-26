@@ -12,9 +12,9 @@ User = get_user_model()
 app_name = "shopping_list"
 
 
-@login_required(login_url='')                           # TODO: add url
+@login_required(login_url='')
 def index(request):
-    user = request.user                                 # TODO: check if it is logged in and if the user exists
+    user = request.user
     owned_shopping_lists = ShoppingList.objects.filter(owner=user)
     other_shopping_lists = ShoppingList.objects.filter(participants=user)
     my_shopping_lists = owned_shopping_lists | other_shopping_lists
@@ -80,7 +80,7 @@ def delete_item(request, item_id):
 @require_POST
 def create_list(request):
     shopping_list_form = ShoppingListForm(request.POST)
-    owner = request.user                                # TODO: check if user exists and is logged in
+    owner = request.user
 
     if shopping_list_form.is_valid():
         new_shopping_list = ShoppingList(
@@ -101,7 +101,8 @@ def shopping_list_details(request, shopping_list_id):
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
     item_form = ItemForm()
     share_form = ShareForm()                            # TODO: check if user is a owner/participator of the list
-    user = request.user                                 # TODO: check if user exists and is logged in
+    user = request.user
+    # if user != shopping_list.owner and user != shopping_list.participants:
     owned_shopping_lists = ShoppingList.objects.filter(owner=user)
     other_shopping_lists = ShoppingList.objects.filter(participants=user)
     my_shopping_lists = owned_shopping_lists | other_shopping_lists
