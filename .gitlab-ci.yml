@@ -29,4 +29,4 @@ test:
     DATABASE_URL: "sqlite://localhost:superuser@superuser:8000/$SQLITE_DB"  # TODO: change localhost and port
   script:
   - cd handleliste
-  - python manage.py test --settings app.settings.ci
+  - python manage.py test
