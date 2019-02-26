@@ -1,0 +1,51 @@
+body{
+    font-family: Calibri;
+}
+
+
+#container{
+    display: flex;
+    height: auto;
+}
+
+
+#profile{
+    border-style: groove;
+}
+
+#list{
+    border-style: groove;
+}
+
+#participants{
+    border-style: groove;
+}
+
+#items{
+    max-height: 50%;
+    overflow: auto;
+}
+
+
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+
+.item-bought {
+    text-decoration: line-through;
+    -webkit-text-fill-color: darkgrey;
+    color: darkgrey;
+}
+.item-not-bought {
+    text-decoration: none;
+    -webkit-text-fill-color: black;
+    color: black;
+}
+
+h1{
+    color: blue;
+}
+

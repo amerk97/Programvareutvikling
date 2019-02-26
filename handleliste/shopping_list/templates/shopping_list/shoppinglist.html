@@ -1,54 +1,79 @@
 {% extends 'shopping_list/index.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
-    <h1>{{ shopping_list.title }}</h1>
-    <p>Created by {{ shopping_list.owner }}</p>
 
-    <h3>Participants</h3>
-    <ul>
-        <li>{{ shopping_list.owner }}</li>
-        {% for participant in shopping_list.participants.all %}
-        <li>{{ participant }}</li>
-        {% endfor %}
-    </ul>
-    <form action="{% url 'share-shopping-list' shopping_list.id %}" method='POST'>
-        {% csrf_token %}
-        {{ share_form.username }}
-        <button type="submit">SHARE</button>
-    </form>
+    <div id="list" class="col-6 border border-secondary">
+        <h2><small>{{ shopping_list.title }}</small></h2>
+        <p>Created by <code>{{ shopping_list.owner }}</code></p>
+        <div id="items" style="max-height: 250px;" class="scrollbar scrollbar-primary">
+                <table class="table table-hover">
+                    <thead>
+                        <th>Item</th>
+                        <th>Amount</th>
+                    </thead>
+                    <tbody>
+                        {% for item in item_list %}
+                            <tr>
+                                {% if item.bought %}
+                                    <td class="item-bought"><a class="text-muted" href="{% url 'not-bought' item.id %}">{{ item.name }}</a></td>
+                                    <td class="item-bought"><a class="text-muted" href="{% url 'not-bought' item.id %}">{{ item.amount }}</a></td>
+                                {% else %}
+                                    <td><a class="text-info" href="{% url 'bought' item.id %}">{{ item.name }}</a></td>
+                                    <td><a class="text-info" href="{% url 'bought' item.id %}">{{ item.amount }}</a></td>
+                                {% endif %}
+                                    <td>
+                                        <!-- Only item creator and shopping list owner should see this-->
+                                        {% if shopping_list.owner == user or item.creator == user %}
+                                        <form action="{% url 'delete-item' item.id %}" method='POST'>
+                                            {%  csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">DELETE</button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </div><br>
 
-    <table style='width:50%'>
-        {% for item in item_list %}
-            <tr>
-                {% if item.bought %}
-                    <td class="item-bought"><a href="{% url 'not-bought' item.id %}">{{ item.name }}</a></td>
-                    <td class="item-bought"><a href="{% url 'not-bought' item.id %}">{{ item.amount }}</a></td>
-                {% else %}
-                    <td><a href="{% url 'bought' item.id %}">{{ item.name }}</a></td>
-                    <td><a href="{% url 'bought' item.id %}">{{ item.amount }}</a></td>
-                {% endif %}
-                    <td>
-                        <!-- Only item creator and shopping list owner should see this-->
-                        {% if shopping_list.owner == user or item.creator == user %}
-                        <form action="{% url 'delete-item' item.id %}" method='POST'>
-                            {%  csrf_token %}
-                            <button type="submit">DELETE ITEM</button>
-                        </form>
-                        {% endif %}
-                    </td>
-            </tr>
-        {% endfor %}
-            <tr>
-                <form action="{% url 'add' shopping_list.id %}" method='POST'>
-                    {% csrf_token %}
-                    <td>{{ item_form.name }}</td>
-                    <td>{{ item_form.amount }}</td>
-                    <td><button type="submit">ADD</button></td>
-                </form>
-            </tr>
-    </table>
-    <form action="{% url 'detail' shopping_list.id %}" method='POST'>
-        {% csrf_token %}
-        <td><button type="submit">REFRESH</button></td>
-    </form>
+        <form action="{% url 'add' shopping_list.id %}" method='POST'>
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-5">{{ item_form.name|as_crispy_field }}</div>
+                <div class="col-3">{{ item_form.amount|as_crispy_field }}</div>
+            </div>
+
+        </form>
+        <div class="row">
+            <form action="{% url 'add' shopping_list.id %}" method='POST'>
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">ADD</button>
+            </form>
+
+
+            <form action="{% url 'detail' shopping_list.id %}" method='POST'>
+                {% csrf_token %}
+                <button type="submit" class="btn btn-default">REFRESH</button>
+            </form>
+        </div>
+
+    </div>
+    <div id="participants" class="col-3 border border-secondary">
+        <h2><small>Participants</small></h2>
+        <ul class="list-group">
+            <li class="list-group-item">{{ shopping_list.owner }}</li>
+            {% for participant in shopping_list.participants.all %}
+            <li class="list-group-item">{{ participant }}</li>
+            {% endfor %}
+        </ul>
+        <form action="{% url 'share-shopping-list' shopping_list.id %}" method='POST'>
+            {% csrf_token %}
+            {{ share_form.username|as_crispy_field }}
+            <button type="submit" class="btn btn-primary">SHARE</button>
+        </form>
+    </div>
+
+
 {% endblock %}
