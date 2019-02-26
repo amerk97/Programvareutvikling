@@ -7,11 +7,20 @@ User = get_user_model()
 # Create your tests here.
 
 
-class ItemMethodTests(TestCase):
-    self.user = User.objects.create_user(username='testuser', password='12345')
-    login = self.client.login(username='testuser', password='12345')
+class ItemModelTests(TestCase):
+    user = None
 
-    def added_item_is_not_bought(self):
+    def create_user(self):
+        self.credentials = {
+            'username': 'testTest',
+            'password': '1ab2bgewr1t3'
+        }
+        # tests login and creates a test user
+        self.user = User.objects.create_user(**self.credentials)
+        response = self.client.post('/login/', self.credentials, follow=True)
+        self.assertTrue(response.context['user'].is_active)
+
+    def test_added_item_is_not_bought(self):
         shopping_list = ShoppingList(
             title='Desert',
             owner=self.user
