@@ -13,12 +13,17 @@ User = get_user_model()
 app_name = "shopping_list"
 
 
-@login_required(login_url='/login/')
-def index(request):
-    user = request.user
+def get_users_shopping_lists(user):
     owned_shopping_lists = ShoppingList.objects.filter(owner=user)
     other_shopping_lists = ShoppingList.objects.filter(participants=user)
     my_shopping_lists = owned_shopping_lists | other_shopping_lists
+    return my_shopping_lists
+
+
+@login_required(login_url='/login/')
+def index(request):
+    user = request.user
+    my_shopping_lists = get_users_shopping_lists(user)
     shopping_list_form = ShoppingListForm()
 
     context = {
@@ -107,10 +112,7 @@ def shopping_list_details(request, shopping_list_id):
     if user != shopping_list.owner and user not in shopping_list.participants.all():
         return HttpResponse('Error 401: Unauthorized. User does not have permission to view this shopping list.', status=401)
 
-    owned_shopping_lists = ShoppingList.objects.filter(owner=user)
-    other_shopping_lists = ShoppingList.objects.filter(participants=user)
-    my_shopping_lists = owned_shopping_lists | other_shopping_lists
-
+    my_shopping_lists = get_users_shopping_lists(user)
     shopping_list_form = ShoppingListForm()
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
     item_form = ItemForm()
@@ -144,9 +146,7 @@ def share_shopping_list(request, shopping_list_id):
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
     item_form = ItemForm()
     user = request.user
-    owned_shopping_lists = ShoppingList.objects.filter(owner=user)
-    other_shopping_lists = ShoppingList.objects.filter(participants=user)
-    my_shopping_lists = owned_shopping_lists | other_shopping_lists
+    my_shopping_lists = get_users_shopping_lists(user)
 
     if share_form.is_valid():
         username = request.POST['username']
@@ -169,4 +169,3 @@ def share_shopping_list(request, shopping_list_id):
         return redirect('detail', shopping_list_id)
     else:
         return redirect('index')
-
