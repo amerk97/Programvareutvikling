@@ -20,7 +20,7 @@ def get_users_shopping_lists(user):
     return my_shopping_lists
 
 
-@login_required(login_url='/login/')
+@login_required(login_url='')
 def index(request):
     user = request.user
     my_shopping_lists = get_users_shopping_lists(user)
@@ -34,7 +34,7 @@ def index(request):
     return render(request, 'shopping_list/index.html', context)
 
 
-@login_required(login_url='/login/')
+@login_required(login_url='')
 @require_POST
 def add_item(request, shopping_list_id):
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
@@ -103,7 +103,7 @@ def create_list(request):
         return redirect('index')
 
 
-@login_required(login_url='/login/')
+@login_required(login_url='')
 def shopping_list_details(request, shopping_list_id):
     user = request.user
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
@@ -137,7 +137,7 @@ def delete_shopping_list(request, shopping_list_id):
     return redirect('index')
 
 
-@login_required(login_url='/login/')
+@login_required(login_url='')
 @require_POST
 def share_shopping_list(request, shopping_list_id):
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
