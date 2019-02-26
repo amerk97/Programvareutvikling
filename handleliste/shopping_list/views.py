@@ -102,7 +102,8 @@ def shopping_list_details(request, shopping_list_id):
     item_form = ItemForm()
     share_form = ShareForm()                            # TODO: check if user is a owner/participator of the list
     user = request.user
-    # if user != shopping_list.owner and user != shopping_list.participants:
+    if user != shopping_list.owner and user != shopping_list.participants:
+        return
     owned_shopping_lists = ShoppingList.objects.filter(owner=user)
     other_shopping_lists = ShoppingList.objects.filter(participants=user)
     my_shopping_lists = owned_shopping_lists | other_shopping_lists
