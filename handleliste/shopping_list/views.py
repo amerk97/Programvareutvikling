@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
+from django.http import HttpResponse
 
 from .models import Item, ShoppingList
 from .forms import ItemForm, ShoppingListForm, ShareForm
@@ -12,12 +13,17 @@ User = get_user_model()
 app_name = "shopping_list"
 
 
-@login_required(login_url='')
-def index(request):
-    user = request.user
+def get_users_shopping_lists(user):
     owned_shopping_lists = ShoppingList.objects.filter(owner=user)
     other_shopping_lists = ShoppingList.objects.filter(participants=user)
     my_shopping_lists = owned_shopping_lists | other_shopping_lists
+    return my_shopping_lists
+
+
+@login_required(login_url='')
+def index(request):
+    user = request.user
+    my_shopping_lists = get_users_shopping_lists(user)
     shopping_list_form = ShoppingListForm()
 
     context = {
@@ -32,8 +38,12 @@ def index(request):
 @require_POST
 def add_item(request, shopping_list_id):
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
-    form = ItemForm(request.POST)                       # TODO: check if user is a participator of list
-    creator = request.user                              # TODO: check if user exists and is logged in
+    form = ItemForm(request.POST)
+    creator = request.user
+
+    # Check if creator is a participator of list
+    if creator != shopping_list.owner and creator not in shopping_list.participants.all():
+        return HttpResponse('Error 401: Unauthorized. User does not have permission to add item.', status=401)
 
     if form.is_valid():
         new_item = Item(
@@ -95,22 +105,21 @@ def create_list(request):
 
 @login_required(login_url='')
 def shopping_list_details(request, shopping_list_id):
+    user = request.user
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
-    shopping_lists = ShoppingList.objects.order_by('id')
+
+    # Check if the user is a participator of the shopping list
+    if user != shopping_list.owner and user not in shopping_list.participants.all():
+        return HttpResponse('Error 401: Unauthorized. User does not have permission to view this shopping list.', status=401)
+
+    my_shopping_lists = get_users_shopping_lists(user)
     shopping_list_form = ShoppingListForm()
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
     item_form = ItemForm()
-    share_form = ShareForm()                            # TODO: check if user is a owner/participator of the list
-    user = request.user
-    if user != shopping_list.owner and user != shopping_list.participants:
-        return
-    owned_shopping_lists = ShoppingList.objects.filter(owner=user)
-    other_shopping_lists = ShoppingList.objects.filter(participants=user)
-    my_shopping_lists = owned_shopping_lists | other_shopping_lists
+    share_form = ShareForm()
 
     context = {
         'shopping_list': shopping_list,             # ShoppingList which is being inspected by user
-        'shopping_lists': shopping_lists,           # List of ShoppingList objects
         'shopping_list_form': shopping_list_form,
         'item_list': item_list,                     # List of Item objects in the inspected ShoppingList
         'item_form': item_form,
@@ -133,13 +142,30 @@ def delete_shopping_list(request, shopping_list_id):
 def share_shopping_list(request, shopping_list_id):
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
     share_form = ShareForm(request.POST)
+    shopping_list_form = ShoppingListForm()
+    item_list = Item.objects.filter(shopping_list=shopping_list_id)
+    item_form = ItemForm()
+    user = request.user
+    my_shopping_lists = get_users_shopping_lists(user)
 
     if share_form.is_valid():
         username = request.POST['username']
-        user = User.objects.get(username=username)
-        if shopping_list.owner != user:
-            shopping_list.participants.add(user)
+        try:
+            shared_with_user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            message = 'User does not exist. Please enter an existing username.'
+            context = {
+                'message': message,
+                'shopping_list': shopping_list,
+                'my_shopping_lists': my_shopping_lists,
+                'item_list': item_list,
+                'item_form': item_form,
+                'shopping_list_form': shopping_list_form,
+                'share_form': share_form
+            }
+            return render(request, 'shopping_list/share_error_message.html', context)
+        if shopping_list.owner != shared_with_user:
+            shopping_list.participants.add(shared_with_user)
         return redirect('detail', shopping_list_id)
     else:
         return redirect('index')
-
