@@ -1,7 +1,12 @@
 from django import forms
-
+from crispy_forms.helper import FormHelper
 
 class ItemForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(ItemForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+
     name = forms.CharField(
         max_length=80,
         widget=forms.TextInput(
@@ -18,6 +23,7 @@ class ItemForm(forms.Form):
             }
         )
     )
+
 
 
 class ShoppingListForm(forms.Form):

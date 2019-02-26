@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <div id="list" class="col-6 border border-secondary">
+    <div id="list" class="col-6" style="border-style: none;">
         <h2><small>{{ shopping_list.title }}</small></h2>
         <p>Created by <code>{{ shopping_list.owner }}</code></p>
         <div id="items" style="max-height: 250px;" class="scrollbar scrollbar-primary">
@@ -17,8 +17,8 @@
                         {% for item in item_list %}
                             <tr>
                                 {% if item.bought %}
-                                    <td class="item-bought"><a class="text-muted" href="{% url 'not-bought' item.id %}">{{ item.name }}</a></td>
-                                    <td class="item-bought"><a class="text-muted" href="{% url 'not-bought' item.id %}">{{ item.amount }}</a></td>
+                                    <td><a class="text-muted" href="{% url 'not-bought' item.id %}">{{ item.name }}</a></td>
+                                    <td><a class="text-muted" href="{% url 'not-bought' item.id %}">{{ item.amount }}</a></td>
                                 {% else %}
                                     <td><a class="text-info" href="{% url 'bought' item.id %}">{{ item.name }}</a></td>
                                     <td><a class="text-info" href="{% url 'bought' item.id %}">{{ item.amount }}</a></td>
@@ -43,24 +43,22 @@
             <div class="row">
                 <div class="col-5">{{ item_form.name|as_crispy_field }}</div>
                 <div class="col-3">{{ item_form.amount|as_crispy_field }}</div>
+
+                <button type="submit" class="btn btn-success" style="height:50%;">ADD</button>
+
             </div>
 
         </form>
-        <div class="row">
-            <form action="{% url 'add' shopping_list.id %}" method='POST'>
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success">ADD</button>
-            </form>
+
 
 
             <form action="{% url 'detail' shopping_list.id %}" method='POST'>
                 {% csrf_token %}
                 <button type="submit" class="btn btn-default">REFRESH</button>
             </form>
-        </div>
 
     </div>
-    <div id="participants" class="col-3 border border-secondary">
+    <div id="participants" class="col-3" style="border-style: none;">
         <h2><small>Participants</small></h2>
         <ul class="list-group">
             <li class="list-group-item">{{ shopping_list.owner }}</li>
