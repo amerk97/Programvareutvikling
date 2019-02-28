@@ -29,7 +29,7 @@ def register(request):
 
 
 def registered(request):
-	return render(request, "user/registered.html")	
+	return redirect('index')
 
 
 def home(request):
@@ -39,7 +39,7 @@ def home(request):
 def logout_request(request):
 	logout(request)
 	messages.info(request, "Logged out successfully!")
-	return redirect("user:home")
+	return redirect('user:login')
 
 
 def login_request(request):

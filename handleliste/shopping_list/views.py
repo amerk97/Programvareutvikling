@@ -16,8 +16,8 @@ app_name = "shopping_list"
 def get_users_shopping_lists(user):
     owned_shopping_lists = ShoppingList.objects.filter(owner=user)
     other_shopping_lists = ShoppingList.objects.filter(participants=user)
-    my_shopping_lists = owned_shopping_lists | other_shopping_lists
-    return my_shopping_lists
+    my_shopping_lists = other_shopping_lists | owned_shopping_lists
+    return my_shopping_lists.distinct().order_by('id')
 
 
 @login_required(login_url='')
