@@ -6,14 +6,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 default_shopping_list_ID = 1
 
-"""
-class Participant(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.user.username
-"""
-
 
 class ShoppingList(models.Model):
     title = models.CharField(max_length=100)

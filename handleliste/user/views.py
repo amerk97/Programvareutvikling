@@ -9,7 +9,6 @@ from shopping_list import views
 
 def register(request):
 
-
 	if request.method == "POST":
 		form = UserCreationForm(request.POST)
 		if form.is_valid():
@@ -61,7 +60,7 @@ def login_request(request):
 		else:
 			messages.error(request, "Invalid username or password")
 
-
 	form = AuthenticationForm()
+
 	return render(request, "user/login.html", {"form": form})
 

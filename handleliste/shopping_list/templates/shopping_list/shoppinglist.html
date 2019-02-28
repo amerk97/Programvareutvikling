@@ -16,6 +16,8 @@
         {{ share_form.username }}
         <button type="submit">SHARE</button>
     </form>
+    {% block error_message %}
+    {% endblock %}
 
     <table style='width:50%'>
         {% for item in item_list %}
