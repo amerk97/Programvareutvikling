@@ -3,10 +3,10 @@ from django import forms
 
 class ItemForm(forms.Form):
     name = forms.CharField(
-        max_length=80,
+        max_length=50,
         widget=forms.TextInput(
             attrs={
-                'placeholder': 'Enter name of item'
+                'placeholder': 'Enter name of item',
             }
         )
     )
@@ -14,7 +14,7 @@ class ItemForm(forms.Form):
         max_length=20,
         widget=forms.TextInput(
             attrs={
-                'placeholder': 'Enter amount of item'
+                'placeholder': 'Enter amount of item',
             }
         )
     )

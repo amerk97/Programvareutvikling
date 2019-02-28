@@ -1,56 +1,80 @@
 {% extends 'shopping_list/index.html' %}
 
 {% block content %}
-    <h1>{{ shopping_list.title }}</h1>
-    <p>Created by {{ shopping_list.owner }}</p>
-
-    <h3>Participants</h3>
-    <ul>
-        <li>{{ shopping_list.owner }}</li>
-        {% for participant in shopping_list.participants.all %}
-        <li>{{ participant }}</li>
-        {% endfor %}
-    </ul>
-    <form action="{% url 'share-shopping-list' shopping_list.id %}" method='POST'>
-        {% csrf_token %}
-        {{ share_form.username }}
-        <button type="submit">SHARE</button>
-    </form>
-    {% block error_message %}
-    {% endblock %}
-
-    <table style='width:50%'>
-        {% for item in item_list %}
-            <tr>
-                {% if item.bought %}
-                    <td class="item-bought"><a href="{% url 'not-bought' item.id %}">{{ item.name }}</a></td>
-                    <td class="item-bought"><a href="{% url 'not-bought' item.id %}">{{ item.amount }}</a></td>
-                {% else %}
-                    <td><a href="{% url 'bought' item.id %}">{{ item.name }}</a></td>
-                    <td><a href="{% url 'bought' item.id %}">{{ item.amount }}</a></td>
-                {% endif %}
-                    <td>
-                        <!-- Only item creator and shopping list owner should see this-->
-                        {% if shopping_list.owner == user or item.creator == user %}
-                        <form action="{% url 'delete-item' item.id %}" method='POST'>
-                            {%  csrf_token %}
-                            <button type="submit">DELETE ITEM</button>
-                        </form>
-                        {% endif %}
-                    </td>
-            </tr>
-        {% endfor %}
-            <tr>
-                <form action="{% url 'add' shopping_list.id %}" method='POST'>
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <h3>{{ shopping_list.title }}</h3>
+            <div class="chip red lighten-2">{{ shopping_list.owner }}</div>
+            {% for participant in shopping_list.participants.all %}
+            <div class="chip">{{ participant }}</div>
+            {% endfor %}
+            <a href="#"><div class="chip"><i class="tiny material-icons toggle-visibility">person_add</i></div></a>
+            <div class="row toggle-item">
+                <form action="{% url 'share-shopping-list' shopping_list.id %}" method='POST' class="col 12">
                     {% csrf_token %}
-                    <td>{{ item_form.name }}</td>
-                    <td>{{ item_form.amount }}</td>
-                    <td><button type="submit">ADD</button></td>
+                    <div class="input-field col s10">{{ share_form.username }}</div>
+                    <div class="input-field col s2">
+                        <button type="submit" class="waves-effect waves-light btn">
+                            <i class="material-icons">person_add</i>
+                        </button>
+                    </div>
                 </form>
-            </tr>
-    </table>
-    <form action="{% url 'detail' shopping_list.id %}" method='POST'>
-        {% csrf_token %}
-        <td><button type="submit">REFRESH</button></td>
-    </form>
+                {% block error_message %}
+                {% endblock %}
+            </div>
+
+            <div class="collection">
+                {% for item in item_list %}
+                        {% if item.bought %}
+                            <a href="{% url 'not-bought' item.id %}" class="collection-item row">
+                                <div class="col s6 item-bought">{{ item.name }}</div>
+                                <div class="col s3 item-bought">{{ item.amount }}</div>
+                                {% if shopping_list.owner == user or item.creator == user %}
+                                    <form action="{% url 'delete-item' item.id %}" method='POST' class="col s1 offset-s2 button-fix">
+                                    {%  csrf_token %}
+                                    <button type="submit" class="waves-effect waves-light btn secondary-content">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                    </form>
+                                {% endif %}
+                            </a>
+                        {% else %}
+                            <a href="{% url 'bought' item.id %}" class="collection-item row">
+                                <div class="col s6">{{ item.name }} </div>
+                                <div class="col s3">{{ item.amount }}</div>
+                                {% if shopping_list.owner == user or item.creator == user %}
+                                <form action="{% url 'delete-item' item.id %}" method='POST' class="col s1 offset-s2 button-fix">
+                                    {%  csrf_token %}
+                                    <button type="submit" class="waves-effect waves-light btn secondary-content">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                {% endfor %}
+                </div>
+            <div class="row">
+                <form action="{% url 'add' shopping_list.id %}" method='POST' class="col s12">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s6">{{ item_form.name }}</div>
+                        <div class="input-field col s4">{{ item_form.amount }}</div>
+                        <div class="input-field col s2">
+                            <button type="submit" class="waves-effect waves-light btn">
+                                <i class="material-icons">add</i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="fixed-action-btn">
+              <a class="btn-floating btn-large red lighten-2" href="">
+                <i class="large material-icons">refresh</i>
+              </a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

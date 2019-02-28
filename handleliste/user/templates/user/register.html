@@ -1,28 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Shopping list website</title>
+    <style>
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        .item-bought {
+	        text-decoration: line-through;
+            -webkit-text-fill-color: darkgray;
+            color: darkgrey;
+        }
+    </style>
+     <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<nav class="nav blue-grey darken-4">
+    <div class="nav-wrapper">
+        <div class="container">
+            <a href="#" class="brand-logo">ShareShopping</a>
+        </div>
+    </div>
+</nav>
 
+<div class="container">
+	<div class="row"></div>
+	<div class="row">
+		<h4 class="container center-align">Register</h4>
+	</div>
+	<div class="container">
+		<form method="POST">
+			{% csrf_token %}
+			<label>{{form.username.label}}</label>
+			{{form.username}}
+			<label>{{form.password1.label}}</label>
+			{{form.password1}}
+			<label>{{form.password2.label}}</label>
+			{{form.password2}}
+			<div class="col 12"><button type="submit" class="waves-effect waves-light btn" style="width:100%;">Register</button></div>
+		</form>
+		<p>Already have an account? <a href="../">Login</a> instead.</p>
+	</div>
+</div>
 
-
-
-<form method="POST">
-	
-	{% csrf_token %}
-	{{form.username.label}}
-	{{form.username}}
-	{{form.password1.label}}
-	{{form.password1}}
-	{{form.password2.label}}
-	{{form.password2}}
-	<button type="submit">Register</button>
-</form>
-
-{% if messages %}
-
-{% for message in messages %}
-
-{{message}}
-
-{% endfor %}
-{% endif %}
-
-
-<br/>
-Already have an account? <a href="../">Login</a> instead.
+</body>
