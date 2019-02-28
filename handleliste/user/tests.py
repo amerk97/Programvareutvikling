@@ -37,6 +37,7 @@ class TestUserViews(TestCase):
         self.assertTemplateUsed(response, 'user/login.html')
 
     def test_login_registered_POST(self):
+        main_url = reverse('index')
         User.objects.create_user(
             username='matte4test',
             password='alallaroiq243'
@@ -49,4 +50,4 @@ class TestUserViews(TestCase):
             }
         )
         self.assertEquals(response.status_code, 302)
-        # self.assertEquals()
+        self.assertRedirects(response, main_url)
