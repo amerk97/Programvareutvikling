@@ -23,11 +23,34 @@ cache:
 before_script:
  - python -V                                   # Print out python version for debugging
  - pip install -r requirements.txt
+ - apt-get update -qq
+ - apt-get install -qq git
+ # Setup SSH deploy keys
+ - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+ - eval $(ssh-agent -s)
+ - ssh-add <(echo "$SSH_PRIVATE_KEY")
+ - mkdir -p ~/.ssh
+- '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 
 test:
   script:
   - cd handleliste
   - python manage.py test
 
+
+deployment:
+  variables:
+    DATABASE_USER: "dmedakovic@74.207.252.20"
+    DATABASE_PASSWORD: "medakovic"
+    DATABASE_URL: "0.0.0.0:8000"
+    DATABASE_MAP: "gruppe-3"
+    ACCEPT: "yes"
+  script:
+	- ssh DATABASE_USER
+	- ACCEPT
+	- DATABASE_PASSWORD
+    - cd DATABASE_MAP
+    - cd handleliste
+    - python3 manage.py runserver DATABASE_URL
 
   
