@@ -30,3 +30,13 @@ test:
   script:
   - cd handleliste
   - python manage.py test
+
+deploy:
+  script:
+  - ssh dmedakovic@74.207.252.20
+  - yes
+  - medakovic
+  - cd gruppe-3
+  - cd handleliste
+  - python3 manage.py runserver 0.0.0.0:8000
+  
