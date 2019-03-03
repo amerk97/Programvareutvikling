@@ -24,20 +24,16 @@ before_script:
  - python -V                                   # Print out python version for debugging
  - pip install -r requirements.txt
 
-stages:
-- test
-- deploy
-
 test:
-  variables:
-    DATABASE_URL: "sqlite://localhost:superuser@superuser:8000/$SQLITE_DB"  # TODO: change localhost and port
   script:
   - cd handleliste
   - python manage.py test
 
-deploy:
+deployment:
+  variables:
+    DATABASE_URL: "dmedakovic@74.207.252.20"
   script:
-  - ssh dmedakovic@74.207.252.20
+  - ssh DATABASE_URL
   - yes
   - medakovic
   - cd gruppe-3
