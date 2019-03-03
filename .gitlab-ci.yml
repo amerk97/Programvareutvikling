@@ -31,13 +31,14 @@ test:
 
 deployment:
   variables:
-    DATABASE_MAIL: "dmedakovic@74.207.252.20"
+    DATABASE_USER: "dmedakovic@74.207.252.20"
     DATABASE_PASSWORD: "medakovic"
     DATABASE_URL: "0.0.0.0:8000"
     DATABASE_MAP: "gruppe-3"
     ACCEPT: "yes"
+    SSH_CODE: "22"
   script:
-  - ssh -tt DATABASE_MAIL
+  - ssh -p SSH_CODE DATABASE_USER
   - ACCEPT
   - DATABASE_PASSWORD
   - cd DATABASE_MAP
