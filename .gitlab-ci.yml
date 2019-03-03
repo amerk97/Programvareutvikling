@@ -46,11 +46,10 @@ deployment:
     DATABASE_MAP: "gruppe-3"
     ACCEPT: "yes"
   script:
-	- ssh DATABASE_USER
-	- ACCEPT
-	- DATABASE_PASSWORD
+    - ssh DATABASE_USER
+    - ACCEPT
+    - DATABASE_PASSWORD
     - cd DATABASE_MAP
     - cd handleliste
     - python3 manage.py runserver DATABASE_URL
-
   
