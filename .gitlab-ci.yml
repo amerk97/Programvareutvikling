@@ -17,6 +17,10 @@ variables:
 cache:
   paths:
   - ~/.cache/pip/
+ 
+stages:
+- test
+- deploy
 
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
@@ -25,20 +29,21 @@ before_script:
  - pip install -r requirements.txt
 
 test:
+  stage: test
   script:
   - cd handleliste
   - python manage.py test
 
 deployment:
+  stage: deploy
   variables:
     DATABASE_USER: "dmedakovic@74.207.252.20"
     DATABASE_PASSWORD: "medakovic"
     DATABASE_URL: "0.0.0.0:8000"
     DATABASE_MAP: "gruppe-3"
     ACCEPT: "yes"
-    SSH_CODE: "22"
   script:
-  - ssh -p SSH_CODE DATABASE_USER
+  - ssh DATABASE_USER
   - ACCEPT
   - DATABASE_PASSWORD
   - cd DATABASE_MAP
