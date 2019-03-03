@@ -31,12 +31,16 @@ test:
 
 deployment:
   variables:
-    DATABASE_URL: "dmedakovic@74.207.252.20"
+    DATABASE_MAIL: "dmedakovic@74.207.252.20"
+    DATABASE_PASSWORD: "medakovic"
+    DATABASE_URL: "0.0.0.0:8000"
+    DATABASE_MAP: "gruppe-3"
+    ACCEPT: "yes"
   script:
-  - ssh DATABASE_URL
-  - yes
-  - medakovic
-  - cd gruppe-3
+  - ssh DATABASE_MAIL
+  - ACCEPT
+  - DATABASE_PASSWORD
+  - cd DATABASE_MAP
   - cd handleliste
-  - python3 manage.py runserver 0.0.0.0:8000
+  - python3 manage.py runserver DATABASE_URL
   
