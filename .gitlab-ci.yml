@@ -37,7 +37,7 @@ deployment:
     DATABASE_MAP: "gruppe-3"
     ACCEPT: "yes"
   script:
-  - ssh DATABASE_MAIL
+  - ssh -tt DATABASE_MAIL
   - ACCEPT
   - DATABASE_PASSWORD
   - cd DATABASE_MAP
