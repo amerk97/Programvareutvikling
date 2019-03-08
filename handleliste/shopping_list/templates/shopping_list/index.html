@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title>Shopping list website</title>
     <style>
@@ -13,40 +14,91 @@
             -webkit-text-fill-color: darkgray;
             color: darkgrey;
         }
+        .button-fix{
+            float: right;
+            margin-top: -7px;
+            margin-bottom: -7px;
+        }
     </style>
+     <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-    {% csrf_token %}
-    {% if messages %}
-        {% for message in messages %}
-            {{message}}
-        {% endfor %}
-    {% endif %}
 
-    {% if user.is_authenticated %}
-        You are logged in.
-        <a href="/logout">Log out</a>
-    {% else %}
-        You are logged out.
-        <a href="/login">Log in</a>
-        <a href="http://localhost:8000">Register</a>
-    {% endif %}
+<ul id="dropdown1" class="dropdown-content">
+  <li><a href="{% url 'user:logout' %}">Sign out</a></li>
+</ul>
+<nav class="nav-extended blue-grey darken-4">
+    <div class="nav-wrapper">
+        <div class="container">
+            <a href="#" class="brand-logo">ShareShopping</a>
+            <a href="#" class="sidenav-trigger" data-target="mobile-links">
+                <i class="material-icons">menu</i>
+            </a>
+            <ul class="right">
+                <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">{{ user.username }}<i class="material-icons right">arrow_drop_down</i></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav-content center">
+        <ul class="tabs tabs-transparent hide-on-med-and-down">
+            {% for shopping_list in my_shopping_lists %}
+            <li class="tab"><a href="{% url 'detail' shopping_list.id %}" >{{ shopping_list.title }}</a></li>
+            {% endfor %}
+            <li class="tab">
+            <form action="{% url 'create-list' %}" method='POST'>
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s12">{{ shopping_list_form.title }}</div>
+                </div>
+            </form>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-
-    <!-- The shopping list the user participates in -->
-    <h1>My shopping lists</h1>
-    <ul>
+<ul class="sidenav" id="mobile-links">
+    <li class="row"><h5 class="col s10 offset-s2">My shopping lists</h5></li>
     {% for shopping_list in my_shopping_lists %}
-        <li><a href="{% url 'detail' shopping_list.id %}">{{ shopping_list.title }}</a></li>
+    <li><a href="{% url 'detail' shopping_list.id %}" target="_self">{{ shopping_list.title }}</a></li>
     {% endfor %}
-    </ul>
-
+    <li>
     <form action="{% url 'create-list' %}" method='POST'>
         {% csrf_token %}
-        {{ shopping_list_form.title }}
-        <button type='submit'>CREATE LIST</button>
+        <div class="row">
+            <div class="input-field col s9">{{ shopping_list_form.title }}</div>
+            <div class="input-field col s1">
+                <button type='submit' class="waves-effect waves-light btn">
+                    <i class="material-icons">add</i>
+                </button>
+            </div>
+        </div>
     </form>
-    {% block content %}
-    {% endblock %}
+    </li>
+    <!-- To make sidenav scrolling function better -->
+    <li><div class="row"></div></li>
+    <li><div class="row"></div></li>
+</ul>
+<!-- The shopping list the user is currently looking at-->
+{% block content %}
+{% endblock %}
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".toggle-item").hide();
+        $('.sidenav').sidenav();
+        $(".dropdown-trigger").dropdown();
+        $('.collapsible').collapsible();
+        $(".toggle-visibility").click(function(){
+            $(".toggle-item").toggle();
+        });
+    });
+</script>
 </body>
 </html>
