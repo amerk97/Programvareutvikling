@@ -156,6 +156,7 @@ def share_shopping_list(request, shopping_list_id):
     shopping_list_form = ShoppingListForm()
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
     item_form = ItemForm()
+    user = request.user
     my_shopping_lists = get_users_shopping_lists(user)
 
     if share_form.is_valid():
