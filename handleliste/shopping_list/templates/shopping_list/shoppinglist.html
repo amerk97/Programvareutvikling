@@ -20,14 +20,13 @@
                 <form action="{% url 'share-shopping-list' shopping_list.id %}" method='POST' class="col 12">
                     {% csrf_token %}
                     <div class="input-field col s10">{{ share_form.username }}</div>
+                    {{ share_form.errors }}
                     <div class="input-field col s2">
                         <button type="submit" class="waves-effect waves-light btn">
                             <i class="material-icons">person_add</i>
                         </button>
                     </div>
                 </form>
-                {% block error_message %}
-                {% endblock %}
             </div>
 
             <div class="collection">

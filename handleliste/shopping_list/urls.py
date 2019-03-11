@@ -12,5 +12,6 @@ urlpatterns = [
     path('shopping-lists/<shopping_list_id>', views.shopping_list_details, name='detail'),
     path('delete-list/<shopping_list_id>', views.delete_shopping_list, name='delete-shopping-list'),
     path('share-list/<shopping_list_id>', views.share_shopping_list, name='share-shopping-list'),
-    path('remove-user-from-list/<shopping_list_id>/<username>', views.remove_user_from_shopping_list, name='remove-user-from-shopping-list')
+    path('remove-user-from-list/<shopping_list_id>/<username>', views.remove_user_from_shopping_list, name='remove-user-from-shopping-list'),
+    path('change-owner-of-list/<shopping_list_id>/<username>', views.change_owner_of_shopping_list, name='change-owner')
 ]
