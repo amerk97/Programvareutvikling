@@ -5,9 +5,15 @@
     <div class="row">
         <div class="col s12">
             <h3>{{ shopping_list.title }}</h3>
+            <a class="btn-floating btn-large red lighten-2" href="{% url 'delete-shopping-list' shopping_list.id %}">
+                <i class="large material-icons">delete</i>
+            </a>
             <div class="chip red lighten-2">{{ shopping_list.owner }}</div>
             {% for participant in shopping_list.participants.all %}
-            <div class="chip">{{ participant }}</div>
+            <div class="chip">
+                {{ participant }}
+                <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}"><i class="close material-icons">close</i></a>
+            </div>
             {% endfor %}
             <a href="#"><div class="chip"><i class="tiny material-icons toggle-visibility">person_add</i></div></a>
             <div class="row toggle-item">
@@ -27,11 +33,11 @@
             <div class="collection">
                 {% for item in item_list %}
                         {% if item.bought %}
-                            <a href="{% url 'not-bought' item.id %}" class="collection-item row">
+                            <a href="{% url 'not-bought' item.id shopping_list.id %}" class="collection-item row">
                                 <div class="col s6 item-bought">{{ item.name }}</div>
                                 <div class="col s3 item-bought">{{ item.amount }}</div>
                                 {% if shopping_list.owner == user or item.creator == user %}
-                                    <form action="{% url 'delete-item' item.id %}" method='POST' class="col s1 offset-s2 button-fix">
+                                    <form action="{% url 'delete-item' item.id shopping_list.id %}" method='POST' class="col s1 offset-s2 button-fix">
                                     {%  csrf_token %}
                                     <button type="submit" class="waves-effect waves-light btn secondary-content">
                                         <i class="material-icons">delete</i>
@@ -40,11 +46,11 @@
                                 {% endif %}
                             </a>
                         {% else %}
-                            <a href="{% url 'bought' item.id %}" class="collection-item row">
+                            <a href="{% url 'bought' item.id shopping_list.id %}" class="collection-item row">
                                 <div class="col s6">{{ item.name }} </div>
                                 <div class="col s3">{{ item.amount }}</div>
                                 {% if shopping_list.owner == user or item.creator == user %}
-                                <form action="{% url 'delete-item' item.id %}" method='POST' class="col s1 offset-s2 button-fix">
+                                <form action="{% url 'delete-item' item.id shopping_list.id %}" method='POST' class="col s1 offset-s2 button-fix">
                                     {%  csrf_token %}
                                     <button type="submit" class="waves-effect waves-light btn secondary-content">
                                         <i class="material-icons">delete</i>
