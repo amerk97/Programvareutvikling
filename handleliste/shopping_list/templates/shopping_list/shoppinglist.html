@@ -10,10 +10,10 @@
             </a>
             <div class="chip red lighten-2">{{ shopping_list.owner }}</div>
             {% for participant in shopping_list.participants.all %}
-            <div class="chip">
-                {{ participant }}
-                <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}"><i class="close material-icons">close</i></a>
-            </div>
+                <div class="chip">
+                    {{ participant }}
+                    <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}"><i class="close material-icons">close</i></a>
+                </div>
             {% endfor %}
             <a href="#"><div class="chip"><i class="tiny material-icons toggle-visibility">person_add</i></div></a>
             <div class="row toggle-item">
