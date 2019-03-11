@@ -41,4 +41,16 @@ Bruk av git:
 ..
 ..
 
+Tilgang til serveren: 
+- Åpne et nytt terminalvindu.
+- Tast inn "ssh dmedakovic@74.207.252.20" (i windows må du laste ned PuTTy som lar deg koble deg til servere over internettet på tilsvarende
+- måte. I PuTTy skriver du inn du inn dmedakovic@74.207.252.20 under "hostname" og trykker "open". Resten av prosessen bør være lik).
+- Du vil bli spørt om passord (passord: medakovic). 
+- Du er nå i "home" mappen til serveren. Gå til "gruppe-3" mappen og deretter til "handleliste" mappen ved å bruke cd og dir/ls kommandoene. 
+- Kjør kommandoen "python3 manage.py runserver 0.0.0.0:8000"
+- Django serveren kjører nå på IP-adressen til serveren, som er 74.207.252.20:8000.
+"
+..
+
+
 

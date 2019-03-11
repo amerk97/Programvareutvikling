@@ -17,16 +17,16 @@ variables:
 cache:
   paths:
   - ~/.cache/pip/
-
+ 
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
 before_script:
  - python -V                                   # Print out python version for debugging
  - pip install -r requirements.txt
 
+
 test:
-  variables:
-    DATABASE_URL: "sqlite://localhost:superuser@superuser:8000/$SQLITE_DB"  # TODO: change localhost and port
   script:
   - cd handleliste
   - python manage.py test
+  
