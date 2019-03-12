@@ -15,7 +15,7 @@ app_name = "shopping_list"
 
 
 # Return the user's shopping lists
-def get_users_shopping_lists(user):
+def get_user_shopping_lists(user):
     owned_shopping_lists = ShoppingList.objects.filter(owner=user)
     other_shopping_lists = ShoppingList.objects.filter(participants=user)
     my_shopping_lists = other_shopping_lists | owned_shopping_lists
@@ -28,10 +28,15 @@ def user_is_member_of_shopping_list(user, shopping_list):
            or user in shopping_list.admins.all()
 
 
+# Check if user has admin permissions
+def user_has_admin_rights(user, shopping_list):
+    return user in shopping_list.admins.all() or user == shopping_list.owner
+
+
 # Redirect the user to the main site
 @login_required(login_url='')
 def index(request):
-    my_shopping_lists = get_users_shopping_lists(request.user)
+    my_shopping_lists = get_user_shopping_lists(request.user)
     shopping_list_form = ShoppingListForm()
 
     context = {
@@ -49,10 +54,10 @@ def shopping_list_details(request, shopping_list_id):
     shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
 
     if not user_is_member_of_shopping_list(user, shopping_list):
-        return HttpResponse('Error 401: Unauthorized. User does not have permission to view this shopping list.',
-                            status=401)
+        return HttpResponse('Error 403: Forbidden. User does not have permission to view this shopping list.',
+                            status=403)
 
-    my_shopping_lists = get_users_shopping_lists(user)
+    my_shopping_lists = get_user_shopping_lists(user)
     shopping_list_form = ShoppingListForm()
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
 
@@ -81,7 +86,7 @@ def add_item(request, shopping_list_id):
 
     # Check if creator is a member of the list
     if not user_is_member_of_shopping_list(creator, shopping_list):
-        return HttpResponse('Error 401: Unauthorized. User does not have permission to add item.', status=401)
+        return HttpResponse('Error 403: Forbidden. User does not have permission to add item.', status=403)
 
     form = ItemForm(request.POST)
     if form.is_valid():
@@ -105,7 +110,7 @@ def bought_item(request, item_id, shopping_list_id):
         return redirect('index')
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        return HttpResponse('Error 401: Unauthorized. User does not have permission to add item.', status=401)
+        return HttpResponse('Error 403: Forbidden. User does not have permission to add item.', status=403)
 
     try:
         item = Item.objects.get(pk=item_id)
@@ -123,7 +128,7 @@ def not_bought_item(request, item_id, shopping_list_id):
         return redirect('index')
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        return HttpResponse('Error 401: Unauthorized. User does not have permission to add item.', status=401)
+        return HttpResponse('Error 403: Forbidden. User does not have permission to add item.', status=403)
 
     try:
         item = Item.objects.get(pk=item_id)
@@ -142,7 +147,7 @@ def delete_item(request, item_id, shopping_list_id):
         return redirect('index')
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        return HttpResponse('Error 401: Unauthorized. User does not have permission to add item.', status=401)
+        return HttpResponse('Error 403: Forbidden. User does not have permission to add item.', status=403)
 
     try:
         item = Item.objects.get(pk=item_id)
@@ -178,7 +183,8 @@ def delete_shopping_list(request, shopping_list_id):
         if request.user == shopping_list.owner:
             shopping_list.delete()
         else:
-            return HttpResponse('Error 401: Unauthorized. User does not have permission to delete shopping list.', status=401)
+            return HttpResponse('Error 403: Forbidden. User does not have permission to delete shopping list.',
+                                status=403)
     finally:
         return redirect('index')
 
@@ -202,15 +208,19 @@ def share_shopping_list(request, shopping_list_id):
 
 # Remove another user from the shopping list
 @login_required(login_url='')
-@require_POST
 def remove_user_from_shopping_list(request, shopping_list_id, username):
+    current_user = request.user
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
+        user_to_be_removed = User.objects.get(username=username)
     except ShoppingList.DoesNotExist:
         return redirect('index')
+    except User.DoesNotExist:
+        return HttpResponse('Error 400: Bad request.')
 
-    current_user = request.user
-    user_to_be_removed = User.objects.get(username=username)
+    if not user_has_admin_rights(current_user, shopping_list):
+        return HttpResponse('Error 403: Forbidden. User does not have permission to remove user from shopping list.',
+                            status=403)
 
     try:
         if user_to_be_removed in shopping_list.participants.all():
@@ -228,8 +238,18 @@ def remove_user_from_shopping_list(request, shopping_list_id, username):
 # Change the owner of a shopping list
 @login_required(login_url='')
 def change_owner_of_shopping_list(request, shopping_list_id, username):
-    new_owner = User.objects.get(username=username)
-    shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
+
+    try:
+        shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
+        new_owner = User.objects.get(username=username)
+    except ShoppingList.DoesNotExist:
+        return redirect('index')
+    except User.DoesNotExist:
+        return HttpResponse('Error 400: Bad request.')
+
+    if request.user != shopping_list.owner:
+        return HttpResponse('Error 403: Forbidden. User does not have permission to change the owner of the shopping list.',
+                            status=403)
 
     if new_owner in shopping_list.participants.all():
         shopping_list.participants.remove(new_owner)
@@ -249,10 +269,15 @@ def change_owner_of_shopping_list(request, shopping_list_id, username):
 def make_user_admin_of_shopping_list(request, shopping_list_id, username):
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
+        user = User.objects.get(username=username)
     except ShoppingList.DoesNotExist:
         return redirect('index')
+    except User.DoesNotExist:
+        return HttpResponse('Error 400: Bad request.', status=400)
 
-    user = User.objects.get(username=username)
+    if not user_has_admin_rights(user, shopping_list):
+        return HttpResponse('Error 403: Forbidden. User does not have permission to make participant an admin.',
+                            status=403)
 
     try:
         shopping_list.participants.remove(user)
