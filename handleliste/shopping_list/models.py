@@ -11,6 +11,7 @@ class ShoppingList(models.Model):
     title = models.CharField(max_length=100)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='owner')
     participants = models.ManyToManyField(User, related_name='participants')
+    admins = models.ManyToManyField(User, related_name='admins')
 
     def __str__(self):
         return self.title

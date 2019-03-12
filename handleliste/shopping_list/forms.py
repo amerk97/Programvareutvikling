@@ -1,5 +1,6 @@
 from django import forms
-
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 class ItemForm(forms.Form):
     name = forms.CharField(
@@ -40,3 +41,9 @@ class ShareForm(forms.Form):
             }
         )
     )
+
+    def clean_username(self, *args, **kwargs):
+        username = self.cleaned_data['username']
+        if User.objects.filter(username=username).count() == 0:
+            raise forms.ValidationError('User does not exist. Please enter the username of an existing user.')
+        return username
