@@ -18,7 +18,8 @@ app_name = "shopping_list"
 def get_user_shopping_lists(user):
     owned_shopping_lists = ShoppingList.objects.filter(owner=user)
     other_shopping_lists = ShoppingList.objects.filter(participants=user)
-    my_shopping_lists = other_shopping_lists | owned_shopping_lists
+    other2_shopping_lists = ShoppingList.objects.filter(admins=user)
+    my_shopping_lists = other_shopping_lists | owned_shopping_lists | other2_shopping_lists
     return my_shopping_lists.distinct().order_by('id')
 
 
@@ -224,9 +225,9 @@ def remove_user_from_shopping_list(request, shopping_list_id, username):
 
     try:
         if user_to_be_removed in shopping_list.participants.all():
-            shopping_list.participants.remove(user)
+            shopping_list.participants.remove(user_to_be_removed)
         elif user_to_be_removed in shopping_list.admins.all():
-            shopping_list.admins.remove(user)
+            shopping_list.admins.remove(user_to_be_removed)
     finally:
         # If the current user is leaves the shopping list, redirect to index
         # Else, if the current user kicks another user, redirect to the shopping list
@@ -275,15 +276,13 @@ def make_user_admin_of_shopping_list(request, shopping_list_id, username):
     except User.DoesNotExist:
         return HttpResponse('Error 400: Bad request.', status=400)
 
-    if not user_has_admin_rights(user, shopping_list):
+    if not user_has_admin_rights(request.user, shopping_list):
         return HttpResponse('Error 403: Forbidden. User does not have permission to make participant an admin.',
                             status=403)
 
     try:
+        shopping_list.admins.add(user)
         shopping_list.participants.remove(user)
-        shopping_list.admin.add(user)
     except:
-        # Something went wrong
         return redirect('index')
-    finally:
-        return redirect('detail', shopping_list_id)
+    return redirect('detail', shopping_list_id)
