@@ -200,6 +200,10 @@ def share_shopping_list(request, shopping_list_id):
         return redirect('index')
     share_form = ShareForm(request.POST)
 
+    # Redirects the user to index if they are not a member of the shopping list
+    if not user_is_member_of_shopping_list(request.user):
+        return redirect('index')
+
     if share_form.is_valid():
         shared_with_user = User.objects.get(username=request.POST['username'])
         if not user_is_member_of_shopping_list(shared_with_user, shopping_list):
@@ -227,6 +231,12 @@ def remove_user_from_shopping_list(request, shopping_list_id, username):
         if user_to_be_removed in shopping_list.participants.all():
             shopping_list.participants.remove(user_to_be_removed)
         elif user_to_be_removed in shopping_list.admins.all():
+            # If the current user is not the owner, he cannot remove an admin
+            # If the current user is an admin and wishes to leave the list, he can leave the shopping list
+            if current_user != shopping_list.owner and current_user != user_to_be_removed:
+                return HttpResponse(
+                    'Error 403: Forbidden. User does not have permission to remove user from shopping list.',
+                    status=403)
             shopping_list.admins.remove(user_to_be_removed)
     finally:
         # If the current user is leaves the shopping list, redirect to index
@@ -252,21 +262,17 @@ def change_owner_of_shopping_list(request, shopping_list_id, username):
         return HttpResponse('Error 403: Forbidden. User does not have permission to change the owner of the shopping list.',
                             status=403)
 
-    if new_owner in shopping_list.participants.all():
-        shopping_list.participants.remove(new_owner)
-    elif new_owner in shopping_list.admins.all():
+    if new_owner in shopping_list.admins.all():
         shopping_list.admins.remove(new_owner)
-    elif new_owner == shopping_list.owner:
-        return redirect('detail', shopping_list_id)
     else:
-        # The new owner must be a member of the shopping list to be able to become the owner of the list
-        # Redirect to shopping list
+        # The new owner must be a admin of the shopping list to be able to become the owner of the list
         return redirect('detail', shopping_list_id)
-    shopping_list.update(owner=new_owner)
+    shopping_list.owner = new_owner
+    shopping_list.save()
     return redirect('index')
 
 
-# Update a participant of a shopping list to become an admin of it
+# Promote a participant to an admin of a shopping list
 def make_user_admin_of_shopping_list(request, shopping_list_id, username):
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
@@ -283,6 +289,5 @@ def make_user_admin_of_shopping_list(request, shopping_list_id, username):
     try:
         shopping_list.admins.add(user)
         shopping_list.participants.remove(user)
-    except:
-        return redirect('index')
-    return redirect('detail', shopping_list_id)
+    finally:
+        return redirect('detail', shopping_list_id)
