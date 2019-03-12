@@ -223,7 +223,7 @@ def make_user_admin_of_shopping_list(request, shopping_list_id, username):
 
     try:
         shopping_list.participants.remove(user)
-        shopping_list.admin.add(user)
+        shopping_list.admins.add(user)
     except:
         # Something went wrong
         return redirect('index')

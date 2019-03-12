@@ -14,23 +14,20 @@
             </div>
 
 
+            {% for admin in shopping_list.admins.all %}
+                <div class="chip red lighten-3">
+                    {{ admin }}
+                    {% if user in shopping_list.admins.all or user == shopping_list.owner %}
+                        <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}" style="color:black"><i class="close material-icons">close</i></a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+
+
             {% for participant in shopping_list.participants.all %}
 
                 {% if user in shopping_list.admins.all or user == shopping_list.owner %}
-
-                    {% if participant in shopping_list.admins.all %}
-                        <div class="chip red lighten-3">
-                            {{ participant }}
-                            <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}" style="color:black"><i class="close material-icons">close</i></a>
-                        </div>
-                    {% else %}
-                        <div class="chip">
-                            {{ participant }}
-                            <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}" style="color:black"><i class="close material-icons">close</i></a>
-                        </div>
-                    {% endif %}
-
-
                     <div class="chip">
                         {{ participant }}
                         <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}" style="color:black"><i class="close material-icons">close</i></a>
@@ -43,16 +40,15 @@
                             <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}" style="color:black"><i class="close material-icons">close</i></a>
                         {% endif %}
                     </div>
-
                 {% endif %}
-
             {% endfor %}
+
             <a href="#"><div class="chip"><i class="tiny material-icons toggle-visibility">person_add</i></div></a>
             {% if user in shopping_list.admins.all or user == shopping_list.owner %}
                 <div>
                     <ul id="dropdown2" class="dropdown-content">
                         {% for participant in shopping_list.participants.all %}
-                            <li><a href="#!"> {{ participant }} </a></li>
+                            <li><a href="{% url 'make-admin' shopping_list.id participant.username %}"> {{ participant }} </a></li>
                         {% endfor %}
                     </ul>
                     <a class="btn dropdown-trigger" href="#!" data-target="dropdown2">Make admin<i class="material-icons right">arrow_drop_down</i></a>
