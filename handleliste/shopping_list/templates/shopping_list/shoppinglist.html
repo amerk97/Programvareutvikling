@@ -15,6 +15,12 @@
                 <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}"><i class="close material-icons">close</i></a>
             </div>
             {% endfor %}
+            {% for admin in shopping_list.admins.all %}
+            <div class="chip blue">
+                {{ admin }}
+                <a href="{% url 'remove-user-from-shopping-list' shopping_list.id admin.username %}"><i class="close material-icons">close</i></a>
+            </div>
+            {% endfor %}
             <a href="#"><div class="chip"><i class="tiny material-icons toggle-visibility">person_add</i></div></a>
             <div class="row toggle-item">
                 <form action="{% url 'share-shopping-list' shopping_list.id %}" method='POST' class="col 12">
