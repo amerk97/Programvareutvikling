@@ -56,26 +56,13 @@ class ShoppingListViews(TestCase):
         self.assertRedirects(response, self.detail_shopping_list_url)
 
     def test_share_shopping_list_POST(self):
-        self.client.login(username='testparticipant1', password='12345testing')
-        self.client.login(username='testparticipant2', password='12345testing')
-        self.client.login(username='testadmin', password='12345testing')
+        self.owner = User.objects.create_user(username='testowner', password='12345testing')
         response1 = self.client.post(self.share_shopping_list_url, {
-            'username': self.participants_en.username
+            'username': self.owner.username
             })
-        response2 = self.client.post(self.share_shopping_list_url, {
-            'username': self.participants_to.username
-            })
-        response3 = self.client.post(self.share_shopping_list_url, {
-            'username': self.admin.username
-            })
+
         self.assertEqual(response1.status_code, 302)
         self.assertRedirects(response1, self.detail_shopping_list_url)
-
-        self.assertEqual(response2.status_code, 302)
-        self.assertRedirects(response2, self.detail_shopping_list_url)
-
-        self.assertEqual(response3.status_code, 302)
-        self.assertRedirects(response3, self.detail_shopping_list_url)
 
     # Sjekker at brukerne som får tilgang til lista havner i participants-lista for den handlelista:
         bool_users_participants = (self.participants_en and self.participants_to and self.admin) in self.shopping_list.participants.all()
@@ -122,6 +109,7 @@ class ShoppingListViews(TestCase):
 
         shopping_list_is_deleted = self.shopping_list_2 not in get_user_shopping_lists(self.owner)
         self.assertTrue(shopping_list_is_deleted)
+
 
     #def test_change_viewed_shoppinglist_POST(self):
      #   response1 = self.client.post(self.share_shopping_list_url_2, {
