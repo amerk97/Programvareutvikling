@@ -20,28 +20,65 @@
             margin-bottom: -7px;
         }
 
+                /* width */
+        ::-webkit-scrollbar {
+          width: 10px;
+        }
 
+        /* Track */
+        ::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+          background: #888;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
         /* The Modal (background) */
         .modal {
               display: none; /* Hidden by default */
               position: fixed; /* Stay in place */
               z-index: 1; /* Sit on top */
-              left: 0;
-              top: 0;
-              width: 60%; /* Full width */
-              height: 60%; /* Full height */
-              overflow: auto; /* Enable scroll if needed */
-              background-color: rgb(0,0,0); /* Fallback color */
-              background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
+              top: 15%;
 
+        }
         /* Modal Content/Box */
         .modal-content {
-            margin: 15% auto; /* 15% from the top and centered */
-            width: 80%; /* Could be more or less, depending on screen size */
+            margin: 2% auto; /* 15% from the top and centered */
+            width: fit-content; /* Could be more or less, depending on screen size */
         }
 
 
+
+         /* Delete list warning -   modal*/
+        .modal2 {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            background-color: white;
+            z-index: 1; /* Sit on top */
+            top: 15%;
+            overflow: hidden;
+            height: fit-content;
+
+        }
+
+        /* delete list warning - content-box */
+        .modal2-content {
+            background-color: white;
+            text-align: center;
+            margin: 2% auto;
+            height: fit-content;
+
+        }
+
+        #id_title{
+            color: lightgrey;
+        }
 
     </style>
      <!-- Compiled and minified CSS -->
@@ -51,6 +88,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
+
 <ul id="dropdown1" class="dropdown-content">
   <li><a href="{% url 'user:logout' %}">Sign out</a></li>
 </ul>
@@ -66,22 +104,26 @@
             </ul>
         </div>
     </div>
-    <div class="nav-content center">
-        <ul class="tabs tabs-transparent hide-on-med-and-down">
+
+</nav>
+
+    <div class="col s12 blue-grey darken-4 hide-on-med-and-down">
+        <ul class="tabs blue-grey darken-4">
             {% for shopping_list in my_shopping_lists %}
-            <li class="tab"><a href="{% url 'detail' shopping_list.id %}" >{{ shopping_list.title }}</a></li>
+            <li class="tab"><a href="{% url 'detail' shopping_list.id %}" style="color: lightgrey;">{{ shopping_list.title }}</a></li>
             {% endfor %}
             <li class="tab">
-            <form action="{% url 'create-list' %}" method='POST'>
-                {% csrf_token %}
-                <div class="row">
-                    <div class="input-field col s12">{{ shopping_list_form.title }}</div>
-                </div>
-            </form>
+                <a>
+                <form action="{% url 'create-list' %}" method='POST' style="margin-top: -15px; margin-bottom: -15px; overflow-x: hidden;">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s12">{{ shopping_list_form.title }}</div>
+                    </div>
+                </form>
+                </a>
             </li>
         </ul>
     </div>
-</nav>
 
 <ul class="sidenav" id="mobile-links">
     <li class="row"><h5 class="col s10 offset-s2">My shopping lists</h5></li>
@@ -105,19 +147,22 @@
     <li><div class="row"></div></li>
     <li><div class="row"></div></li>
 </ul>
-
 <!-- Error messages -->
 {% if messages %}
     <div class="container">
-        <div class="card-panel red lighten-3">
         {% for message in messages %}
-            <p>{{message}}</p>
+            {% if message.tags == 'success' %}
+                <div class="card-panel green lighten-3">
+                {{message}}
+                </div>
+            {% else %}
+                <div class="card-panel red lighten-3">
+                {{message}}
+                </div>
+            {% endif %}
         {% endfor %}
-        </div>
     </div>
 {% endif %}
-
-
 <!-- The shopping list the user is currently looking at-->
 {% block content %}
 {% endblock %}
@@ -134,8 +179,13 @@
         $(".toggle-visibility").click(function(){
             $(".toggle-item").toggle();
         });
+        $('.tabs').tabs({
+            onShow: function (event, ui) {
+                formID = $('ul.tabs li a.active').html();
+            },
+            swipeable: True
+        });
     });
-
 
 </script>
 </body>
