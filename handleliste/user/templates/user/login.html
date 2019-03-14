@@ -35,11 +35,19 @@
 	</div>
     {% if messages %}
     <div class="container">
-        <div class="card-panel red lighten-3">
+
         {% for message in messages %}
-            {{message}}
+            {% if message.tags == 'success' %}
+                <div class="card-panel green lighten-3">
+                {{message}}
+                </div>
+            {% else %}
+                <div class="card-panel red lighten-3">
+                {{message}}
+                </div>
+            {% endif %}
         {% endfor %}
-        </div>
+
     </div>
     {% endif %}
 	<div class="container">

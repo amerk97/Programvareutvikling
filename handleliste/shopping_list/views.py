@@ -51,16 +51,16 @@ def index(request):
 # Redirect the user to look at the shopping list details
 @login_required(login_url='')
 def shopping_list_details(request, shopping_list_id):
+    error_message = 'Could not view the shopping list.'
     user = request.user
     try:
         shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
     except ShoppingList.DoesNotExist:
-        messages.error(request, "The shopping list has been deleted. Could not view the shopping list.")
+        messages.error(request, 'The shopping list has been deleted. ' + error_message)
         return redirect('index')
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        messages.error(request,
-                       "You are not a member of the shopping list and therefore do not have permission to view it.")
+        messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
     my_shopping_lists = get_user_shopping_lists(user)
@@ -83,18 +83,18 @@ def shopping_list_details(request, shopping_list_id):
 @login_required(login_url='')
 @require_POST
 def add_item(request, shopping_list_id):
+    error_message = 'Could not add item to the shopping list.'
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
     except ShoppingList.DoesNotExist:
-        messages.error(request, "The shopping list has been deleted. Could not add item to the shopping list.")
+        messages.error(request, 'The shopping list has been deleted. ' + error_message)
         return redirect('index')
 
     creator = request.user
 
-    # Check if creator is a member of the list
+    # Check if creator of item is a member of the list
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        messages.error(request,
-                       "Could not add item. You are not a member of the shopping list. ")
+        messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
     form = ItemForm(request.POST)
@@ -114,14 +114,15 @@ def add_item(request, shopping_list_id):
 # Mark an item as bought
 @login_required(login_url='')
 def bought_item(request, item_id, shopping_list_id):
+    error_message = 'Could not mark item as bought.'
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
     except ShoppingList.DoesNotExist:
-        messages.error(request, "The shopping list has been deleted. Could not mark item as bought.")
+        messages.error(request, 'The shopping list has been deleted. ' + error_message)
         return redirect('index')
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        messages.error(request, "You are not a member of the shopping list. Could not mark item as bought.")
+        messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
     try:
@@ -129,7 +130,7 @@ def bought_item(request, item_id, shopping_list_id):
         item.bought = True
         item.save()
     except Item.DoesNotExist:
-        messages.error(request, "The item has been deleted. Could not mark item as bought.")
+        messages.error(request, 'The item has been deleted. ' + error_message)
     finally:
         return redirect('detail', shopping_list_id)
 
@@ -137,14 +138,15 @@ def bought_item(request, item_id, shopping_list_id):
 # Unmark an item as bought
 @login_required(login_url='')
 def not_bought_item(request, item_id, shopping_list_id):
+    error_message = 'Could not mark item as not bought.'
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
     except ShoppingList.DoesNotExist:
-        messages.error(request, "The shopping list has been deleted. Could not mark item as not bought.")
+        messages.error(request, 'The shopping list has been deleted. ' + error_message)
         return redirect('index')
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        messages.error(request, "You are not a member of the shopping list. Could not make item as not bought.")
+        messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
     try:
@@ -152,7 +154,7 @@ def not_bought_item(request, item_id, shopping_list_id):
         item.bought = False
         item.save()
     except Item.DoesNotExist:
-        messages.error(request, "The item has been deleted. Could not mark item as not bought.")
+        messages.error(request, 'The item has been deleted. ' + error_message)
     finally:
         return redirect('detail', shopping_list_id)
 
@@ -161,14 +163,15 @@ def not_bought_item(request, item_id, shopping_list_id):
 @login_required(login_url='')
 @require_POST
 def delete_item(request, item_id, shopping_list_id):
+    error_message = 'Could not delete item.'
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
     except ShoppingList.DoesNotExist:
-        messages.error(request, "The shopping list has been deleted. Could not delete item.")
+        messages.error(request, 'The shopping list has been deleted. ' + error_message)
         return redirect('index')
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        messages.error(request, "You are not a member of the shopping list. Could not delete item.")
+        messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
     try:
@@ -201,13 +204,14 @@ def create_list(request):
 # Delete a shopping list
 @login_required(login_url='')
 def delete_shopping_list(request, shopping_list_id):
+    error_message = 'Could not delete the shopping list.'
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
         if request.user == shopping_list.owner:
             shopping_list.delete()
+            messages.success(request, "Successfully deleted the shopping list!")
         else:
-            messages.error(request, "You are not the owner of the shopping list. Could not delete the shopping list.")
-            return redirect('index')
+            messages.error(request, 'You are not the owner of the shopping list. ' + error_message)
     finally:
         return redirect('index')
 
@@ -216,16 +220,17 @@ def delete_shopping_list(request, shopping_list_id):
 @login_required(login_url='')
 @require_POST
 def share_shopping_list(request, shopping_list_id):
+    error_message = 'Could not share the shopping list.'
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
     except ShoppingList.DoesNotExist:
-        messages.error(request, "The shopping list has been deleted. Could not share the shopping list.")
+        messages.error(request, 'The shopping list has been deleted. ' + error_message)
         return redirect('index')
     share_form = ShareForm(request.POST)
 
     # Redirects the user to index if they are not a member of the shopping list
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        messages.error(request, "You are not a member of the shopping list. Could not share the shopping list.")
+        messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
     if share_form.is_valid():
@@ -241,17 +246,18 @@ def share_shopping_list(request, shopping_list_id):
 @login_required(login_url='')
 def remove_user_from_shopping_list(request, shopping_list_id, username):
     current_user = request.user
+    error_message = 'Could not remove user from shopping list.'
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
         user_to_be_removed = User.objects.get(username=username)
     except ShoppingList.DoesNotExist:
-        messages.error(request, "The shopping list has been deleted. Could not remove user from shopping list.")
+        messages.error(request, 'The shopping list has been deleted. ')
         return redirect('index')
     except User.DoesNotExist:
         return HttpResponse('Error 400: Bad request.', status=400)
 
     if not user_has_admin_rights(current_user, shopping_list):
-        messages.error(request, "You are do not have admin rights. Could not remove user.")
+        messages.error(request, 'You are do not have admin rights. ' + error_message)
         return redirect('index')
 
     try:
@@ -259,7 +265,8 @@ def remove_user_from_shopping_list(request, shopping_list_id, username):
             shopping_list.participants.remove(user_to_be_removed)
         elif user_to_be_removed in shopping_list.admins.all():
             if current_user != shopping_list.owner and current_user != user_to_be_removed:
-                messages.error(request, "Could not remove the user since the user is an admin. To remove an admin, you have to be the owner of the shopping list")
+                messages.error(request,
+                               "To remove an admin, you must be the owner of the shopping list. " + error_message)
                 return redirect('index')
             shopping_list.admins.remove(user_to_be_removed)
     finally:
@@ -273,56 +280,61 @@ def remove_user_from_shopping_list(request, shopping_list_id, username):
 # Change the owner of a shopping list
 @login_required(login_url='')
 def change_owner_of_shopping_list(request, shopping_list_id, username):
+    error_message = 'Could not change the owner of shopping list.'
 
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
         new_owner = User.objects.get(username=username)
     except ShoppingList.DoesNotExist:
-        messages.error(request, "The shopping list has been deleted. Could not change the owner of shopping list.")
+        messages.error(request, "The shopping list has been deleted. " + error_message)
         return redirect('index')
     except User.DoesNotExist:
         return HttpResponse('Error 400: Bad request.')
+
+    if not user_is_member_of_shopping_list(request.user, shopping_list):
+        messages.error(request, "You are not a member of the shopping list. " + error_message)
+        return redirect('index')
 
     if request.user != shopping_list.owner:
         return HttpResponse('Error 403: Forbidden. User does not have permission to change the owner of the shopping list.',
                             status=403)
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
-        messages.error(request,
-                       "Could not give ownership to another user. You are not a member of the shopping list. ")
-        return redirect('index')
-
     if new_owner in shopping_list.admins.all():
         shopping_list.admins.remove(new_owner)
+        shopping_list.owner = new_owner
+        shopping_list.save()
+        messages.success(request, 'Successfully changed the owner of the shopping list! You have left the shopping list.')
+        return redirect('index')
     else:
         # The new owner must be a admin of the shopping list to be able to become the owner of the list
-        messages.error(request, "Could not give ownership of shopping list to the user. The user must be an admin of the shopping list.")
+        messages.error(request, "The new owner must be an admin of the shopping list." + error_message)
         return redirect('detail', shopping_list_id)
-    shopping_list.owner = new_owner
-    shopping_list.save()
-    return redirect('index')
 
 
 # Promote a participant to an admin of a shopping list
 def make_user_admin_of_shopping_list(request, shopping_list_id, username):
+    error_message = 'Could not make user an admin of the shopping list.'
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
         user = User.objects.get(username=username)
     except ShoppingList.DoesNotExist:
-        messages.error(request, "The shopping list has been deleted. Could not make user an admin of the shopping list.")
+        messages.error(request, "The shopping list has been deleted. " + error_message)
         return redirect('index')
     except User.DoesNotExist:
         return HttpResponse('Error 400: Bad request.', status=400)
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
         messages.error(request,
-                       "Could not make the user an admin. You are not a member of the shopping list. ")
+                       "You are not a member of the shopping list. " + error_message)
         return redirect('index')
 
     if not user_has_admin_rights(request.user, shopping_list):
         messages.error(request,
-                       "You do not have permission to make another user admin. You need to be an admin or owner of shopping list to do so.")
+                       "You must an admin/owner of shopping list to promote a participant to an admin. " + error_message)
         return redirect('detail', shopping_list_id)
+
+    if not user_is_member_of_shopping_list(user, shopping_list):
+        messages.error(request, f"{user} is not a member of the shopping list. " + error_message)
 
     try:
         shopping_list.admins.add(user)

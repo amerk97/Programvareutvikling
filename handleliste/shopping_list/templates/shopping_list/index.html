@@ -85,11 +85,17 @@
 <!-- Error messages -->
 {% if messages %}
     <div class="container">
-        <div class="card-panel red lighten-3">
         {% for message in messages %}
-            <p>{{message}}</p>
+            {% if message.tags == 'success' %}
+                <div class="card-panel green lighten-3">
+                {{message}}
+                </div>
+            {% else %}
+                <div class="card-panel red lighten-3">
+                {{message}}
+                </div>
+            {% endif %}
         {% endfor %}
-        </div>
     </div>
 {% endif %}
 <!-- The shopping list the user is currently looking at-->
