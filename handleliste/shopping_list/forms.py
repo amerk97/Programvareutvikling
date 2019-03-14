@@ -27,7 +27,7 @@ class ShoppingListForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'background-color': 'white',
-                'placeholder': 'Enter title of shopping list'
+                'placeholder': 'Enter title of new list'
             }
         )
     )

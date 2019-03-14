@@ -262,7 +262,8 @@ def change_owner_of_shopping_list(request, shopping_list_id, username):
         # The new owner must be a member of the shopping list to be able to become the owner of the list
         # Redirect to shopping list
         return redirect('detail', shopping_list_id)
-    shopping_list.update(owner=new_owner)
+    shopping_list.owner = new_owner
+    shopping_list.save()
     return redirect('index')
 
 
