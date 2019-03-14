@@ -33,6 +33,15 @@
 	<div class="row">
 		<h4 class="container center-align">Sign in</h4>
 	</div>
+    {% if messages %}
+    <div class="container">
+        <div class="card-panel red lighten-3">
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 	<div class="container">
 		<form method="POST">
 		    {% csrf_token %}
