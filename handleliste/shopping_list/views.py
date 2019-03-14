@@ -255,7 +255,7 @@ def remove_user_from_shopping_list(request, shopping_list_id, username):
     except User.DoesNotExist:
         return HttpResponse('Error 400: Bad request.', status=400)
 
-    if not user_has_admin_rights(current_user, shopping_list):
+    if not user_has_admin_rights(current_user, shopping_list) and current_user != user_to_be_removed:
         messages.error(request, 'You are do not have admin rights. ' + error_message)
         return redirect('index')
 
@@ -272,6 +272,7 @@ def remove_user_from_shopping_list(request, shopping_list_id, username):
         # If the current user is leaves the shopping list, redirect to index
         # Else, if the current user kicks another user, redirect to the shopping list
         if current_user == user_to_be_removed:
+            messages.success(request, "Successfully left the shopping list!")
             return redirect('index')
         return redirect('detail', shopping_list_id)
 
