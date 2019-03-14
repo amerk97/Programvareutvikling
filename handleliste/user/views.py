@@ -29,10 +29,6 @@ def registered(request):
 	return redirect('index')
 
 
-def home(request):
-	return render(request, "user/home.html")
-
-
 def logout_request(request):
 	logout(request)
 
