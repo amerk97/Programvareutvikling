@@ -56,7 +56,7 @@ def shopping_list_details(request, shopping_list_id):
     try:
         shopping_list = ShoppingList.objects.get(pk=shopping_list_id)
     except ShoppingList.DoesNotExist:
-        messages.error(request, 'The shopping list has been deleted. ' + error_message)
+        messages.error(request, 'The shopping list has either been deleted or you might not have permission to view it. ' + error_message)
         return redirect('index')
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
@@ -92,7 +92,6 @@ def add_item(request, shopping_list_id):
 
     creator = request.user
 
-    # Check if creator of item is a member of the list
     if not user_is_member_of_shopping_list(request.user, shopping_list):
         messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
