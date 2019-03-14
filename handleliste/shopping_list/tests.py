@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from .models import Item, ShoppingList
 from django.contrib.auth import get_user_model
-from . import views
+from .views import *
 
 User = get_user_model()
 
@@ -113,12 +113,15 @@ class ShoppingListViews(TestCase):
     # Sletter lista og sjekker statuskode ++:
         self.index_url = reverse('index')
         self.delete_shopping_list_url = reverse('delete-shopping-list', args='2')
-        response_delete_list= self.client.post(self.delete_shopping_list_url, {
+        response_delete_list = self.client.post(self.delete_shopping_list_url, {
             'username': self.owner.username
         })
         self.assertEqual(response_delete_list.status_code, 302)
         self.assertRedirects(response_delete_list, self.index_url)
 
+
+        shopping_list_is_deleted = self.shopping_list_2 not in get_user_shopping_lists(self.owner)
+        self.assertTrue(shopping_list_is_deleted)
 
     #def test_change_viewed_shoppinglist_POST(self):
      #   response1 = self.client.post(self.share_shopping_list_url_2, {
