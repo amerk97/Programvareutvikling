@@ -13,7 +13,7 @@
             <div class="chip">
                 {{ participant }}
                 <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant.username %}"><i class="close material-icons">close</i></a>
-                <a href="{% url 'make-admin' shopping_list.id participant.username"><i class="close material-icons">close</i></a>
+                <a href="{% url 'make-admin' shopping_list.id participant.username %}"><i class="close material-icons">close</i></a>
             </div>
             {% endfor %}
             {% for admin in shopping_list.admins.all %}
