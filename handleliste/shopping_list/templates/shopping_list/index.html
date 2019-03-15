@@ -14,42 +14,22 @@
             -webkit-text-fill-color: darkgray;
             color: darkgrey;
         }
-        .button-fix{
+        .button-fix {
             float: right;
             margin-top: -7px;
             margin-bottom: -7px;
         }
 
-                /* width */
-        ::-webkit-scrollbar {
-          width: 10px;
-        }
-
-        /* Track */
-        ::-webkit-scrollbar-track {
-          background: #f1f1f1;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-          background: #888;
-        }
-
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-          background: #555;
-        }
-
-
     </style>
      <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
+    <!-- Simple scrollbar -->
+    <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
     <!-- Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-
+<div class="z-depth-2">
 <ul id="dropdown1" class="dropdown-content">
   <li><a href="{% url 'user:logout' %}">Sign out</a></li>
 </ul>
@@ -65,11 +45,9 @@
             </ul>
         </div>
     </div>
-
 </nav>
-
-    <div class="col s12 blue-grey darken-4 hide-on-med-and-down">
-        <ul class="tabs blue-grey darken-4">
+    <div class="col s12 blue-grey darken-4 hide-on-med-and-down" style="height:54px;">
+        <ul data-simplebar class="tabs blue-grey darken-4">
             {% for shopping_list in my_shopping_lists %}
             <li class="tab"><a href="{% url 'detail' shopping_list.id %}" style="color: lightgrey;">{{ shopping_list.title }}</a></li>
             {% endfor %}
@@ -85,7 +63,7 @@
             </li>
         </ul>
     </div>
-
+</div>
 <ul class="sidenav" id="mobile-links">
     <li class="row"><h5 class="col s10 offset-s2">My shopping lists</h5></li>
     {% for shopping_list in my_shopping_lists %}
@@ -147,7 +125,7 @@
             swipeable: True
         });
     });
-
 </script>
+<script src="https://unpkg.com/simplebar@latest/dist/simplebar.js"></script>
 </body>
 </html>
