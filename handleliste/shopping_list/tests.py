@@ -55,42 +55,89 @@ class ShoppingListViews(TestCase):
         self.assertEquals(response.status_code, 302)
         self.assertRedirects(response, self.detail_shopping_list_url)
 
-    def test_share_shopping_list_POST(self):
-        self.owner = User.objects.create_user(username='testowner', password='12345testing')
+    def test_aashare_shopping_list_POST(self):
+        # self.owner = User.objects.create_user(username='testowner', password='12345testing')
+
+        # printer listene, skal være tomme:
+        # print(self.shopping_list.participants.all())
+        # print(self.shopping_list.admins.all())
+        # print(self.shopping_list.owner)
+
         response1 = self.client.post(self.share_shopping_list_url, {
-            'username': self.owner.username
-            })
+            'username': self.participants_en
+        })
 
         self.assertEqual(response1.status_code, 302)
         self.assertRedirects(response1, self.detail_shopping_list_url)
 
-    # Sjekker at brukerne som får tilgang til lista havner i participants-lista for den handlelista:
-        bool_users_participants = (self.participants_en and self.participants_to and self.admin) in self.shopping_list.participants.all()
+        response2 = self.client.post(self.share_shopping_list_url, {
+            'username': self.participants_to
+        })
+
+        self.assertEqual(response2.status_code, 302)
+        self.assertRedirects(response2, self.detail_shopping_list_url)
+
+        response3 = self.client.post(self.share_shopping_list_url, {
+            'username': self.admin
+        })
+        self.assertEqual(response3.status_code, 302)
+        self.assertRedirects(response3, self.detail_shopping_list_url)
+
+        # printer listene, og ser at de inneholder forventede brukere:
+        # print(self.shopping_list.participants.all())
+        # print(self.shopping_list.admins.all())
+        # print(self.shopping_list.owner)
+
+    # Sjekke at ingen av de er admin, at alle er i participants, at self.owner er owner:
+        bool_users_not_admin = (self.participants_en and self.participants_to) not in self.shopping_list.admins.all()
+        self.assertTrue(bool_users_not_admin)
+
+        bool_users_participants = (self.participants_en and self.participants_to) in self.shopping_list.participants.all()
         self.assertTrue(bool_users_participants)
 
-    # Sjekke om noen av de tre er admin: skal ikke være det for de skal kun være én type bruker:
-        bool_users_admin = (self.participants_en or self.participants_to or self.admin) in self.shopping_list.admins.all()
-        self.assertFalse(bool_users_admin)
+        bool_owner = self.owner == self.shopping_list.owner
+        self.assertTrue(bool_owner)
 
     def test_make_user_admin_of_shopping_list_POST(self):
+        # print(self.shopping_list.admins.all())
+        # print(self.shopping_list.participants.all())
+
         self.make_user_admin_of_shopping_list_url = reverse('make-admin', args=['1', self.admin])
         response = self.client.post(self.make_user_admin_of_shopping_list_url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, self.detail_shopping_list_url)
+
+        # print(self.shopping_list.admins.all())
+        # print(self.shopping_list.participants.all())
 
     # Sjekker om brukeren som blir gjort til admin er i admins-lista til den spesifikke handlelista:
         bool_admin_i_adminliste = (self.admin in self.shopping_list.admins.all()) and (self.admin not in self.shopping_list.participants.all())
         self.assertTrue(bool_admin_i_adminliste)
 
     def test_remove_user_from_list_POST(self):
+        self.client.post(self.share_shopping_list_url, {
+            'username': self.participants_en
+        })
+        self.client.post(self.share_shopping_list_url, {
+            'username': self.participants_to
+        })
+        self.client.post(self.share_shopping_list_url, {
+            'username': self.admin
+        })
+        # print(self.shopping_list.participants.all())
+
         self.remove_user_from_list_url = reverse('remove-user-from-shopping-list', args=['1', self.participants_en])
         response_remove = self.client.post(self.remove_user_from_list_url)
         self.assertEqual(response_remove.status_code, 302)
         self.assertRedirects(response_remove, self.detail_shopping_list_url)
 
+        # print(self.shopping_list.participants.all())
+
     # Sjekker om bruker 'participants_en' fortsatt er i participants-listen til den aktuelle handlelisten:
         bool_is_removed = self.participants_en not in self.shopping_list.participants.all()
         self.assertTrue(bool_is_removed)
+
+    # Prøve å forlate en liste:
 
     def test_delete_shopping_list_POST(self):
     # sjekker at bruker 'self.owner' er eier av shopping_list_2
