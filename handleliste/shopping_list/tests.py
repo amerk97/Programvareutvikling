@@ -157,8 +157,7 @@ class ShoppingListViews(TestCase):
         shopping_list_is_deleted = self.shopping_list_2 not in get_user_shopping_lists(self.owner)
         self.assertTrue(shopping_list_is_deleted)
 
-
-    #def test_change_viewed_shoppinglist_POST(self):
+    # def test_change_viewed_shoppinglist_POST(self):
      #   response1 = self.client.post(self.share_shopping_list_url_2, {
     #        'username': self.participants_en.username
      #   })
