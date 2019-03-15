@@ -227,7 +227,6 @@ def share_shopping_list(request, shopping_list_id):
         return redirect('index')
     share_form = ShareForm(request.POST)
 
-    # Redirects the user to index if they are not a member of the shopping list
     if not user_is_member_of_shopping_list(request.user, shopping_list):
         messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
@@ -255,9 +254,13 @@ def remove_user_from_shopping_list(request, shopping_list_id, username):
     except User.DoesNotExist:
         return HttpResponse('Error 400: Bad request.', status=400)
 
+    if not user_is_member_of_shopping_list(request.user, shopping_list):
+        messages.error(request, "You are not a member of the shopping list. " + error_message)
+        return redirect('index')
+
     if not user_has_admin_rights(current_user, shopping_list) and current_user != user_to_be_removed:
         messages.error(request, 'You are do not have admin rights. ' + error_message)
-        return redirect('index')
+        return redirect('detail', shopping_list_id)
 
     try:
         if user_to_be_removed in shopping_list.participants.all():
@@ -324,8 +327,7 @@ def make_user_admin_of_shopping_list(request, shopping_list_id, username):
         return HttpResponse('Error 400: Bad request.', status=400)
 
     if not user_is_member_of_shopping_list(request.user, shopping_list):
-        messages.error(request,
-                       "You are not a member of the shopping list. " + error_message)
+        messages.error(request, "You are not a member of the shopping list. " + error_message)
         return redirect('index')
 
     if not user_has_admin_rights(request.user, shopping_list):
