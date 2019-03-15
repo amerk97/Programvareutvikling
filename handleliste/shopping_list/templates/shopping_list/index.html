@@ -20,6 +20,45 @@
             margin-bottom: -7px;
         }
 
+        /* The Modal (background) */
+        .modal {
+              display: none; /* Hidden by default */
+              position: fixed; /* Stay in place */
+              z-index: 1; /* Sit on top */
+              top: 15%;
+
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            margin: 2% auto; /* 15% from the top and centered */
+            width: fit-content; /* Could be more or less, depending on screen size */
+        }
+
+         /* Delete list warning -   modal*/
+        .modal2 {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            background-color: white;
+            z-index: 1; /* Sit on top */
+            top: 15%;
+            overflow: hidden;
+            height: fit-content;
+
+        }
+
+        /* delete list warning - content-box */
+        .modal2-content {
+            background-color: white;
+            text-align: center;
+            margin: 2% auto;
+            height: fit-content;
+
+        }
+
+        #id_title{
+            color: lightgrey;
+        }
+
     </style>
      <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -41,12 +80,8 @@
             <a href="#" class="sidenav-trigger" data-target="mobile-links">
                 <i class="material-icons">menu</i>
             </a>
-            <ul class="right hide-on-small-only">
-                <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">{{ user.username }}<i class="material-icons right">arrow_drop_down</i></a></li>
-            </ul>
-            <ul class="right hide-on-med-and-up">
-                <li><a class="dropdown-trigger" href="#!" data-target="dropdown1"><i class="material-icons right">arrow_drop_down</i></a></li>
-            </ul>
+                <a class="right hide-on-small-only dropdown-trigger" href="#" data-target="dropdown1">{{ user.username }}<i class="material-icons right">arrow_drop_down</i></a>
+                <a class="right hide-on-med-and-up dropdown-trigger" href="#" data-target="dropdown1"><i class="material-icons right">arrow_drop_down</i></a>
         </div>
     </div>
 </nav>

@@ -26,7 +26,8 @@ class ShoppingListForm(forms.Form):
         max_length=13,
         widget=forms.TextInput(
             attrs={
-                'placeholder': 'Enter title of shopping list'
+                'color': 'red',
+                'placeholder': 'Enter title of new list'
             }
         )
     )
