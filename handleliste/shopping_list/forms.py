@@ -4,7 +4,7 @@ User = get_user_model()
 
 class ItemForm(forms.Form):
     name = forms.CharField(
-        max_length=50,
+        max_length=30,
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Enter name of item',
@@ -12,7 +12,7 @@ class ItemForm(forms.Form):
         )
     )
     amount = forms.CharField(
-        max_length=20,
+        max_length=15,
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Enter amount of item',
@@ -23,7 +23,7 @@ class ItemForm(forms.Form):
 
 class ShoppingListForm(forms.Form):
     title = forms.CharField(
-        max_length=100,
+        max_length=13,
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Enter title of shopping list'

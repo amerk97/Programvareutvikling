@@ -8,7 +8,7 @@ default_shopping_list_ID = 1
 
 
 class ShoppingList(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=25)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='owner')
     participants = models.ManyToManyField(User, related_name='participants')
     admins = models.ManyToManyField(User, related_name='admins')
