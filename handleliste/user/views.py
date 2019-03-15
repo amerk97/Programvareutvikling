@@ -29,14 +29,12 @@ def registered(request):
 	return redirect('index')
 
 
-def home(request):
-	return render(request, "user/home.html")
-
-
 def logout_request(request):
 	logout(request)
+	test = redirect('user:login')
+	messages.success(request, 'Logged out successfully!')
 
-	return redirect('user:login')
+	return test
 
 
 def login_request(request):
