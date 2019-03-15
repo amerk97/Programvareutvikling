@@ -17,16 +17,29 @@ variables:
 cache:
   paths:
   - ~/.cache/pip/
+  
+stages:
+ - test
+ - deploy
  
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
 before_script:
  - python -V                                   # Print out python version for debugging
- - pip install -r requirements.txt
 
 
 test:
+  stage: test
   script:
+  - pip install -r requirements_test.txt
   - cd handleliste
   - python manage.py test
+
+deploy:
+  stage: deploy
+  only:
+  - master
+  script:
+  - pip install -r requirements_deploy.txt
+  - python auto_ssh.py
   
