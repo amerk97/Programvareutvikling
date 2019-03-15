@@ -1,6 +1,5 @@
 
 
-
 from pexpect import pxssh
 import getpass
 import time
@@ -20,9 +19,9 @@ try:
     name = str(name)
     ACTOKEN = 'UTfyZCCs4f3H6TZQGjux'
 
-    s.sendline('find -delete')
-    s.prompt()
-    print(s.before)
+    # s.sendline('find -delete')
+    # s.prompt()
+    # print(s.before)
 
     s.sendline(f'git clone https://oauth2:{ACTOKEN}@gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3.git {name}')
     s.prompt()
