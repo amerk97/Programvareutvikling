@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!-- Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
 <nav class="nav blue-grey darken-4">
@@ -33,6 +34,23 @@
 	<div class="row">
 		<h4 class="container center-align">Sign in</h4>
 	</div>
+    {% if messages %}
+    <div class="container">
+
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="card-panel green lighten-3">
+                {{message}}
+                </div>
+            {% else %}
+                <div class="card-panel red lighten-3">
+                {{message}}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+    {% endif %}
 	<div class="container">
 		<form method="POST">
 		    {% csrf_token %}
