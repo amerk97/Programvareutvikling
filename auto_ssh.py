@@ -1,5 +1,4 @@
 
-
 from pexpect import pxssh
 import getpass
 import time
@@ -30,6 +29,11 @@ try:
     s.sendline(f'cd {name}/handleliste')
     s.prompt()
     print(s.before)
+    
+    s.sendline('python3 -m pip install django')
+    s.prompt()
+    print(s.before)
+
 
     s.sendline('python3 manage.py runserver 0.0.0.0:8000')
     s.prompt()
