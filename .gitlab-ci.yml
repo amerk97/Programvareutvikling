@@ -17,6 +17,10 @@ variables:
 cache:
   paths:
   - ~/.cache/pip/
+  
+stages:
+ - test
+ - deploy
  
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
@@ -26,7 +30,15 @@ before_script:
 
 
 test:
+  stage: test
   script:
   - cd handleliste
   - python manage.py test
+
+deploy:
+  stage: deploy
+  only:
+  - master
+  script:
+  - python auto_ssh.py
   
