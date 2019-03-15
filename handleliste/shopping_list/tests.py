@@ -147,3 +147,23 @@ class ShoppingListViews(TestCase):
 
         shopping_list_is_deleted = self.shopping_list_2 not in get_user_shopping_lists(self.owner)
         self.assertTrue(shopping_list_is_deleted)
+
+    def test_admin_leaves_list_POST(self):
+        #Adds user as particpant
+        self.client.post(self.share_shopping_list_url, {
+            'username': self.admin
+        })
+        #makes user admin
+        self.make_user_admin_of_shopping_list_url = reverse('make-admin', args=['1', self.admin])
+        self.client.post(self.make_user_admin_of_shopping_list_url)
+        #Admin leaves list
+        self.remove_user_from_list_url = reverse('remove-user-from-shopping-list', args=['1', self.admin])
+        response_remove = self.client.post(self.remove_user_from_list_url)
+        #Test if admin has left the shoppinglist
+        self.assertEqual(response_remove.status_code, 302)
+        self.assertRedirects(response_remove, self.detail_shopping_list_url)
+        bool_is_removed = (self.admin not in self.shopping_list.participants.all()) and (
+                    self.shopping_list not in get_user_shopping_lists(self.admin))
+        self.assertTrue(bool_is_removed)
+
+
