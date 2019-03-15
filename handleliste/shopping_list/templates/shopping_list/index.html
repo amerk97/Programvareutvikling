@@ -14,20 +14,62 @@
             -webkit-text-fill-color: darkgray;
             color: darkgrey;
         }
-        .button-fix{
+        .button-fix {
             float: right;
             margin-top: -7px;
             margin-bottom: -7px;
         }
+
+        /* The Modal (background) */
+        .modal {
+              display: none; /* Hidden by default */
+              position: fixed; /* Stay in place */
+              z-index: 1; /* Sit on top */
+              top: 15%;
+
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            margin: 2% auto; /* 15% from the top and centered */
+            width: fit-content; /* Could be more or less, depending on screen size */
+        }
+
+         /* Delete list warning -   modal*/
+        .modal2 {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            background-color: white;
+            z-index: 1; /* Sit on top */
+            top: 15%;
+            overflow: hidden;
+            height: fit-content;
+
+        }
+
+        /* delete list warning - content-box */
+        .modal2-content {
+            background-color: white;
+            text-align: center;
+            margin: 2% auto;
+            height: fit-content;
+
+        }
+
+        #id_title{
+            color: lightgrey;
+        }
+
     </style>
      <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
+    <!-- Simple scrollbar -->
+    <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
     <!-- Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
-
+<div class="z-depth-2">
 <ul id="dropdown1" class="dropdown-content">
   <li><a href="{% url 'user:logout' %}">Sign out</a></li>
 </ul>
@@ -38,28 +80,29 @@
             <a href="#" class="sidenav-trigger" data-target="mobile-links">
                 <i class="material-icons">menu</i>
             </a>
-            <ul class="right">
-                <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">{{ user.username }}<i class="material-icons right">arrow_drop_down</i></a></li>
-            </ul>
+                <a class="right hide-on-small-only dropdown-trigger" href="#" data-target="dropdown1">{{ user.username }}<i class="material-icons right">arrow_drop_down</i></a>
+                <a class="right hide-on-med-and-up dropdown-trigger" href="#" data-target="dropdown1"><i class="material-icons right">arrow_drop_down</i></a>
         </div>
     </div>
-    <div class="nav-content center">
-        <ul class="tabs tabs-transparent hide-on-med-and-down">
+</nav>
+    <div class="col s12 blue-grey darken-4 hide-on-med-and-down" style="height:54px;">
+        <ul data-simplebar class="tabs blue-grey darken-4">
             {% for shopping_list in my_shopping_lists %}
-            <li class="tab"><a href="{% url 'detail' shopping_list.id %}" >{{ shopping_list.title }}</a></li>
+            <li class="tab"><a href="{% url 'detail' shopping_list.id %}" style="color: lightgrey;">{{ shopping_list.title }}</a></li>
             {% endfor %}
             <li class="tab">
-            <form action="{% url 'create-list' %}" method='POST'>
-                {% csrf_token %}
-                <div class="row">
-                    <div class="input-field col s12">{{ shopping_list_form.title }}</div>
-                </div>
-            </form>
+                <a>
+                <form action="{% url 'create-list' %}" method='POST' style="margin-top: -15px; margin-bottom: -15px; overflow-x: hidden;">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s12">{{ shopping_list_form.title }}</div>
+                    </div>
+                </form>
+                </a>
             </li>
         </ul>
     </div>
-</nav>
-
+</div>
 <ul class="sidenav" id="mobile-links">
     <li class="row"><h5 class="col s10 offset-s2">My shopping lists</h5></li>
     {% for shopping_list in my_shopping_lists %}
@@ -82,6 +125,22 @@
     <li><div class="row"></div></li>
     <li><div class="row"></div></li>
 </ul>
+<!-- Error messages -->
+{% if messages %}
+    <div class="container">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="card-panel green lighten-3">
+                {{message}}
+                </div>
+            {% else %}
+                <div class="card-panel red lighten-3">
+                {{message}}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
 <!-- The shopping list the user is currently looking at-->
 {% block content %}
 {% endblock %}
@@ -98,7 +157,14 @@
         $(".toggle-visibility").click(function(){
             $(".toggle-item").toggle();
         });
+        $('.tabs').tabs({
+            onShow: function (event, ui) {
+                formID = $('ul.tabs li a.active').html();
+            },
+            swipeable: True
+        });
     });
 </script>
+<script src="https://unpkg.com/simplebar@latest/dist/simplebar.js"></script>
 </body>
 </html>
