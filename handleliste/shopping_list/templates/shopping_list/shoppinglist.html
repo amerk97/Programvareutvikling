@@ -49,7 +49,7 @@
                 </div>
                 <div class="col s2"><br><br><br>
                     {% if user == shopping_list.owner %}
-                        <a class=" btn-floating btn-large red lighten-2" id="myBtn2">
+                        <a class=" btn-floating btn-large red lighten-2" id="myBtn2" href="{% url 'delete-shopping-list' shopping_list.id %}">
                             <i class="large material-icons">delete</i>
                         </a>
                     {% endif %}
@@ -145,19 +145,6 @@
             <div></div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col s8"><br></div>
-        <!-- OWNER DELETES LIST! YES OR NO -->
-        <div id="myModal2" class="modal2 col s4 offset-s2" style="box-shadow: 0px 0px 5px 2000px rgba(0,0,0,0.5);">
-            <!-- Modal content -->
-            <div class="modal2-content" style="padding-bottom: 15px;">
-                <br><h5>Do you really want to delete this list?</h5>
-                <a class="waves-effect waves-light btn" href="{% url 'delete-shopping-list' shopping_list.id %}">Delete</a>
-                <a class="waves-effect waves-light btn grey" href="">Cancel</a>
-            </div>
-        </div>
-    </div>
 </div>
 
 
@@ -172,26 +159,7 @@
     span.onclick = function() { // When the user clicks on <span> (x), close the modal
         modal.style.display = "none";
     }
-    window.onclick = function(event) {  // When the user clicks anywhere outside of the modal, close it
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    var modal2 = document.getElementById('myModal2');
-    var btn2 = document.getElementById("myBtn2");
-    var span2 = document.getElementsByClassName("close")[0];
-
-    btn2.onclick = function () {
-        modal2.style.display = "block";
-    }
-    span2.onclick = function() {
-        modal2.style.display = "none";
-    }
-
 </script>
-
-
 {% endblock %}
 
 
