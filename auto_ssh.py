@@ -36,10 +36,6 @@ try:
     # s.sendline('python3 manage.py runserver 0.0.0.0:8000')
     # s.prompt()
     # print(s.before)
-    aesdojgioj
-    
-    ogoskafd
-    asdjok
 
 
     s.logout()
