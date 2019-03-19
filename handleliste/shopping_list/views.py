@@ -371,3 +371,35 @@ def add_comment(request, shopping_list_id):
         for msg in form.errors:
             messages.error(request, f"{form.errors[msg]}")
         return redirect('detail', shopping_list_id)
+
+
+#Add reply to a comment
+@login_required(login_url='')
+@require_POST
+def reply(request, shopping_list_id, comment_id):
+    error_message = 'Could not reply to this comment.'
+    try:
+        shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
+        comment = Comment.objects.filter(pk=comment_id)[0]
+    except ShoppingList.DoesNotExist:
+        messages.error(request, 'This shopping list does not exist.' + error_message)
+        return redirect('index')
+    except Comment.DoesNotExist:
+        messages.error(request, 'The comment you are replying to has been deleted.' + error_message)
+        return redirect('detail', shopping_list_id)
+
+
+    creator = request.user
+
+    form = ReplyForm(request.POST)
+    if form.is_valid():
+        new_item = Reply(
+            author=creator,
+            content=request.POST['content'],
+            parent_comment=comment
+        )
+        new_item.save()
+    else:
+        messages.error(request, 'The form was invalid.')
+    return redirect('detail', shopping_list_id)
+

@@ -52,3 +52,7 @@ class ShareForm(forms.Form):
 
 class CommentForm(forms.Form):
     content = forms.CharField(max_length=150)
+
+
+class ReplyForm(form.Form):
+    content = forms.CharField(max_length=150)
