@@ -37,6 +37,9 @@ try:
     # s.prompt()
     # print(s.before)
     aesdojgioj
+    
+    ogoskafd
+    asdjok
 
 
     s.logout()
