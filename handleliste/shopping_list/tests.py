@@ -179,8 +179,11 @@ class ShoppingListViews(TestCase):
         response_remove = self.client.post(self.remove_user_from_list_url)
         # Test if owner has left the shoppinglist
         self.assertEqual(response_remove.status_code, 302)
-        self.assertRedirects(response_remove, self.detail_shopping_list_url)
+        self.index_url = reverse('index')
+        self.assertRedirects(response_remove, self.index_url)
         print(self.owner)
         print(self.shopping_list.admins.all())
+        #bool_owner_is_removed =
+        #bool_admin_is_owner =
         # Checks if owner is not the owner
         # Checks if admin is the owner
