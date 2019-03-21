@@ -16,6 +16,23 @@ class ShoppingList(models.Model):
     def __str__(self):
         return self.title
 
+    # Return the user's shopping lists
+    @staticmethod
+    def get_user_shopping_lists(user):
+        owned_shopping_lists = ShoppingList.objects.filter(owner=user)
+        other_shopping_lists = ShoppingList.objects.filter(participants=user)
+        other2_shopping_lists = ShoppingList.objects.filter(admins=user)
+        my_shopping_lists = other_shopping_lists | owned_shopping_lists | other2_shopping_lists
+        return my_shopping_lists.distinct().order_by('id')
+
+    # Check if user is a member of shopping list
+    def user_is_member(self, user):
+        return user == self.owner or user in self.participants.all() or user in self.admins.all()
+
+    # Check if user has admin rights
+    def user_has_admin_rights(self, user):
+        return user in self.admins.all() or user == self.owner
+
 
 class Item(models.Model):
     name = models.CharField(max_length=80)
