@@ -66,7 +66,7 @@ def shopping_list_details(request, shopping_list_id):
     my_shopping_lists = get_user_shopping_lists(user)
     shopping_list_form = ShoppingListForm()
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
-    comments = Comment.objects.filter(shopping_list=shopping_list).order_by(date)
+    comments = Comments.objects.filter(shopping_list=shopping_list).order_by(date)
 
     context = {
         'shopping_list': shopping_list,             # ShoppingList which is being inspected by user
@@ -358,10 +358,6 @@ def add_comment(request, shopping_list_id):
         messages.error(request, "The shopping list has been deleted. " + error_message)
         return redirect('index')
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
-        messages.error(request, "You are not a member of the shopping list. " + error_message)
-        return redirect('index')
-
     form = CommentForm(request.POST)
     if form.is_valid():
         new_comment = Comment(
@@ -377,26 +373,33 @@ def add_comment(request, shopping_list_id):
         return redirect('detail', shopping_list_id)
 
 
+#Add reply to a comment
 @login_required(login_url='')
-def delete_comment(request, shopping_list_id, comment_id):
-    error_message = 'Could not delete comment.'
+@require_POST
+def reply(request, shopping_list_id, comment_id):
+    error_message = 'Could not reply to this comment.'
     try:
-        shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)
-        comment = Comment.objects.filter(pk=comment_id)
-
-        if not user_is_member_of_shopping_list(request.user, shopping_list):
-            messages.error(request, 'You must be a member of the shopping list to delete a comment in it. ' + error_message)
-            return redirect('index')
-
-        if user_has_admin_rights(request.user, shopping_list) or request.user == comment.author:
-            comment.delete()
-            messages.success(request, "Successfully deleted the comment!")
-        else:
-            messages.error(request, 'You must be the owner, an admin of shopping list or the author of comment to delete it. ' + error_message)
-
+        shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
+        comment = Comment.objects.filter(pk=comment_id)[0]
     except ShoppingList.DoesNotExist:
-        messages.success(request, 'The shopping list was deleted while the delete-comment request was made. The comment was successfully deleted!')
+        messages.error(request, 'This shopping list does not exist.' + error_message)
         return redirect('index')
-    finally:
-        messages.success(request, 'Successfully deleted the comment!')
+    except Comment.DoesNotExist:
+        messages.error(request, 'The comment you are replying to has been deleted.' + error_message)
         return redirect('detail', shopping_list_id)
+
+
+    creator = request.user
+
+    form = ReplyForm(request.POST)
+    if form.is_valid():
+        new_item = Reply(
+            author=creator,
+            content=request.POST['content'],
+            parent_comment=comment
+        )
+        new_item.save()
+    else:
+        messages.error(request, 'The form was invalid.')
+    return redirect('detail', shopping_list_id)
+
