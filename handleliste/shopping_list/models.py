@@ -23,12 +23,10 @@ class ShoppingList(models.Model):
         other_shopping_lists = ShoppingList.objects.filter(participants=user)
         other2_shopping_lists = ShoppingList.objects.filter(admins=user)
         my_shopping_lists = other_shopping_lists | owned_shopping_lists | other2_shopping_lists
-        ShoppingList.get_user_shopping_lists(user)
         return my_shopping_lists.distinct().order_by('id')
 
     # Check if user is a member of shopping list
     def user_is_member(self, user):
-        shopping_list.user_is_member(user)
         return user == self.owner or user in self.participants.all() or user in self.admins.all()
 
     # Check if user has admin rights
