@@ -33,10 +33,12 @@ class Comment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     content = models.CharField(max_length=150)
     shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE)
-    #replies = models.ManyToManyField(Reply)
 
     def __str__(self):
         return self.content
+
+    def replies(self):
+        return Reply.objects.filter(parent_comment=self)
 
 
 class Reply(models.Model):
@@ -47,6 +49,3 @@ class Reply(models.Model):
 
     def __str__(self):
         return self.content
-
-
-

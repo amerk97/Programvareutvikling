@@ -373,7 +373,19 @@ def add_comment(request, shopping_list_id):
         return redirect('detail', shopping_list_id)
 
 
-#Add reply to a comment
+@login_required(login_url='')
+def delete_comment(shopping_list_id, comment_id):
+    error_message = "Could not delete comment."
+    try:
+        shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)
+        comment = Comment.objects.filter(pk=comment_id)
+    except ShoppingList.DoesNotExist:
+        messages.success(request, "The shopping list has been deleted by another user. Your comment was successfully deleted with it.")
+        return redirect('index')
+
+    # TODO: delete comment if user has permission
+
+# Add reply to a comment
 @login_required(login_url='')
 @require_POST
 def reply(request, shopping_list_id, comment_id):
@@ -388,13 +400,10 @@ def reply(request, shopping_list_id, comment_id):
         messages.error(request, 'The comment you are replying to has been deleted.' + error_message)
         return redirect('detail', shopping_list_id)
 
-
-    creator = request.user
-
     form = ReplyForm(request.POST)
     if form.is_valid():
         new_item = Reply(
-            author=creator,
+            author=request.user,
             content=request.POST['content'],
             parent_comment=comment
         )
