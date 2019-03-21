@@ -33,7 +33,7 @@
                             <div class="chip">
                                 {{ participant }}
                                 <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant %}" style="color:black"><i class="close material-icons">close</i></a>
-                                <a href="{% url 'make-admin' shopping_list.id participant %}" style="color:black"><i class="close material-icons">person</i></a>
+                                <!-- <a href="{% url 'make-admin' shopping_list.id participant %}" style="color:black"><i class="close material-icons">person</i></a> -->
                             </div>
 
                         {% else %}
@@ -48,7 +48,14 @@
                     <a href="#"><div class="chip"><i class="tiny material-icons toggle-visibility">person_add</i></div></a>
                 </div>
                 <div class="col s2"><br><br><br>
+                    {% if user in shopping_list.admins.all or user == shopping_list.owner %}
+                        <a id="myBtnAdmin" class="btn-floating btn-large blue lighten-2" >
+                            <i class="large material-icons">person</i>
+                        </a>
+                    {% endif %}
+
                     {% if user == shopping_list.owner %}
+
                         <a class=" btn-floating btn-large red lighten-2" id="myBtn2" href="{% url 'delete-shopping-list' shopping_list.id %}">
                             <i class="large material-icons">delete</i>
                         </a>
@@ -143,10 +150,42 @@
             <div class="row" style="margin-bottom: -15px;"><a class="right waves-effect waves-light btn grey" href="">Cancel</a></div>
         </div>
     </div>
+
+
+    <!-- MAKE ADMIN! GIVE ADMIN FUNCTIONS POPUP -->
+    <div id="myModalAdmin" class="modalAdmin" style="box-shadow: 0px 0px 5px 2000px rgba(0,0,0,0.5);">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <h5>Make admin</h5>
+            {% for participant in shopping_list.participants.all %}
+            <a href="{% url 'make-admin' shopping_list.id participant.username %}" style="color:black">
+                <div class="chip">
+                    {{ participant }}
+                </div>
+            </a>
+            {% endfor %}
+            <div class="row">
+                <a class="right waves-effect waves-light btn grey" href="">Cancel</a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
 <script type="text/javascript">
+
+    var modalAdmin = document.getElementById('myModalAdmin');
+    var btnAdmin = document.getElementById("myBtnAdmin");
+    var spanAdmin = document.getElementByClassName("close")[0];
+
+    btnAdmin.onclick = function() { // When the user clicks on the button, open the modal
+        modalAdmin.style.display = "block";
+    }
+    spanAdmin.onclick = function() { // When the user clicks on <spanAdmin> (x), close the modal
+        modalAdmin.style.display = "none";
+    }
+
     var modal = document.getElementById('myModal');
     var btn = document.getElementById("myBtn");
     var span = document.getElementsByClassName("close")[0];
