@@ -382,8 +382,15 @@ def delete_comment(shopping_list_id, comment_id):
     except ShoppingList.DoesNotExist:
         messages.success(request, "The shopping list has been deleted by another user. Your comment was successfully deleted with it.")
         return redirect('index')
+    except Comment.DoesNotExist:
+        return redirect('detail', shopping_list_id)
+
 
     # TODO: delete comment if user has permission
+    # check if user is member of shopping list - if not, redirect to index
+    # check if user is author or has admin rights - if not, redirect to shopping list detail
+    # delete comment
+    # redirect to detail shopping list
 
 # Add reply to a comment
 @login_required(login_url='')
