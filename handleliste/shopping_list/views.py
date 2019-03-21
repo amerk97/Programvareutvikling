@@ -3,8 +3,8 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.contrib import messages
 
-from .models import Item, ShoppingList
-from .forms import ItemForm, ShoppingListForm, ShareForm
+from .models import Item, ShoppingList, Comment
+from .forms import ItemForm, ShoppingListForm, ShareForm, CommentForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from user import views, urls
@@ -66,12 +66,14 @@ def shopping_list_details(request, shopping_list_id):
     my_shopping_lists = get_user_shopping_lists(user)
     shopping_list_form = ShoppingListForm()
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
+    comments = Comments.objects.filter(shopping_list=shopping_list).order_by(date)
 
     context = {
         'shopping_list': shopping_list,             # ShoppingList which is being inspected by user
         'shopping_list_form': shopping_list_form,
         'item_list': item_list,                     # List of Item objects in the inspected ShoppingList
         'item_form': ItemForm(),
+        'comments': comments,
         'share_form': ShareForm(),
         'my_shopping_lists': my_shopping_lists,
     }
@@ -343,3 +345,61 @@ def make_user_admin_of_shopping_list(request, shopping_list_id, username):
         shopping_list.participants.remove(user)
     finally:
         return redirect('detail', shopping_list_id)
+
+
+# Add comment to a shopping list
+@login_required(login_url='')
+@require_POST
+def add_comment(request, shopping_list_id):
+    error_message = 'Could not add comment.'
+    try:
+        shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
+    except ShoppingList.DoesNotExist:
+        messages.error(request, "The shopping list has been deleted. " + error_message)
+        return redirect('index')
+
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        new_comment = Comment(
+            author=request.user,
+            content=request.POST['content'],
+            shopping_list=shopping_list
+        )
+        new_comment.save()
+        return redirect('detail', shopping_list_id)
+    else:
+        for msg in form.errors:
+            messages.error(request, f"{form.errors[msg]}")
+        return redirect('detail', shopping_list_id)
+
+
+#Add reply to a comment
+@login_required(login_url='')
+@require_POST
+def reply(request, shopping_list_id, comment_id):
+    error_message = 'Could not reply to this comment.'
+    try:
+        shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]
+        comment = Comment.objects.filter(pk=comment_id)[0]
+    except ShoppingList.DoesNotExist:
+        messages.error(request, 'This shopping list does not exist.' + error_message)
+        return redirect('index')
+    except Comment.DoesNotExist:
+        messages.error(request, 'The comment you are replying to has been deleted.' + error_message)
+        return redirect('detail', shopping_list_id)
+
+
+    creator = request.user
+
+    form = ReplyForm(request.POST)
+    if form.is_valid():
+        new_item = Reply(
+            author=creator,
+            content=request.POST['content'],
+            parent_comment=comment
+        )
+        new_item.save()
+    else:
+        messages.error(request, 'The form was invalid.')
+    return redirect('detail', shopping_list_id)
+

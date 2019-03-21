@@ -48,3 +48,11 @@ class ShareForm(forms.Form):
         if User.objects.filter(username=username).count() == 0:
             raise forms.ValidationError('User does not exist. Please enter the username of an existing user.')
         return username
+
+
+class CommentForm(forms.Form):
+    content = forms.CharField(max_length=150)
+
+
+class ReplyForm(form.Form):
+    content = forms.CharField(max_length=150)
