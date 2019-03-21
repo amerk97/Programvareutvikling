@@ -66,7 +66,7 @@ def shopping_list_details(request, shopping_list_id):
     my_shopping_lists = get_user_shopping_lists(user)
     shopping_list_form = ShoppingListForm()
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
-    comments = Comments.objects.filter(shopping_list=shopping_list).order_by(date)
+    comments = Comment.objects.filter(shopping_list=shopping_list).order_by()
 
     context = {
         'shopping_list': shopping_list,             # ShoppingList which is being inspected by user
