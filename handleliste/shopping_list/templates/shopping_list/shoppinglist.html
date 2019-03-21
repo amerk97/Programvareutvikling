@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col s12">
             <div class="row">
-                <div class="col s10">
+                <div class="col s9">
                     <h3>{{ shopping_list.title }}</h3>
                     <div class="chip red lighten-2">
                         {{ shopping_list.owner }}
@@ -47,9 +47,9 @@
                     {% endfor %}
                     <a href="#"><div class="chip"><i class="tiny material-icons toggle-visibility">person_add</i></div></a>
                 </div>
-                <div class="col s2"><br><br><br>
+                <div class="col s3"><br><br><br>
                     {% if user in shopping_list.admins.all or user == shopping_list.owner %}
-                        <a id="myBtnAdmin" class="btn-floating btn-large blue lighten-2" >
+                        <a id="myBtnAdmin" class="btn-floating btn-large blue lighten-2">
                             <i class="large material-icons">person</i>
                         </a>
                     {% endif %}
@@ -130,6 +130,53 @@
                   </a>
             </div>
         </div>
+
+        <div class="col s12">
+            <div class="row">
+                <h5>Comments</h5>
+                <form action="#" method="post" style="width:100%;">
+                    <textarea placeholder="Write your comment here" name="comment"></textarea>
+                </form>
+            </div>
+
+
+            <div class="row">
+                <div class="col s10"></div>
+                <div class="col s2">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Comment
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col s1"></div>
+                <div class="col s11">
+                    <small style="color:darkblue;">USERNAME</small>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+                    <div class="row">
+                        <form action="#" method="post" style="width:100%;">
+                            <textarea placeholder="Write your reply here" name="comment"></textarea>
+                        </form>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col s10"></div>
+                        <div class="col s2">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Reply
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
 
@@ -153,9 +200,9 @@
 
 
     <!-- MAKE ADMIN! GIVE ADMIN FUNCTIONS POPUP -->
-    <div id="myModalAdmin" class="modalAdmin" style="box-shadow: 0px 0px 5px 2000px rgba(0,0,0,0.5);">
+    <div id="myModalAdmin" class="modal-admin" style="box-shadow: 0px 0px 5px 2000px rgba(0,0,0,0.5);">
         <!-- Modal content -->
-        <div class="modal-content">
+        <div class="modal-admin-content">
             <h5>Make admin</h5>
             {% for participant in shopping_list.participants.all %}
             <a href="{% url 'make-admin' shopping_list.id participant.username %}" style="color:black">
@@ -175,9 +222,21 @@
 
 <script type="text/javascript">
 
+    var modal = document.getElementById('myModal');
+    var btn = document.getElementById("myBtn");
+    var span = document.getElementsByClassName("close")[0];
+
     var modalAdmin = document.getElementById('myModalAdmin');
     var btnAdmin = document.getElementById("myBtnAdmin");
-    var spanAdmin = document.getElementByClassName("close")[0];
+    var spanAdmin = document.getElementsByClassName("close")[0];
+
+
+    btn.onclick = function() { // When the user clicks on the button, open the modal
+        modal.style.display = "block";
+    }
+    span.onclick = function() { // When the user clicks on <span> (x), close the modal
+        modal.style.display = "none";
+    }
 
     btnAdmin.onclick = function() { // When the user clicks on the button, open the modal
         modalAdmin.style.display = "block";
@@ -186,16 +245,7 @@
         modalAdmin.style.display = "none";
     }
 
-    var modal = document.getElementById('myModal');
-    var btn = document.getElementById("myBtn");
-    var span = document.getElementsByClassName("close")[0];
 
-    btn.onclick = function() { // When the user clicks on the button, open the modal
-        modal.style.display = "block";
-    }
-    span.onclick = function() { // When the user clicks on <span> (x), close the modal
-        modal.style.display = "none";
-    }
 </script>
 {% endblock %}
 
