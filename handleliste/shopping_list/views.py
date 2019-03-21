@@ -14,30 +14,10 @@ User = get_user_model()
 app_name = "shopping_list"
 
 
-# Return the user's shopping lists
-def get_user_shopping_lists(user):
-    owned_shopping_lists = ShoppingList.objects.filter(owner=user)
-    other_shopping_lists = ShoppingList.objects.filter(participants=user)
-    other2_shopping_lists = ShoppingList.objects.filter(admins=user)
-    my_shopping_lists = other_shopping_lists | owned_shopping_lists | other2_shopping_lists
-    return my_shopping_lists.distinct().order_by('id')
-
-
-# Check if user is member of shopping list
-def user_is_member_of_shopping_list(user, shopping_list):
-    return user == shopping_list.owner or user in shopping_list.participants.all() \
-           or user in shopping_list.admins.all()
-
-
-# Check if user has admin permissions
-def user_has_admin_rights(user, shopping_list):
-    return user in shopping_list.admins.all() or user == shopping_list.owner
-
-
 # Redirect the user to the main site
 @login_required(login_url='')
 def index(request):
-    my_shopping_lists = get_user_shopping_lists(request.user)
+    my_shopping_lists = ShoppingList.get_user_shopping_lists(request.user)
     shopping_list_form = ShoppingListForm()
 
     context = {
@@ -59,11 +39,11 @@ def shopping_list_details(request, shopping_list_id):
         messages.error(request, 'The shopping list has either been deleted or you might not have permission to view it. ' + error_message)
         return redirect('index')
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
+    if not shopping_list.user_is_member(request.user):
         messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
-    my_shopping_lists = get_user_shopping_lists(user)
+    my_shopping_lists = ShoppingList.get_user_shopping_lists(user)
     shopping_list_form = ShoppingListForm()
     item_list = Item.objects.filter(shopping_list=shopping_list_id)
 
@@ -92,7 +72,7 @@ def add_item(request, shopping_list_id):
 
     creator = request.user
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
+    if not shopping_list.user_is_member(request.user):
         messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
@@ -120,7 +100,7 @@ def bought_item(request, item_id, shopping_list_id):
         messages.error(request, 'The shopping list has been deleted. ' + error_message)
         return redirect('index')
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
+    if not shopping_list.user_is_member(request.user):
         messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
@@ -144,7 +124,7 @@ def not_bought_item(request, item_id, shopping_list_id):
         messages.error(request, 'The shopping list has been deleted. ' + error_message)
         return redirect('index')
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
+    if not shopping_list.user_is_member(request.user):
         messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
@@ -169,7 +149,7 @@ def delete_item(request, item_id, shopping_list_id):
         messages.error(request, 'The shopping list has been deleted. ' + error_message)
         return redirect('index')
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
+    if not shopping_list.user_is_member(request.user):
         messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
@@ -227,13 +207,13 @@ def share_shopping_list(request, shopping_list_id):
         return redirect('index')
     share_form = ShareForm(request.POST)
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
+    if not shopping_list.user_is_member(request.user):
         messages.error(request, 'You are not a member of the shopping list. ' + error_message)
         return redirect('index')
 
     if share_form.is_valid():
         shared_with_user = User.objects.get(username=request.POST['username'])
-        if not user_is_member_of_shopping_list(shared_with_user, shopping_list):
+        if not shopping_list.user_is_member(shared_with_user):
             shopping_list.participants.add(shared_with_user)
     else:
         messages.error(request, "User does not exist. Please share with an existing user.")
@@ -254,11 +234,11 @@ def remove_user_from_shopping_list(request, shopping_list_id, username):
     except User.DoesNotExist:
         return HttpResponse('Error 400: Bad request.', status=400)
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
+    if not shopping_list.user_is_member(request.user):
         messages.error(request, "You are not a member of the shopping list. " + error_message)
         return redirect('index')
 
-    if not user_has_admin_rights(current_user, shopping_list) and current_user != user_to_be_removed:
+    if not shopping_list.user_has_admin_rights(current_user) and current_user != user_to_be_removed:
         messages.error(request, 'You are do not have admin rights. ' + error_message)
         return redirect('detail', shopping_list_id)
 
@@ -294,7 +274,7 @@ def change_owner_of_shopping_list(request, shopping_list_id, username):
     except User.DoesNotExist:
         return HttpResponse('Error 400: Bad request.')
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
+    if not shopping_list.user_is_member(request.user):
         messages.error(request, "You are not a member of the shopping list. " + error_message)
         return redirect('index')
 
@@ -326,16 +306,16 @@ def make_user_admin_of_shopping_list(request, shopping_list_id, username):
     except User.DoesNotExist:
         return HttpResponse('Error 400: Bad request.', status=400)
 
-    if not user_is_member_of_shopping_list(request.user, shopping_list):
+    if not shopping_list.user_is_member(request.user):
         messages.error(request, "You are not a member of the shopping list. " + error_message)
         return redirect('index')
 
-    if not user_has_admin_rights(request.user, shopping_list):
+    if not shopping_list.user_has_admin_rights(request.user):
         messages.error(request,
                        "You must an admin/owner of shopping list to promote a participant to an admin. " + error_message)
         return redirect('detail', shopping_list_id)
 
-    if not user_is_member_of_shopping_list(user, shopping_list):
+    if not shopping_list.user_is_member(user):
         messages.error(request, f"{user} is not a member of the shopping list. " + error_message)
 
     try:
