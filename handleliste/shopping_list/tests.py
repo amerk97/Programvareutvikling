@@ -128,7 +128,7 @@ class ShoppingListViews(TestCase):
         self.assertRedirects(response_remove, self.detail_shopping_list_url)
 
         # Check if user "participants_en" still is in participants-list for the shopping-list:
-        bool_is_removed = (self.participants_en not in self.shopping_list.participants.all()) and (self.shopping_list not in get_user_shopping_lists(self.participants_en))
+        bool_is_removed = (self.participants_en not in self.shopping_list.participants.all()) and (self.shopping_list not in ShoppingList.get_user_shopping_lists(self.participants_en))
         self.assertTrue(bool_is_removed)
 
     def test_delete_shopping_list_POST(self):
@@ -145,7 +145,7 @@ class ShoppingListViews(TestCase):
         self.assertEqual(response_delete_list.status_code, 302)
         self.assertRedirects(response_delete_list, self.index_url)
 
-        shopping_list_is_deleted = self.shopping_list_2 not in get_user_shopping_lists(self.owner)
+        shopping_list_is_deleted = self.shopping_list_2 not in ShoppingList.get_user_shopping_lists(self.owner)
         self.assertTrue(shopping_list_is_deleted)
 
     def test_admin_leaves_list_POST(self):
@@ -163,7 +163,7 @@ class ShoppingListViews(TestCase):
         self.assertEqual(response_remove.status_code, 302)
         self.assertRedirects(response_remove, self.detail_shopping_list_url)
         bool_is_removed = (self.admin not in self.shopping_list.participants.all()) and (
-                    self.shopping_list not in get_user_shopping_lists(self.admin))
+                    self.shopping_list not in ShoppingList.get_user_shopping_lists(self.admin))
         self.assertTrue(bool_is_removed)
 
     def test_owner_leaves_list_POST(self):
@@ -174,16 +174,51 @@ class ShoppingListViews(TestCase):
         # makes user admin
         self.make_user_admin_of_shopping_list_url = reverse('make-admin', args=['1', self.admin])
         self.client.post(self.make_user_admin_of_shopping_list_url)
-        # removes owner from list
-        self.remove_user_from_list_url = reverse('remove-user-from-shopping-list', args=['1', self.owner])
-        response_remove = self.client.post(self.remove_user_from_list_url)
-        # Test if owner has left the shoppinglist
-        self.assertEqual(response_remove.status_code, 302)
+        #make admin owner
+        self.change_owner_of_shopping_list_url = reverse('change-owner', args=['1', self.admin])
+        response_change_owner = self.client.post(self.change_owner_of_shopping_list_url)
+        # assert tests of change owner
+        self.assertEquals(response_change_owner.status_code, 302)
         self.index_url = reverse('index')
-        self.assertRedirects(response_remove, self.index_url)
-        print(self.owner)
+        self.assertRedirects(response_change_owner, self.index_url)
+
+        print(ShoppingList.objects.filter(owner=self.admin))
+        print(ShoppingList.objects.filter(owner=self.owner))
+        print(get_user_shopping_lists(self.owner))
+        print(get_user_shopping_lists(self.admin))
+        print(self.shopping_list.owner)
         print(self.shopping_list.admins.all())
-        #bool_owner_is_removed =
-        #bool_admin_is_owner =
-        # Checks if owner is not the owner
-        # Checks if admin is the owner
+        print(self.shopping_list.participants.all())
+
+        #testing if change owner suceeded
+        bool_owner_is_removed = (self.shopping_list not in get_user_shopping_lists(self.owner)) and (self.shopping_list not in ShoppingList.objects.filter(owner=self.owner))
+        bool_admin_is_owner = (self.shopping_list in get_user_shopping_lists(self.admin)) and (self.shopping_list in ShoppingList.objects.filter(owner=self.admin)) and (self.admin not in self.shopping_list.admins.all())
+        self.assertTrue(bool_owner_is_removed)
+        self.assertTrue(bool_admin_is_owner)
+
+    def test_add_comment_POST(self):
+        #add a comment on a shoppinglist
+        comment_content = 'What a cool shoppinglist, and what a page! But can handle comments?'
+        self.add_comment_url = reverse('add-comment', args = '1')
+        response = self.client.post(self.add_comment_url, {
+            'author': self.owner,
+            'content': comment_content,
+            'shopping_list': self.shopping_list
+        })
+        #testing if comment is added
+        self.assertEquals(response.status_code, 302)
+        self.assertRedirects(response, self.detail_shopping_list_url)
+        bool_comment_is_added =
+        self.assertTrue(bool_comment_is_added)
+
+    def test_delete_comment_POST(self):
+        #make a comment
+        comment_content = 'And ditch them?'
+        self.client.post(self.add_comment_url, {
+            'author': self.owner,
+            'content': comment_content,
+            'shopping_list': self.shopping_list
+        })
+        #delete the comment
+        self.delete_comment_url = reverse('delete-comment', args = ['1', '1'])
+        response = self.client.post(self.delete_comment_url)
