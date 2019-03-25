@@ -192,27 +192,21 @@ class ShoppingListViews(TestCase):
 
     def test_add_comment_POST(self):
         #add a comment on a shoppinglist
-
         self.add_comment_url = reverse('add-comment', args = '1')
         response = self.client.post(self.add_comment_url, {
-            'author': self.owner,                                                 #FJERNE??
-            'content': comment_content,
-            'shopping_list': self.shopping_list                                   #FJERNE??
+            'content': self.comment
         })
         #testing if comment is added
         self.assertEquals(response.status_code, 302)
         self.assertRedirects(response, self.detail_shopping_list_url)
         #ShoppingList.get_user_shopping_lists(self.admin)
-        bool_comment_is_added = Comment
+        bool_comment_is_added = (self.comment in Comment.content)
         self.assertTrue(bool_comment_is_added)
 
     def test_delete_comment_POST(self):
         #make a comment
-        comment_content = 'And ditch them?'
         self.client.post(self.add_comment_url, {
-            'author': self.owner,                                                 #FJERNE??
-            'content': comment_content,
-            'shopping_list': self.shopping_list                                   #FJERNE??
+            'content': self.comment
         })
         #delete the comment
         self.delete_comment_url = reverse('delete-comment', args = ['1', '1'])
@@ -225,14 +219,13 @@ class ShoppingListViews(TestCase):
 
     def test_reply_comment_POST(self):
         # make a comment
-        comment_content = 'And ditch them?'
         self.client.post(self.add_comment_url, {
-            'author': self.owner,  # FJERNE??
-            'content': comment_content,
-            'shopping_list': self.shopping_list  # FJERNE??
+            'content': self.comment
         })
         #reply to the comment
-
+        self.client.post(self.add_comment_url, {
+            'content': self.reply_comment
+        })
         self.reply_comment_url = reverse('reply', args = ['1','1'])
         response = self.client.post(self.reply_comment_url)
         #test if comment is replied
