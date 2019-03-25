@@ -50,7 +50,9 @@ Tilgang til serveren:
 - Kjør kommandoen "python3 manage.py runserver 0.0.0.0:8000"
 - Django serveren kjører nå på IP-adressen til serveren, som er 74.207.252.20:8000.
 "
-..
 
+Kjøre serveren: 
+- Kjør filen auto_start.py og vent noen sekunder mens programmet logger inn gjennom ssh og starter serveren. 
+- Åpne nettleseren og gå til 74.207.252.20:8000.
 
 
