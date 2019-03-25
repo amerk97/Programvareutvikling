@@ -3,7 +3,7 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.contrib import messages
 
-from .models import Item, ShoppingList, Comment
+from .models import Item, ShoppingList, Comment, Reply
 from .forms import ItemForm, ShoppingListForm, ShareForm, CommentForm, ReplyForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -362,7 +362,7 @@ def add_comment(request, shopping_list_id):
 
 
 @login_required(login_url='')
-def delete_comment(shopping_list_id, comment_id):
+def delete_comment(request, shopping_list_id, comment_id):
     error_message = "Could not delete comment."
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]

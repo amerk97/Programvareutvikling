@@ -22,7 +22,6 @@
                             {{ admin }}
                             {% if user == shopping_list.owner or user == admin %}
                                 <a href="{% url 'remove-user-from-shopping-list' shopping_list.id admin.username %}" style="color:black"><i class="close material-icons">close</i></a>
-
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -129,79 +128,117 @@
                     <i class="large material-icons">refresh</i>
                   </a>
             </div>
+            <br><br><br><hr color="lightgrey">
         </div>
 
+
+
+
+    <!-- ------------------------------------------------------------------------------- -->
 
         <div class="row">
-            <div class="col s12">
-                <div class="row">
-                <h5>Comments</h5>
-                <form action="#" method="post" style="width:100%;">
-                    <textarea placeholder="Write your comment here" name="comment"></textarea>
-                </form>
-            </div>
-            <div class="row">
-                <div class="col s10"></div>
-                <div class="col s2">
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Comment
-                        <i class="material-icons right">send</i>
-                    </button>
-                </div>
-            </div>
-            </div>
-        </div>
-        {% for comment in shopping_list.comments.all %}
-            <div class="row">
+            <form action="{% url 'add-comment' shopping_list.id %}" method="POST" style="width:100%;">
                 <div class="col s12">
-                    <small style="color: darkblue;">
-                        {{ comment.author }} - {{ comment.date|timesince:now }}
-                    </small>
-                    <p>
-                        {{ comment.content }}
-                    </p>
-                    <hr color="lightgray">
-                </div>
-            </div>
-            {% for reply in comment.replies.all %}
-                <div class="row">
-                    <div class="col s1"></div>
-                    <div class="col s11">
-                        <small style="color: darkblue;">
-                            {{ comment.author }} - {{ comment.date|timesince:now }}
-                        </small>
-                        <p>
-                            {{ reply.content }}
-                        </p>
-                        <hr color="lightgray">
-                    </div>
-                </div>
-            {% endfor %}
-            {% if comment.replies.size != 0 %}
-                <div class="row">
                     <div class="row">
-                        <div class="col s1"></div>
-                        <div class="col s11">
-                            <form action="#" method="post" style="width:100%;">
-                                <textarea placeholder="Write your reply here" name="comment"></textarea>
-                            </form>
-                        </div>
+                        <h5>Comments</h5>
+                        {% csrf_token %}
+                        {{comment_form.content}}
                     </div>
-
-
                     <div class="row">
                         <div class="col s10"></div>
                         <div class="col s2">
-                            <button class="btn waves-effect waves-light" type="submit" name="action">Reply
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Comment
                                 <i class="material-icons right">send</i>
                             </button>
                         </div>
                     </div>
                 </div>
+            </form>
+        </div>
+
+
+        {% for comment in comments %}
+            <div class="row">
+                <div class="col s11">
+                    {% if comment.author == shopping_list.owner %}
+                        <div class="chip red lighten-2">{{comment.author}}</div>
+                        <small>  {{comment.date|timesince}} ago</small>
+                    {% elif comment.author in shopping_list.admins.all %}
+                        <div class="chip red lighten-4">{{comment.author}}</div>
+                        <small>  {{comment.date|timesince}} ago</small>
+                    {% else %}
+                        <div class="chip">{{comment.author}}</div>
+                        <small>  {{comment.date|timesince}} ago</small>
+                    {% endif %}
+                    <p>
+                        {{ comment.content }}
+                    </p>
+                    <hr color="lightgray">
+                </div>
+
+                {% if comment.author == user or user == admin or user == shopping_list.owner %}
+                    <div class="col s1">
+                        <br><br><a href="{% url 'delete-comment' shopping_list.id comment.id %}" style="color:black;"><i class="small material-icons">delete</i></a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% for reply in comment.replies %}
+                <div class="row">
+                    <div class="col s1">
+
+                    </div>
+                    <div class="col s10">
+                        {% if reply.author == shopping_list.owner %}
+                            <div class="chip red lighten-2">{{reply.author}}</div>
+                            <small>  {{reply.date|timesince}} ago</small>
+                        {% elif reply.author in shopping_list.admins.all %}
+                            <div class="chip red lighten-4">{{reply.author}}</div>
+                            <small>  {{reply.date|timesince}} ago</small>
+                        {% else %}
+                            <div class="chip">{{reply.author}}</div>
+                            <small>  {{reply.date|timesince}} ago</small>
+                        {% endif %}
+                        <!--
+                        <small style="color: darkblue;">
+                            {{ reply }}
+                        </small><div class="chip red lighten-2">{{reply}}</div>
+                        -->
+                        <p>
+                            {{ reply.content }}
+                        </p>
+                        <hr color="lightgray">
+                    </div>
+                    {% if reply.author == user or user == admin or user == shopping_list.owner %}
+                        <div class="col s1">
+                            <br><br><a href="{% url 'delete-reply' shopping_list.id reply.id %}" style="color:black;"><i class="small material-icons">delete</i></a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% if comments %}
+                <div class="row">
+                    <form action="{% url 'reply' shopping_list.id comment.id %}" method="post" style="width:100%;">
+                        <div class="col s1"></div>
+                        <div class="col s9">
+                            {% csrf_token %}
+                            {{reply_form.content}}
+                        </div>
+                        <div class="col s2">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Reply
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </form>
+                </div><br><br>
+
             {% endif %}
         {% endfor %}
 
 
 
+
+    <!-- ------------------------------------------------------------------------------- -->
 
         <!-- FOR LOOP, FOR EACH COMMENT, NOT REPLIES-->
 
@@ -209,6 +246,7 @@
 
 
 
+<!--    EARLIER DRAFT OF THE COMMENT SECTION!
 
         <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <div class="col s12">
@@ -300,7 +338,7 @@
         </div>
     </div>
 
-
+-->
 
 
 
