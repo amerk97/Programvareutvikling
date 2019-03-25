@@ -13,8 +13,8 @@ try:
     s.login(hostname, username, password)
    
 
-    name = time.time()
-    name = str(name)
+    
+    name = "share_shopping"
     ACTOKEN = 'UTfyZCCs4f3H6TZQGjux'
 
     s.sendline('find -delete')
