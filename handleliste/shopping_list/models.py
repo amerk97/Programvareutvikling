@@ -16,6 +16,23 @@ class ShoppingList(models.Model):
     def __str__(self):
         return self.title
 
+    # Return the user's shopping lists
+    @staticmethod
+    def get_user_shopping_lists(user):
+        owned_shopping_lists = ShoppingList.objects.filter(owner=user)
+        other_shopping_lists = ShoppingList.objects.filter(participants=user)
+        other2_shopping_lists = ShoppingList.objects.filter(admins=user)
+        my_shopping_lists = other_shopping_lists | owned_shopping_lists | other2_shopping_lists
+        return my_shopping_lists.distinct().order_by('id')
+
+    # Check if user is a member of shopping list
+    def user_is_member(self, user):
+        return user == self.owner or user in self.participants.all() or user in self.admins.all()
+
+    # Check if user has admin rights
+    def user_has_admin_rights(self, user):
+        return user in self.admins.all() or user == self.owner
+
 
 class Item(models.Model):
     name = models.CharField(max_length=80)
@@ -33,20 +50,19 @@ class Comment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     content = models.CharField(max_length=150)
     shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE)
-    #replies = models.ManyToManyField(Reply)
 
     def __str__(self):
-        return self.content
+        return str(self.author) + " : " + self.date.strftime('%Y-%m-%d %H:%M')
+
+    def replies(self):
+        return Reply.objects.filter(parent_comment=self)
 
 
 class Reply(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     content = models.CharField(max_length=150)
-    parent_comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    parent_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
-        return self.content
-
-
-
+        return str(self.author) + " : " + self.date.strftime('%Y-%m-%d %H:%M')

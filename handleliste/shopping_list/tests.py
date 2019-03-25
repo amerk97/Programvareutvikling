@@ -128,7 +128,7 @@ class ShoppingListViews(TestCase):
         self.assertRedirects(response_remove, self.detail_shopping_list_url)
 
         # Check if user "participants_en" still is in participants-list for the shopping-list:
-        bool_is_removed = (self.participants_en not in self.shopping_list.participants.all()) and (self.shopping_list not in get_user_shopping_lists(self.participants_en))
+        bool_is_removed = (self.participants_en not in self.shopping_list.participants.all()) and (self.shopping_list not in ShoppingList.get_user_shopping_lists(self.participants_en))
         self.assertTrue(bool_is_removed)
 
     def test_delete_shopping_list_POST(self):
@@ -145,7 +145,7 @@ class ShoppingListViews(TestCase):
         self.assertEqual(response_delete_list.status_code, 302)
         self.assertRedirects(response_delete_list, self.index_url)
 
-        shopping_list_is_deleted = self.shopping_list_2 not in get_user_shopping_lists(self.owner)
+        shopping_list_is_deleted = self.shopping_list_2 not in ShoppingList.get_user_shopping_lists(self.owner)
         self.assertTrue(shopping_list_is_deleted)
 
     def test_admin_leaves_list_POST(self):
@@ -163,7 +163,7 @@ class ShoppingListViews(TestCase):
         self.assertEqual(response_remove.status_code, 302)
         self.assertRedirects(response_remove, self.detail_shopping_list_url)
         bool_is_removed = (self.admin not in self.shopping_list.participants.all()) and (
-                    self.shopping_list not in get_user_shopping_lists(self.admin))
+                    self.shopping_list not in ShoppingList.get_user_shopping_lists(self.admin))
         self.assertTrue(bool_is_removed)
 
 
