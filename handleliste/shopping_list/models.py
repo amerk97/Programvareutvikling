@@ -43,3 +43,26 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    content = models.CharField(max_length=150)
+    shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.author) + " : " + self.date.strftime('%Y-%m-%d %H:%M')
+
+    def replies(self):
+        return Reply.objects.filter(parent_comment=self)
+
+
+class Reply(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    content = models.CharField(max_length=150)
+    parent_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, default=1)
+
+    def __str__(self):
+        return str(self.author) + " : " + self.date.strftime('%Y-%m-%d %H:%M')
