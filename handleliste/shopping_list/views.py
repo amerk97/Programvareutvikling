@@ -3,7 +3,7 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.contrib import messages
 
-from .models import Item, ShoppingList, Comment
+from .models import Item, ShoppingList, Comment, Reply
 from .forms import ItemForm, ShoppingListForm, ShareForm, CommentForm, ReplyForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
