@@ -34,6 +34,18 @@ class ShoppingListViews(TestCase):
             title='TestSletteListe',
             owner=self.owner
         )
+        comment_content = 'What a cool shoppinglist, and what a page! But can handle comments?'
+        self.comment = Comment.objects.create(
+            author = self.owner,
+            content = comment_content,
+            shopping_list = self.shopping_list
+        )
+        reply_comment = 'Well of course you can'
+        self.reply_comment = Comment.objects.create(
+            author = self.participants_to,
+            content = reply_comment,
+            shopping_list = self.shopping_list
+        )
 
     def test_detail_shopping_list_GET(self):
         response = self.client.post(self.detail_shopping_list_url)
@@ -180,7 +192,7 @@ class ShoppingListViews(TestCase):
 
     def test_add_comment_POST(self):
         #add a comment on a shoppinglist
-        comment_content = 'What a cool shoppinglist, and what a page! But can handle comments?'
+
         self.add_comment_url = reverse('add-comment', args = '1')
         response = self.client.post(self.add_comment_url, {
             'author': self.owner,                                                 #FJERNE??
@@ -190,7 +202,8 @@ class ShoppingListViews(TestCase):
         #testing if comment is added
         self.assertEquals(response.status_code, 302)
         self.assertRedirects(response, self.detail_shopping_list_url)
-        #bool_comment_is_added =
+        #ShoppingList.get_user_shopping_lists(self.admin)
+        bool_comment_is_added = Comment
         self.assertTrue(bool_comment_is_added)
 
     def test_delete_comment_POST(self):
@@ -219,7 +232,7 @@ class ShoppingListViews(TestCase):
             'shopping_list': self.shopping_list  # FJERNE??
         })
         #reply to the comment
-        reply_comment = 'Well of course you can'
+
         self.reply_comment_url = reverse('reply', args = ['1','1'])
         response = self.client.post(self.reply_comment_url)
         #test if comment is replied
