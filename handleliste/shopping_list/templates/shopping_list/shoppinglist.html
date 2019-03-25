@@ -56,7 +56,7 @@
 
                     {% if user == shopping_list.owner %}
 
-                        <a class=" btn-floating btn-large red lighten-2" id="myBtn2" href="{% url 'delete-shopping-list' shopping_list.id %}">
+                        <a class="btn-floating btn-large red lighten-2" href="{% url 'delete-shopping-list' shopping_list.id %}">
                             <i class="large material-icons">delete</i>
                         </a>
                     {% endif %}
