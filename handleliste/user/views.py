@@ -31,10 +31,10 @@ def registered(request):
 
 def logout_request(request):
 	logout(request)
-	test = redirect('user:login')
+	redirection = redirect('user:login')
 	messages.success(request, 'Logged out successfully!')
 
-	return test
+	return redirection
 
 
 def login_request(request):
