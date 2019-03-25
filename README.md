@@ -14,9 +14,6 @@ Git:
 - "git init" inne i mappen hvor filene fra prosjektet ligger.
 - Du bør nå ha alle filene og kunne adde, committe, pulle og pushe kode.
 
-Bruk av git:
-- Hvis du skal begynne på en ny issue så lag en branch "git checkout -b <NAVN-P$
-..
 
 Administrativt:
 - For å logge inn på admin siden bruk:
