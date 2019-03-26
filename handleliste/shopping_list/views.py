@@ -461,5 +461,5 @@ def delete_reply(request,  shopping_list_id, reply_id):
         return redirect('detail, shopping_list_id')
 
     reply.delete()
-    messages.success(request, "Successfully deleted the comment!")
+    messages.success(request, "Successfully deleted the reply!")
     return redirect('detail', shopping_list_id)

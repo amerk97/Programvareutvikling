@@ -18,5 +18,5 @@ urlpatterns = [
     path('add-comment/<shopping_list_id>', views.add_comment, name='add-comment'),
     path('delete-comment/<shopping_list_id>/<comment_id>', views.delete_comment, name='delete-comment'),
     path('reply/<shopping_list_id>/<comment_id>', views.reply, name='reply'),
-    path('delete-reply/<shopping_list_id>/<comment_id>', views.delete_reply, name='delete-reply')
+    path('delete-reply/<shopping_list_id>/<reply_id>', views.delete_reply, name='delete-reply')
 ]
