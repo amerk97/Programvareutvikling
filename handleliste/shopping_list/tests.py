@@ -46,6 +46,12 @@ class ShoppingListViews(TestCase):
             content = self.reply_content,
             parent_comment = self.comment
         )
+        item_name = 'Sjokolade'
+        item_amount = '1 stk'
+        self.item = Item.objects.create(
+            name = item_name,
+            amount = item_amount
+        )
         self.add_comment_url = reverse('add-comment', args='1')
 
     def test_detail_shopping_list_GET(self):
@@ -61,9 +67,11 @@ class ShoppingListViews(TestCase):
         response = self.client.post(add_url, {
             'name': item_name,
             'amount': item_amount
-            }
+            }, follow=True
         )
-        self.assertEquals(response.status_code, 302)
+        bool_item_added = self.item in response.context['item_list']
+        self.assertTrue(bool_item_added)
+        self.assertEquals(response.status_code, 200)
         self.assertRedirects(response, self.detail_shopping_list_url)
 
     def test_share_shopping_list_POST(self):
@@ -210,7 +218,7 @@ class ShoppingListViews(TestCase):
             'content': self.comment_content
         })
         #delete the comment
-        delete_comment_url = reverse('delete-comment', args=['1', 1])  # TODO: fix bug, throws error when it shouldn't
+        delete_comment_url = reverse('delete-comment', args=['1', 1])
         response = self.client.post(delete_comment_url)
         #tests if comment is deleted
         self.assertEquals(response.status_code, 302)
