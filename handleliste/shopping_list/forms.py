@@ -51,8 +51,20 @@ class ShareForm(forms.Form):
 
 
 class CommentForm(forms.Form):
-    content = forms.CharField(max_length=150)
+    content = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'placeholder':'Write your comment here'
+            }
+        ),
+        max_length=150)
 
 
 class ReplyForm(forms.Form):
-    content = forms.CharField(max_length=150)
+    content = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'placeholder':'Write your reply here'
+            }
+        ),
+        max_length=150)
