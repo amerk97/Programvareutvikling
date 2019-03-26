@@ -218,13 +218,13 @@ class ShoppingListViews(TestCase):
             'content': self.comment_content
         })
         #delete the comment
-        delete_comment_url = reverse('delete-comment', args=['1', 1])
-        response = self.client.post(delete_comment_url)
+        delete_comment_url = reverse('delete-comment', args=['1', '1'])
+        response = self.client.post(delete_comment_url, follow=True)
         #tests if comment is deleted
-        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.status_code, 200)
         self.assertRedirects(response, self.detail_shopping_list_url)
-        #bool_comment_is_removed =
-        #self.assertTrue(bool_comment_is_removed)
+        bool_comment_is_removed = self.comment not in response.context['comments']
+        self.assertTrue(bool_comment_is_removed)
 
     def test_reply_comment_POST(self):
         # make a comment
@@ -235,9 +235,10 @@ class ShoppingListViews(TestCase):
         self.reply_url = reverse('reply', args=['1', '1'])
         response = self.client.post(self.reply_url, {
             'content': self.reply_content
-        })
+        }, follow=True)
         #test if comment is replied
-        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.status_code, 200)
         self.assertRedirects(response, self.detail_shopping_list_url)
-        #bool_comment_is_replied =
-        #self.assertTrue(bool_comment_is_replied)
+        replies = list(response.context['comments'].all())[0].replies()
+        bool_comment_is_replied = self.reply in replies
+        self.assertTrue(bool_comment_is_replied)
