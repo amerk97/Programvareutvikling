@@ -71,6 +71,8 @@
 <ul id="dropdown1" class="dropdown-content">
   <li><a href="{% url 'user:logout' %}">Sign out</a></li>
 </ul>
+
+<!-- NAVBAR FOR BIG SCREENS -->
 <nav class="nav-extended blue-grey darken-4">
     <div class="nav-wrapper">
         <div class="container">
@@ -101,6 +103,8 @@
         </ul>
     </div>
 </div>
+
+<!-- NAVBAR FOR SMALL SCREENS/MOBILE -->
 <ul class="sidenav" id="mobile-links">
     <li class="row"><h5 class="col s10 offset-s2">My shopping lists</h5></li>
     {% for shopping_list in my_shopping_lists %}
