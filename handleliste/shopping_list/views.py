@@ -362,7 +362,7 @@ def add_comment(request, shopping_list_id):
 
 
 @login_required(login_url='')
-def delete_comment(shopping_list_id, comment_id):
+def delete_comment(request, shopping_list_id, comment_id):
     error_message = "Could not delete comment."
     try:
         shopping_list = ShoppingList.objects.filter(pk=shopping_list_id)[0]

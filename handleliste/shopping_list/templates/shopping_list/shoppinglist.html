@@ -124,6 +124,30 @@
             </div>
         </div>
     </div>
+        <div class="row">
+        <form method="POST" action="{% url 'add-comment' shopping_list.id %}" >
+            {% csrf_token %}
+            {{comment_form.content}}
+            <button type="submit">Add comment</button>
+        </form>
+    </div>
+    <div class="row">
+        <p>COMMENTS</p>
+        {% for comment in comments %}
+            {{comment.content}}
+            <a href="{% url 'delete-comment' shopping_list.id comment.id %}">DELETE COMMENT</a>
+            <p>REPLIES</p>
+                {% for reply in comment.replies %}
+                    {{reply.content}}
+                    <a href="{% url 'delete-reply' shopping_list.id reply.id %}">DELETE REPLY</a>
+                {% endfor %}
+                <form method="POST" action="{% url 'reply' shopping_list.id comment.id %}" >
+                    {% csrf_token %}
+                    {{reply_form.content}}
+                    <button type="submit">Add reply</button>
+                </form>
+        {% endfor %}
+    </div>
 
     <!-- OWNER LEAVES LIST! PASS ON OWNERSHIP POPUP -->
     <div id="myModal" class="modal" style="box-shadow: 0px 0px 5px 2000px rgba(0,0,0,0.5);">
