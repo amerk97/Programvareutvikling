@@ -11,21 +11,18 @@ User = get_user_model()
 class ShoppingListViews(TestCase):
 
     def setUp(self):
-        #making users that can be used in tests
+        # making users that can be used in tests
         self.owner = User.objects.create_user(username='testowner', password='12345testing')
-        self.participants_en = User.objects.create_user(username = 'testparticipant1', password='12345testing')
+        self.participants_en = User.objects.create_user(username='testparticipant1', password='12345testing')
         self.participants_to = User.objects.create_user(username='testparticipant2', password='12345testing')
-        self.admin = User.objects.create_user(username = 'testadmin1', password = '12345testing');
-        #making a client, and owner logs in
+        self.admin = User.objects.create_user(username='testadmin1', password='12345testing');
+        # making a client, and owner logs in
         self.client = Client()
         self.client.login(username='testowner', password='12345testing')
-        #making urls to shopping list used in tests
+        # making urls to shopping list used in tests
         self.detail_shopping_list_url = reverse('detail', args='1')
         self.share_shopping_list_url = reverse('share-shopping-list', args='1')
-        # Don't think we need this
-        # self.detail_shopping_list_url_2 = reverse('detail', args='2')
-        # self.share_shopping_list_url_2 = reverse('share-shopping-list', args='2')
-        #makes two test lists
+        # makes a test list
         self.shopping_list = ShoppingList.objects.create(
             title='en tittel',
             owner=self.owner
@@ -34,25 +31,12 @@ class ShoppingListViews(TestCase):
             title='TestSletteListe',
             owner=self.owner
         )
-        self.comment_content = 'What a cool shoppinglist, and what a page! But can handle comments?'
-        self.comment = Comment.objects.create(
-            author = self.owner,
-            content = self.comment_content,
-            shopping_list = self.shopping_list
-        )
-        self.reply_content = 'Well of course you can'
-        self.reply = Reply.objects.create(
-            author = self.participants_to,
-            content = self.reply_content,
-            parent_comment = self.comment
-        )
         item_name = 'Sjokolade'
         item_amount = '1 stk'
         self.item = Item.objects.create(
-            name = item_name,
-            amount = item_amount
+            name=item_name,
+            amount=item_amount
         )
-        self.add_comment_url = reverse('add-comment', args='1')
 
     def test_detail_shopping_list_GET(self):
         response = self.client.post(self.detail_shopping_list_url)
@@ -199,6 +183,42 @@ class ShoppingListViews(TestCase):
         self.assertTrue(bool_owner_is_removed)
         self.assertTrue(bool_admin_is_owner)
 
+
+class CommentViews(TestCase):
+
+    def setUp(self):
+        # making users that can be used in tests
+        self.owner = User.objects.create_user(username='testowner', password='12345testing')
+        self.participants_en = User.objects.create_user(username='testparticipant1', password='12345testing')
+        self.participants_to = User.objects.create_user(username='testparticipant2', password='12345testing')
+        self.admin = User.objects.create_user(username='testadmin1', password='12345testing');
+        # making a client, and owner logs in
+        self.client = Client()
+        self.client.login(username='testowner', password='12345testing')
+        # making urls to shopping list used in tests
+        self.detail_shopping_list_url = reverse('detail', args='1')
+        self.share_shopping_list_url = reverse('share-shopping-list', args='1')
+        #makes a test list
+        self.shopping_list = ShoppingList.objects.create(
+            title='en tittel',
+            owner=self.owner
+        )
+        #makes a test comment
+        self.comment_content = 'What a cool shoppinglist, and what a page! But can handle comments?'
+        self.comment = Comment.objects.create(
+            author=self.owner,
+            content=self.comment_content,
+            shopping_list=self.shopping_list
+        )
+        #makes a test reply
+        self.reply_content = 'Well of course you can'
+        self.reply = Reply.objects.create(
+            author=self.participants_to,
+            content=self.reply_content,
+            parent_comment=self.comment
+        )
+        self.add_comment_url = reverse('add-comment', args='1')
+
     def test_add_comment_POST(self):
         #add a comment on a shoppinglist
         self.add_comment_url = reverse('add-comment', args='1')
@@ -242,3 +262,21 @@ class ShoppingListViews(TestCase):
         replies = list(response.context['comments'].all())[0].replies()
         bool_comment_is_replied = self.reply in replies
         self.assertTrue(bool_comment_is_replied)
+
+    def test_delete_reply_POST(self):
+        # make a comment
+        self.client.post(self.add_comment_url, {
+            'content': self.comment_content
+        })
+        # reply to the comment
+        self.reply_url = reverse('reply', args=['1', '1'])
+        self.client.post(self.reply_url, {
+            'content': self.reply_content
+        })
+        delete_reply_url = reverse('delete-reply', args=['1', '1'])
+        response = self.client.post(delete_reply_url, follow=True)
+        # tests if comment is deleted
+        self.assertEquals(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list_url)
+        bool_comment_is_removed = self.reply not in list(response.context['comments'].all())[0].replies()
+        self.assertTrue(bool_comment_is_removed)
