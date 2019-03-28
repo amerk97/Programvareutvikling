@@ -371,7 +371,7 @@ def delete_comment(request, shopping_list_id, comment_id):
         return redirect('index')
 
     try:
-        comment = Comment.objects.filter(pk=comment_id)
+        comment = Comment.objects.filter(pk=comment_id)[0]
     except Comment.DoesNotExist:
         if shopping_list.user_is_member(request.user):
             messages.success(request, "The comment has already been deleted.")
@@ -387,7 +387,7 @@ def delete_comment(request, shopping_list_id, comment_id):
     if not shopping_list.user_has_admin_rights(request.user) and request.user != comment.author:
         messages.error(request, "You do not have permission to delete this comment. " +
                                 "You must be the author or have admin rights to do so. " + error_message)
-        return redirect('detail, shopping_list_id')
+        return redirect('detail', shopping_list_id)
 
     comment.delete()
     messages.success(request, "Successfully deleted the comment!")
@@ -458,7 +458,7 @@ def delete_reply(request,  shopping_list_id, reply_id):
     if not shopping_list.user_has_admin_rights(request.user) and request.user != reply.author:
         messages.error(request, "You do not have permission to delete this reply. " +
                                 "You must be the author or have admin rights to do so. " + error_message)
-        return redirect('detail, shopping_list_id')
+        return redirect('detail', shopping_list_id)
 
     reply.delete()
     messages.success(request, "Successfully deleted the reply!")
