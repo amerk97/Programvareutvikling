@@ -35,6 +35,23 @@ try:
 
     os.system("xdg-open http://74.207.252.20:8000")
 
+    while True: 
+
+        inp = input("[+] Server is up and running. Press 'q' to shut down: ")
+
+
+        if ord(inp) == 113:
+
+            break
+
+        else:
+            print("[-] Invalid key. Press 'q' to shut down the server")
+            continue
+
+    print("[+] Shutting down...")
+    s.sendcontrol('c')
+    s.sendline('exit')
+
     s.logout()
 
 
