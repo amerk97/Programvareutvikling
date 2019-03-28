@@ -12,39 +12,92 @@ class ShoppingListViews(TestCase):
 
     def setUp(self):
         # Create users
-        self.owner = User.objects.create_user(username='testowner', password='12345testing')
-        self.participants_en = User.objects.create_user(username='testparticipant1', password='12345testing')
-        self.participants_to = User.objects.create_user(username='testparticipant2', password='12345testing')
-        self.admin = User.objects.create_user(username='testadmin1', password='12345testing')
+        self.password = '12345testing'
+        self.owner = User.objects.create_user(username='testowner', password=self.password)
+        self.participant1 = User.objects.create_user(username='testparticipant1', password=self.password)
+        self.participant2 = User.objects.create_user(username='testparticipant2', password=self.password)
+        self.admin = User.objects.create_user(username='testadmin1', password=self.password)
+        self.outsider = User.objects.create_user(username='testoutsider', password=self.password)
         # Create client and log in with owner
         self.client = Client()
-        self.client.login(username='testowner', password='12345testing')
-        # Shopping list urls
-        self.detail_shopping_list_url = reverse('detail', args='1')
-        self.share_shopping_list_url = reverse('share-shopping-list', args='1')
-        self.index_url = reverse('index')
+        self.client.login(username='testowner', password=self.password)
         # Create shopping lists
-        self.shopping_list = ShoppingList.objects.create(
+        self.shopping_list1 = ShoppingList.objects.create(
             title='en tittel',
             owner=self.owner
         )
-        self.shopping_list_2 = ShoppingList.objects.create(
+        self.shopping_list2 = ShoppingList.objects.create(
             title='TestSletteListe',
             owner=self.owner
         )
-        item_name = 'Sjokolade'
-        item_amount = '1 stk'
+        # Add participants and admin
+        self.shopping_list1.participants.add(self.participant1)
+        self.shopping_list1.participants.add(self.participant2)
+        self.shopping_list1.admins.add(self.admin)
+        # Shopping list urls
+        self.detail_shopping_list1_url = reverse('detail', args=str(self.shopping_list1.id))
+        self.detail_shopping_list2_url = reverse('detail', args=str(self.shopping_list2.id))
+        self.share_shopping_list1_url = reverse('share-shopping-list', args=str(self.shopping_list1.id))
+        self.share_shopping_list2_url = reverse('share-shopping-list', args=str(self.shopping_list2.id))
+        self.index_url = reverse('index')
+        self.delete_shopping_list1_url = reverse('delete-shopping-list', args=str(self.shopping_list1.id))
+        # TODO: might remove
+        # Create item
+        self.item_name = 'Sjokolade'
+        self.item_amount = '1 stk'
         self.item = Item.objects.create(
-            name=item_name,
-            amount=item_amount
+            name=self.item_name,
+            amount=self.item_amount
         )
 
-    def test_detail_shopping_list_GET(self):
-        response = self.client.post(self.detail_shopping_list_url)
+    def test_create_shopping_list(self):
+        # Delete shopping list
+        self.shopping_list1.delete()
+        # Change id to match the auto-generated id when new list is made
+        self.shopping_list1.id = 3
+        # Create new shopping list
+        self.create_list_url = reverse('create-list')
+        response = self.client.post(self.create_list_url, {
+            'title': self.shopping_list1.title
+        }, follow=True)
+        # Check if the new shopping list has been created
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed('shopping_list/shoppinglist.html')
-        self.assertEquals(response.context['shopping_list'], self.shopping_list)
+        detail_shopping_list1_url = reverse('detail', args=str(self.shopping_list1.id))
+        self.assertRedirects(response, detail_shopping_list1_url)
+        self.assertEquals(response.context['shopping_list'], self.shopping_list1)
 
+    # Check if user has access to shopping list they are a member of
+    def test_detail_shopping_list(self):
+        # Check if owner of shopping list has access
+        response = self.client.post(self.detail_shopping_list1_url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('shopping_list/shoppinglist.html')
+        self.assertEquals(response.context['shopping_list'], self.shopping_list1)
+
+        # Check if participant of shopping list has access
+        self.client.login(username=self.participant1.username, password=self.password)
+        response = self.client.post(self.detail_shopping_list1_url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('shopping_list/shoppinglist.html')
+        self.assertEquals(response.context['shopping_list'], self.shopping_list1)
+
+        # Check if admin of shopping list has access
+        self.client.login(username=self.admin.username, password=self.password)
+        response = self.client.post(self.detail_shopping_list1_url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('shopping_list/shoppinglist.html')
+        self.assertEquals(response.context['shopping_list'], self.shopping_list1)
+
+        # Check if outsider does not have access
+        self.client.login(username=self.outsider.username, password=self.password)
+        response = self.client.post(self.detail_shopping_list1_url, follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed('shopping_list/index.html')
+        self.assertRedirects(response, self.index_url)
+
+    '''
+    # TODO: must move
     def test_add_item_POST(self):
         add_url = reverse('add', args='1')
         item_name = 'Sjokolade'
@@ -57,129 +110,424 @@ class ShoppingListViews(TestCase):
         bool_item_added = self.item in response.context['item_list']
         self.assertTrue(bool_item_added)
         self.assertEquals(response.status_code, 200)
-        self.assertRedirects(response, self.detail_shopping_list_url)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+    '''
 
-    def test_share_shopping_list_POST(self):
-        response = self.client.post(self.share_shopping_list_url, {
-            'username': self.participants_en
-        })
-        response2 = self.client.post(self.share_shopping_list_url, {
-            'username': self.participants_to
-        })
-        response3 = self.client.post(self.share_shopping_list_url, {
-            'username': self.admin
+    def test_share_shopping_list_as_owner(self):
+        # Share shopping list with outsider
+        response = self.client.post(self.share_shopping_list2_url, {
+            'username': self.outsider
         }, follow=True)
-        # Tests that list is shared with participant one
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, self.detail_shopping_list_url)
-        # Tests that list is shared with participant two
-        self.assertEqual(response2.status_code, 302)
-        self.assertRedirects(response2, self.detail_shopping_list_url)
-        # Tests that list is shared with participant three
-        self.assertEqual(response3.status_code, 200)
-        self.assertRedirects(response3, self.detail_shopping_list_url)
-        # Check that none of the users are in participants
-        bool_users_not_admin = (self.participants_en and self.participants_to) not in self.shopping_list.admins.all()
-        self.assertTrue(bool_users_not_admin)
-        bool_users_participants = (self.participants_en and self.participants_to) in self.shopping_list.participants.all()
-        self.assertTrue(bool_users_participants)
+        # Tests that list is shared with outsider
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list2_url)
+        # Check that outsider is a participant of the list
+        bool_is_participant = self.outsider in self.shopping_list2.participants.all()
+        self.assertTrue(bool_is_participant)
+        # Check that outsider is not an admin of the list
+        bool_is_not_admin = self.outsider not in self.shopping_list2.admins.all()
+        self.assertTrue(bool_is_not_admin)
         # Check if shopping list's owner is correct
-        bool_owner = self.owner == self.shopping_list.owner
+        bool_owner = self.owner == self.shopping_list2.owner
         self.assertTrue(bool_owner)
 
-    def test_make_user_admin_of_shopping_list_POST(self):
-        # Share shopping list with self.participant_en
-        self.client.post(self.share_shopping_list_url, {
-            'username': self.participants_en
-        })
-        # Share shopping list with self.admin (admin is only a participator for now)
-        self.client.post(self.share_shopping_list_url, {
-            'username': self.admin
-        })
-        # Owner of shopping list makes self.admin admin
-        self.make_user_admin_of_shopping_list_url_1 = reverse('make-admin', args=['1', self.admin])
-        response = self.client.post(self.make_user_admin_of_shopping_list_url_1)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, self.detail_shopping_list_url)
-        # Check that self.admin is in the list of admins in shopping list
-        bool_admin_i_adminliste = (self.admin in self.shopping_list.admins.all()) and (self.admin not in self.shopping_list.participants.all())
-        self.assertTrue(bool_admin_i_adminliste)
+    def test_share_shopping_list_as_admin(self):
+        self.client.login(username=self.admin.username, password=self.password)
+        response = self.client.post(self.share_shopping_list1_url, {
+            'username': self.outsider
+        }, follow=True)
+        # Tests that list is shared with outsider
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that outsider is a participant of the list
+        bool_is_participant = self.outsider in self.shopping_list1.participants.all()
+        self.assertTrue(bool_is_participant)
+        # Check that outsider is not an admin of the list
+        bool_is_not_admin = self.outsider not in self.shopping_list1.admins.all()
+        self.assertTrue(bool_is_not_admin)
+        # Check if shopping list's owner is correct
+        bool_owner = self.owner == self.shopping_list1.owner
+        self.assertTrue(bool_owner)
 
-    def test_remove_user_from_list_POST(self):
-        # Share shopping list with self.participants_en, self.participants_to and self.admin
-        self.client.post(self.share_shopping_list_url, {
-            'username': self.participants_en
-        })
-        self.client.post(self.share_shopping_list_url, {
-            'username': self.participants_to
-        })
-        self.client.post(self.share_shopping_list_url, {
-            'username': self.admin
-        })
-        # Remove participants_en from shopping list
-        self.remove_user_from_list_url = reverse('remove-user-from-shopping-list', args=['1', self.participants_en])
-        response_remove = self.client.post(self.remove_user_from_list_url)
-        self.assertEqual(response_remove.status_code, 302)
-        self.assertRedirects(response_remove, self.detail_shopping_list_url)
+    def test_share_shopping_list_as_participant(self):
+        self.client.login(username=self.participant1.username, password=self.password)
+        response = self.client.post(self.share_shopping_list1_url, {
+            'username': self.outsider
+        }, follow=True)
+        # Tests that list is shared with outsider
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that outsider is a participant of the list
+        bool_is_participant = self.outsider in self.shopping_list1.participants.all()
+        self.assertTrue(bool_is_participant)
+        # Check that outsider is not an admin of the list
+        bool_is_not_admin = self.outsider not in self.shopping_list1.admins.all()
+        self.assertTrue(bool_is_not_admin)
+        # Check if shopping list's owner is correct
+        bool_owner = self.owner == self.shopping_list1.owner
+        self.assertTrue(bool_owner)
 
-        # Check if participants_en still has been removes from the list of participants of shopping list
-        bool_is_removed = (self.participants_en not in self.shopping_list.participants.all()) and (self.shopping_list not in ShoppingList.get_user_shopping_lists(self.participants_en))
+    def test_share_shopping_list_as_outsider(self):
+        self.client.login(username=self.outsider.username, password=self.password)
+        response = self.client.post(self.share_shopping_list2_url, {
+            'username': self.outsider
+        }, follow=True)
+        # Tests that list is not shared with outsider
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        # Check that outsider is not a participant of the list
+        bool_is_participant = self.outsider in self.shopping_list2.participants.all()
+        self.assertFalse(bool_is_participant)
+        # Check that outsider is not an admin of the list
+        bool_is_not_admin = self.outsider not in self.shopping_list2.admins.all()
+        self.assertTrue(bool_is_not_admin)
+        # Check if shopping list's owner is correct
+        bool_owner = self.owner == self.shopping_list2.owner
+        self.assertTrue(bool_owner)
+
+    def test_make_user_admin_as_owner(self):
+        # Promote participant1 to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.participant1])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that participant1 is an admin of the shopping list and not a participant anymore
+        bool_is_admin = (self.participant1 in self.shopping_list1.admins.all()) and (self.admin not in self.shopping_list1.participants.all())
+        self.assertTrue(bool_is_admin)
+
+        # Promote admin to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that admin is still an admin of the shopping list
+        bool_is_admin = self.admin in self.shopping_list1.admins.all()
+        self.assertTrue(bool_is_admin)
+
+        # Promote outsider to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.outsider])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that outsider is not an admin of the shopping list
+        bool_is_admin = self.outsider in self.shopping_list1.admins.all()
+        self.assertFalse(bool_is_admin)
+
+        # Promote owner to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.owner])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that owner is not an admin of the shopping list
+        bool_is_admin = self.owner in self.shopping_list1.admins.all()
+        self.assertFalse(bool_is_admin)
+
+    def test_make_user_admin_as_admin(self):
+        self.client.login(username=self.admin.username, password=self.password)
+        # Promote participant1 to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.participant1])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that participant1 is an admin of the shopping list and not a participant anymore
+        bool_is_admin = (self.participant1 in self.shopping_list1.admins.all()) and (self.admin not in self.shopping_list1.participants.all())
+        self.assertTrue(bool_is_admin)
+
+        # Promote admin to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that admin is still an admin of the shopping list
+        bool_is_admin = self.admin in self.shopping_list1.admins.all()
+        self.assertTrue(bool_is_admin)
+
+        # Promote outsider to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.outsider])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that outsider is not an admin of the shopping list
+        bool_is_admin = self.outsider in self.shopping_list1.admins.all()
+        self.assertFalse(bool_is_admin)
+
+        # Promote owner to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.owner])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that owner is not an admin of the shopping list
+        bool_is_admin = self.owner in self.shopping_list1.admins.all()
+        self.assertFalse(bool_is_admin)
+
+    def test_make_user_admin_as_participant(self):
+        self.client.login(username=self.participant1, password=self.password)
+        # Promote participant1 to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.participant2])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that participant1 is an admin of the shopping list and not a participant anymore
+        bool_is_admin = (self.participant2 in self.shopping_list1.admins.all()) and (self.admin not in self.shopping_list1.participants.all())
+        self.assertFalse(bool_is_admin)
+
+        # Promote admin to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that admin is still an admin of the shopping list
+        bool_is_admin = self.admin in self.shopping_list1.admins.all()
+        self.assertTrue(bool_is_admin)
+
+        # Promote outsider to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.outsider])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that outsider is not an admin of the shopping list
+        bool_is_admin = self.outsider in self.shopping_list1.admins.all()
+        self.assertFalse(bool_is_admin)
+
+        # Promote owner to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.owner])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check that owner is not an admin of the shopping list
+        bool_is_admin = self.owner in self.shopping_list1.admins.all()
+        self.assertFalse(bool_is_admin)
+
+    def test_make_user_admin_as_outsider(self):
+        self.client.login(username=self.outsider, password=self.password)
+        # Promote participant1 to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.participant2])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        # Check that participant1 is an admin of the shopping list and not a participant anymore
+        bool_is_admin = (self.participant2 in self.shopping_list1.admins.all()) and (self.admin not in self.shopping_list1.participants.all())
+        self.assertFalse(bool_is_admin)
+
+        # Promote admin to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        # Check that admin is still an admin of the shopping list
+        bool_is_admin = self.admin in self.shopping_list1.admins.all()
+        self.assertTrue(bool_is_admin)
+
+        # Promote outsider to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.outsider])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        # Check that outsider is not an admin of the shopping list
+        bool_is_admin = self.outsider in self.shopping_list1.admins.all()
+        self.assertFalse(bool_is_admin)
+
+        # Promote owner to admin
+        make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.owner])
+        response = self.client.post(make_admin_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        # Check that owner is not an admin of the shopping list
+        bool_is_admin = self.owner in self.shopping_list1.admins.all()
+        self.assertFalse(bool_is_admin)
+
+    def test_remove_user_from_list_as_owner(self):
+        # Remove participant1 from shopping list
+        remove_user_url = reverse('remove-user-from-shopping-list', args=[str(self.shopping_list1.id), self.participant1])
+        response = self.client.post(remove_user_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check if participant1 has been removed from the shopping list
+        bool_is_removed = (self.participant1 not in self.shopping_list1.participants.all()) and (self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.participant1))
         self.assertTrue(bool_is_removed)
 
-    def test_delete_shopping_list_POST(self):
-        # Check if user "self.owner' is owner of shopping_list_2_
-        check_owner = self.owner == self.shopping_list.owner
-        self.assertTrue(check_owner)
+        # Remove admin from shopping list
+        remove_user_url = reverse('remove-user-from-shopping-list', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(remove_user_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check if admin has been removed from the shopping list
+        bool_is_removed = (self.admin not in self.shopping_list1.admins.all()) and (
+                    self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.admin))
+        self.assertTrue(bool_is_removed)
 
-        # Delete list and check status_code:
-        self.index_url = reverse('index')
-        self.delete_shopping_list_url = reverse('delete-shopping-list', args='2')
-        response_delete_list = self.client.post(self.delete_shopping_list_url, {
-            'username': self.owner.username
-        })
-        self.assertEqual(response_delete_list.status_code, 302)
-        self.assertRedirects(response_delete_list, self.index_url)
+        # Leave shopping list
+        remove_user_url = reverse('remove-user-from-shopping-list', args=[str(self.shopping_list1.id), self.owner])
+        response = self.client.post(remove_user_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        # Check if owner has not been removed from the shopping list
+        bool_is_removed = self.owner != self.shopping_list1.owner and self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.owner)
+        self.assertFalse(bool_is_removed)
 
-        shopping_list_is_deleted = self.shopping_list_2 not in ShoppingList.get_user_shopping_lists(self.owner)
+    def test_remove_user_from_list_as_admin(self):
+        self.client.login(username=self.admin.username, password=self.password)
+        # Remove participant1 from shopping list
+        remove_user_url = reverse('remove-user-from-shopping-list', args=[str(self.shopping_list1.id), self.participant1])
+        response = self.client.post(remove_user_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check if participant1 has been removed from the shopping list
+        bool_is_removed = (self.participant1 not in self.shopping_list1.participants.all()) and (self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.participant1))
+        self.assertTrue(bool_is_removed)
+
+        # Remove owner of shopping list
+        remove_user_url = reverse('remove-user-from-shopping-list', args=[str(self.shopping_list1.id), self.owner])
+        response = self.client.post(remove_user_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check if owner has not been removed from the shopping list
+        bool_is_removed = self.owner != self.shopping_list1.owner and self.shopping_list1 not in ShoppingList.get_user_shopping_lists(
+            self.owner)
+        self.assertFalse(bool_is_removed)
+
+        # Leave shopping list (and remove admin)
+        remove_user_url = reverse('remove-user-from-shopping-list', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(remove_user_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        # Check if admin has been removed from the shopping list
+        bool_is_removed = (self.admin not in self.shopping_list1.admins.all()) and (
+                    self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.admin))
+        self.assertTrue(bool_is_removed)
+
+    def test_remove_user_from_list_as_participant(self):
+        self.client.login(username=self.participant1.username, password=self.password)
+        # Remove owner of shopping list
+        remove_user_url = reverse('remove-user-from-shopping-list', args=[str(self.shopping_list1.id), self.owner])
+        response = self.client.post(remove_user_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check if owner has not been removed from the shopping list
+        bool_is_removed = self.owner != self.shopping_list1.owner and self.shopping_list1 not in ShoppingList.get_user_shopping_lists(
+            self.owner)
+        self.assertFalse(bool_is_removed)
+
+        # Remove admin
+        remove_user_url = reverse('remove-user-from-shopping-list', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(remove_user_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
+        # Check if admin has been removed from the shopping list
+        bool_is_removed = (self.admin not in self.shopping_list1.admins.all()) and (
+                    self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.admin))
+        self.assertFalse(bool_is_removed)
+
+        # Leave shopping list
+        remove_user_url = reverse('remove-user-from-shopping-list',
+                                  args=[str(self.shopping_list1.id), self.participant1])
+        response = self.client.post(remove_user_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        # Check if participant1 has been removed from the shopping list
+        bool_is_removed = (self.participant1 not in self.shopping_list1.participants.all()) and (
+                    self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.participant1))
+        self.assertTrue(bool_is_removed)
+
+    def test_delete_shopping_list(self):
+        # Delete shopping list as outsider
+        self.client.login(username=self.outsider.username, password=self.password)
+        response = self.client.post(self.delete_shopping_list1_url, follow=True)
+        # Check if list has not been deleted
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        shopping_list_is_deleted = self.shopping_list1 not in ShoppingList.objects.filter(pk=self.shopping_list1.id)
+        self.assertFalse(shopping_list_is_deleted)
+
+        # Delete shopping list as participant
+        self.client.login(username=self.participant1.username, password=self.password)
+        response = self.client.post(self.delete_shopping_list1_url, follow=True)
+        # Check if list has not been deleted
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        shopping_list_is_deleted = self.shopping_list1 not in ShoppingList.objects.filter(pk=self.shopping_list1.id)
+        self.assertFalse(shopping_list_is_deleted)
+
+        # Delete shopping list as admin
+        self.client.login(username=self.admin.username, password=self.password)
+        response = self.client.post(self.delete_shopping_list1_url, follow=True)
+        # Check if list has not been deleted
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        shopping_list_is_deleted = self.shopping_list1 not in ShoppingList.objects.filter(pk=self.shopping_list1.id)
+        self.assertFalse(shopping_list_is_deleted)
+
+        # Delete shopping list as owner
+        self.client.login(username=self.owner.username, password=self.password)
+        response = self.client.post(self.delete_shopping_list1_url, follow=True)
+        # Check if list has been deleted
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, self.index_url)
+        shopping_list_is_deleted = self.shopping_list1 not in ShoppingList.objects.filter(pk=self.shopping_list1.id)
         self.assertTrue(shopping_list_is_deleted)
 
-    def test_admin_leaves_list_POST(self):
-        # Adds user as participant
-        self.client.post(self.share_shopping_list_url, {
-            'username': self.admin
-        })
-        # Makes user admin
-        self.make_user_admin_of_shopping_list_url = reverse('make-admin', args=['1', self.admin])
-        self.client.post(self.make_user_admin_of_shopping_list_url)
-        # Admin leaves list
-        self.remove_user_from_list_url = reverse('remove-user-from-shopping-list', args=['1', self.admin])
-        response_remove = self.client.post(self.remove_user_from_list_url)
-        # Test if admin has left the shopping list
-        self.assertEqual(response_remove.status_code, 302)
-        self.assertRedirects(response_remove, self.detail_shopping_list_url)
-        bool_is_removed = (self.admin not in self.shopping_list.participants.all()) and (
-                    self.shopping_list not in ShoppingList.get_user_shopping_lists(self.admin))
-        self.assertTrue(bool_is_removed)
-
-    def test_owner_leaves_list_POST(self):
-        # Add self.admin to shopping list as participant
-        self.client.post(self.share_shopping_list_url, {
-            'username': self.admin
-        })
-        # Promote self.admin to admin of shopping list
-        self.make_user_admin_of_shopping_list_url = reverse('make-admin', args=['1', self.admin])
-        self.client.post(self.make_user_admin_of_shopping_list_url)
-        # As owner of shopping list (self.owner), transfer ownership to self.admin
-        self.change_owner_of_shopping_list_url = reverse('change-owner', args=['1', self.admin])
-        response_change_owner = self.client.post(self.change_owner_of_shopping_list_url)
+    def test_change_owner_as_owner(self):
+        # As owner of shopping list, transfer ownership to participant
+        change_owner_url = reverse('change-owner', args=[str(self.shopping_list1.id), self.participant1])
+        response = self.client.post(change_owner_url)
         # Check redirection of page and status code
-        self.assertEquals(response_change_owner.status_code, 302)
-        self.assertRedirects(response_change_owner, self.index_url)
+        self.assertEquals(response.status_code, 302)
+        self.assertRedirects(response, self.detail_shopping_list1_url)
         # Check if ownership has been transferred
-        bool_owner_is_removed = (self.shopping_list not in ShoppingList.get_user_shopping_lists(self.owner)) and (self.shopping_list not in ShoppingList.objects.filter(owner=self.owner))
-        bool_admin_is_owner = (self.shopping_list in ShoppingList.get_user_shopping_lists(self.admin)) and (self.shopping_list in ShoppingList.objects.filter(owner=self.admin)) and (self.admin not in self.shopping_list.admins.all())
+        bool_owner_is_removed = (self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.owner)) \
+                                and (self.shopping_list1 not in ShoppingList.objects.filter(owner=self.owner))
+        bool_participant1_is_owner = (self.shopping_list1 in ShoppingList.get_user_shopping_lists(self.participant1)) \
+                              and (self.shopping_list1 in ShoppingList.objects.filter(owner=self.participant1)) \
+                              and (self.participant1 not in self.shopping_list1.participants.all())
+        self.assertFalse(bool_owner_is_removed)
+        self.assertFalse(bool_participant1_is_owner)
+
+        # As owner of shopping list (self.owner), transfer ownership to self.admin
+        change_owner_url = reverse('change-owner', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(change_owner_url)
+        # Check redirection of page and status code
+        self.assertEquals(response.status_code, 302)
+        self.assertRedirects(response, self.index_url)
+        # Check if ownership has been transferred
+        bool_owner_is_removed = (self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.owner)) \
+                                and (self.shopping_list1 not in ShoppingList.objects.filter(owner=self.owner))
+        bool_admin_is_owner = (self.shopping_list1 in ShoppingList.get_user_shopping_lists(self.admin)) \
+                              and (self.shopping_list1 in ShoppingList.objects.filter(owner=self.admin)) \
+                              and (self.admin not in self.shopping_list1.admins.all())
         self.assertTrue(bool_owner_is_removed)
         self.assertTrue(bool_admin_is_owner)
+
+    def test_change_owner_as_admin(self):
+        self.client.login(username=self.admin.username, password=self.password)
+        # Change owner
+        change_owner_url = reverse('change-owner', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(change_owner_url, follow=True)
+        # Check status code
+        self.assertEquals(response.status_code, 403)
+        # Check if ownership has not been transferred
+        bool_owner_is_removed = (self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.owner)) \
+                                and (self.shopping_list1 not in ShoppingList.objects.filter(owner=self.owner))
+        bool_admin_is_owner = (self.shopping_list1 in ShoppingList.get_user_shopping_lists(self.admin)) \
+                              and (self.shopping_list1 in ShoppingList.objects.filter(owner=self.admin)) \
+                              and (self.admin not in self.shopping_list1.admins.all())
+        self.assertFalse(bool_owner_is_removed)
+        self.assertFalse(bool_admin_is_owner)
+
+    def test_change_owner_as_participant(self):
+        self.client.login(username=self.participant1.username, password=self.password)
+        # Change owner
+        change_owner_url = reverse('change-owner', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(change_owner_url, follow=True)
+        # Check status code
+        self.assertEquals(response.status_code, 403)
+        # Check if ownership has not been transferred
+        bool_owner_is_removed = (self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.owner)) \
+                                and (self.shopping_list1 not in ShoppingList.objects.filter(owner=self.owner))
+        bool_admin_is_owner = (self.shopping_list1 in ShoppingList.get_user_shopping_lists(self.admin)) \
+                              and (self.shopping_list1 in ShoppingList.objects.filter(owner=self.admin)) \
+                              and (self.admin not in self.shopping_list1.admins.all())
+        self.assertFalse(bool_owner_is_removed)
+        self.assertFalse(bool_admin_is_owner)
 
 
 class CommentViews(TestCase):

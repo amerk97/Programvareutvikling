@@ -323,6 +323,11 @@ def make_user_admin_of_shopping_list(request, shopping_list_id, username):
 
     if not shopping_list.user_is_member(user):
         messages.error(request, f"{user} is not a member of the shopping list. " + error_message)
+        return redirect('detail', shopping_list_id)
+
+    if user == shopping_list.owner:
+        messages.error(request, "Cannot make owner admin without making another admin the new owner. " + error_message)
+        return redirect('detail', shopping_list_id)
 
     try:
         shopping_list.admins.add(user)
