@@ -161,10 +161,15 @@ def delete_item(request, item_id, shopping_list_id):
 
     try:
         item = Item.objects.get(pk=item_id)
-        shopping_list_id = item.shopping_list.id
-        item.delete()
-    finally:
+    except Item.DoesNotExist:
         return redirect('detail', shopping_list_id)
+
+    if not shopping_list.user_has_admin_rights(request.user) and request.user != item.creator:
+        messages.error(request, 'You do not have permission to delete the item. ' + error_message)
+        return redirect('detail', shopping_list_id)
+
+    item.delete()
+    return redirect('detail', shopping_list_id)
 
 
 # Create a shopping list and get redirected to see it as your view
