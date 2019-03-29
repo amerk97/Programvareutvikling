@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from shopping_list.models import Item, ShoppingList, Comment, Reply
+from shopping_list.models import ShoppingList, Comment
 from shopping_list.views import *
 from django.contrib.auth import get_user_model
 User = get_user_model()

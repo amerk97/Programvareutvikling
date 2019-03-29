@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from shopping_list.models import Item, ShoppingList, Comment, Reply
+from shopping_list.models import ShoppingList
 from shopping_list.views import *
 from django.contrib.auth import get_user_model
 
@@ -494,6 +494,22 @@ class ShoppingListViews(TestCase):
         response = self.client.post(change_owner_url, follow=True)
         # Check status code
         self.assertEquals(response.status_code, 403)
+        # Check if ownership has not been transferred
+        bool_owner_is_removed = (self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.owner)) \
+                                and (self.shopping_list1 not in ShoppingList.objects.filter(owner=self.owner))
+        bool_admin_is_owner = (self.shopping_list1 in ShoppingList.get_user_shopping_lists(self.admin)) \
+                              and (self.shopping_list1 in ShoppingList.objects.filter(owner=self.admin)) \
+                              and (self.admin not in self.shopping_list1.admins.all())
+        self.assertFalse(bool_owner_is_removed)
+        self.assertFalse(bool_admin_is_owner)
+
+    def test_change_owner_as_outsider(self):
+        self.client.login(username=self.outsider.username, password=self.password)
+        # Change owner
+        change_owner_url = reverse('change-owner', args=[str(self.shopping_list1.id), self.admin])
+        response = self.client.post(change_owner_url, follow=True)
+        # Check status code
+        self.assertEquals(response.status_code, 200)
         # Check if ownership has not been transferred
         bool_owner_is_removed = (self.shopping_list1 not in ShoppingList.get_user_shopping_lists(self.owner)) \
                                 and (self.shopping_list1 not in ShoppingList.objects.filter(owner=self.owner))
