@@ -7,8 +7,12 @@
     <div class="row">
         <div class="col s12">
             <div class="row">
-                <div class="col s10">
+
+                <!-- DISPLAY EVERY PARTICIPANT WITH COLOR CODED CHIPS BASED ON ACCESS -->
+                <div class="col s9">
                     <h3>{{ shopping_list.title }}</h3>
+
+                    <!-- OWNER, CAN REMOVE EVERYONE -->
                     <div class="chip red lighten-2">
                         {{ shopping_list.owner }}
                         {% if user == shopping_list.owner %}
@@ -16,26 +20,23 @@
                         {% endif %}
                     </div>
 
-
+                    <!-- ADMINS, CAN REMOVE EVERYONE EXCEPT OWNER -->
                     {% for admin in shopping_list.admins.all %}
                         <div class="chip red lighten-4">
                             {{ admin }}
                             {% if user == shopping_list.owner or user == admin %}
                                 <a href="{% url 'remove-user-from-shopping-list' shopping_list.id admin.username %}" style="color:black"><i class="close material-icons">close</i></a>
-
                             {% endif %}
                         </div>
                     {% endfor %}
 
+                    <!-- PARTICIPANTS, CAN ONLY REMOVE THEMSELVES -->
                     {% for participant in shopping_list.participants.all %}
-
                         {% if user in shopping_list.admins.all or user == shopping_list.owner %}
                             <div class="chip">
                                 {{ participant }}
                                 <a href="{% url 'remove-user-from-shopping-list' shopping_list.id participant %}" style="color:black"><i class="close material-icons">close</i></a>
-                                <a href="{% url 'make-admin' shopping_list.id participant %}" style="color:black"><i class="close material-icons">person</i></a>
                             </div>
-
                         {% else %}
                             <div class="chip">
                                 {{ participant }}
@@ -45,11 +46,21 @@
                             </div>
                         {% endif %}
                     {% endfor %}
+
+                    <!-- CHIP FOR SHOWING ADD MEMBER FIELD -->
                     <a href="#"><div class="chip"><i class="tiny material-icons toggle-visibility">person_add</i></div></a>
                 </div>
-                <div class="col s2"><br><br><br>
+
+                <!-- MAKE ADMIN (VISIBLE FOR OWNER AND ADMINS) AND DELETE BUTTONS (VISIBLE FOR OWNER) -->
+                <div class="col s3"><br><br><br>
+                    {% if user in shopping_list.admins.all or user == shopping_list.owner %}
+                        <a id="myBtnAdmin" class="btn-floating btn-large blue lighten-2">
+                            <i class="large material-icons">person</i>
+                        </a>
+                    {% endif %}
+
                     {% if user == shopping_list.owner %}
-                        <a class=" btn-floating btn-large red lighten-2" id="myBtn2" href="{% url 'delete-shopping-list' shopping_list.id %}">
+                        <a class="btn-floating btn-large red lighten-2" href="{% url 'delete-shopping-list' shopping_list.id %}">
                             <i class="large material-icons">delete</i>
                         </a>
                     {% endif %}
@@ -58,7 +69,7 @@
 
 
 
-
+            <!-- TOGGLE/POPUP FORM FOR SHARING LIST -->
             <div class="row toggle-item">
                 <form action="{% url 'share-shopping-list' shopping_list.id %}" method='POST' class="col 12">
                     {% csrf_token %}
@@ -72,12 +83,21 @@
                 </form>
             </div>
 
+
+            <!-- SHOPPING LIST FUNCTIONS -->
+
             <div class="collection">
+
+                <!-- DISPLAY EVERY ITEM IN THE LIST -->
                 {% for item in item_list %}
+
+                        <!-- DISPLAY LINE THROUGH ITEM NAME IF BOUGHT -->
                         {% if item.bought %}
                             <a href="{% url 'not-bought' item.id shopping_list.id %}" class="collection-item row">
                                 <div class="col s6 item-bought">{{ item.name }}</div>
                                 <div class="col s3 item-bought">{{ item.amount }}</div>
+
+                                <!-- DISPLAY DELETE ITEM IF USER IS OWNER OR CREATOR/ADDER OF ITEM -->
                                 {% if shopping_list.owner == user or item.creator == user %}
                                     <form action="{% url 'delete-item' item.id shopping_list.id %}" method='POST' class="col s1 offset-s2 button-fix">
                                     {%  csrf_token %}
@@ -91,6 +111,8 @@
                             <a href="{% url 'bought' item.id shopping_list.id %}" class="collection-item row">
                                 <div class="col s6">{{ item.name }} </div>
                                 <div class="col s3">{{ item.amount }}</div>
+
+                                <!-- DISPLAY DELETE ITEM IF USER IS OWNER OR CREATOR/ADDER OF ITEM -->
                                 {% if shopping_list.owner == user or item.creator == user %}
                                 <form action="{% url 'delete-item' item.id shopping_list.id %}" method='POST' class="col s1 offset-s2 button-fix">
                                     {%  csrf_token %}
@@ -103,6 +125,8 @@
                         {% endif %}
                 {% endfor %}
                 </div>
+
+            <!-- FORM FOR ADD NEW ITEM: NAME - AMOUNT - BUTTON -->
             <div class="row">
                 <form action="{% url 'add' shopping_list.id %}" method='POST' class="col s12">
                     {% csrf_token %}
@@ -117,15 +141,121 @@
                     </div>
                 </form>
             </div>
+
+            <!-- REFRESH WEBSITE BUTTON -->
             <div class="fixed-action-btn">
                   <a class="btn-floating btn-large red lighten-2" href="">
                     <i class="large material-icons">refresh</i>
                   </a>
             </div>
+            <br><br><br><hr color="lightgrey">
         </div>
-    </div>
 
 
+
+
+    <!-- COMMENT SECTION START-->
+
+        <!-- WRITE COMMENT AND SUBMIT BUTTON -->
+        <div class="row">
+            <form action="{% url 'add-comment' shopping_list.id %}" method="POST" style="width:100%;">
+                <div class="col s12">
+                    <div class="row">
+                        <h5>Comments</h5>
+                        {% csrf_token %}
+                        {{comment_form.content}}
+                    </div>
+                    <div class="row">
+                        <div class="col s10"></div>
+                        <div class="col s2">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Comment
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- DISPLAY EACH COMMENT -->
+        {% for comment in comments %}
+            <div class="row">
+                <div class="col s11">
+                    {% if comment.author == shopping_list.owner %}
+                        <div class="chip red lighten-2">{{comment.author}}</div>
+                        <small>  {{comment.date|timesince}} ago</small>
+                    {% elif comment.author in shopping_list.admins.all %}
+                        <div class="chip red lighten-4">{{comment.author}}</div>
+                        <small>  {{comment.date|timesince}} ago</small>
+                    {% else %}
+                        <div class="chip">{{comment.author}}</div>
+                        <small>  {{comment.date|timesince}} ago</small>
+                    {% endif %}
+                    <p>
+                        {{ comment.content }}
+                    </p>
+                    <hr color="lightgray">
+                </div>
+
+                <!-- ADMIN, OWNER AND AUTHOR CAN DELETE COMMENTS -->
+                {% if comment.author == user or user == admin or user == shopping_list.owner %}
+                    <div class="col s1">
+                        <br><br><a href="{% url 'delete-comment' shopping_list.id comment.id %}" style="color:black;"><i class="small material-icons">delete</i></a>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- DISPLAY REPLY FOR EACH COMMENT -->
+            {% for reply in comment.replies %}
+                <div class="row">
+                    <div class="col s1"></div>
+                    <div class="col s10">
+                        {% if reply.author == shopping_list.owner %}
+                            <div class="chip red lighten-2">{{reply.author}}</div>
+                            <small>  {{reply.date|timesince}} ago</small>
+                        {% elif reply.author in shopping_list.admins.all %}
+                            <div class="chip red lighten-4">{{reply.author}}</div>
+                            <small>  {{reply.date|timesince}} ago</small>
+                        {% else %}
+                            <div class="chip">{{reply.author}}</div>
+                            <small>  {{reply.date|timesince}} ago</small>
+                        {% endif %}
+                        <p>
+                            {{ reply.content }}
+                        </p>
+                        <hr color="lightgray">
+                    </div>
+
+                    <!-- ADMIN, OWNER AND AUTHOR CAN DELETE REPLIES -->
+                    {% if reply.author == user or user == admin or user == shopping_list.owner %}
+                        <div class="col s1">
+                            <br><br><a href="{% url 'delete-reply' shopping_list.id reply.id %}" style="color:black;"><i class="small material-icons">delete</i></a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <!-- IF THERE ARE COMMENTS, DISPLAY A REPLY FIELD AND BUTTON -->
+            {% if comments %}
+                <div class="row">
+                    <form action="{% url 'reply' shopping_list.id comment.id %}" method="post" style="width:100%;">
+                        <div class="col s1"></div>
+                        <div class="col s9">
+                            {% csrf_token %}
+                            {{reply_form.content}}
+                        </div>
+                        <div class="col s2">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Reply
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </form>
+                </div><br><br>
+            {% endif %}
+        {% endfor %}
+
+    <!-- COMMENT SECTION END -->
 
 
     <!-- OWNER LEAVES LIST! PASS ON OWNERSHIP POPUP -->
@@ -143,13 +273,41 @@
             <div class="row" style="margin-bottom: -15px;"><a class="right waves-effect waves-light btn grey" href="">Cancel</a></div>
         </div>
     </div>
+
+
+    <!-- MAKE ADMIN! GIVE ADMIN FUNCTIONS POPUP -->
+    <div id="myModalAdmin" class="modal-admin" style="box-shadow: 0px 0px 5px 2000px rgba(0,0,0,0.5);">
+        <!-- Modal content -->
+        <div class="modal-admin-content">
+            <h5>Make admin</h5>
+            {% for participant in shopping_list.participants.all %}
+            <a href="{% url 'make-admin' shopping_list.id participant.username %}" style="color:black">
+                <div class="chip">
+                    {{ participant }}
+                </div>
+            </a>
+            {% endfor %}
+            <div class="row">
+                <a class="right waves-effect waves-light btn grey" href="">Cancel</a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
 <script type="text/javascript">
+
+    // variables for the two modals
+
     var modal = document.getElementById('myModal');
     var btn = document.getElementById("myBtn");
     var span = document.getElementsByClassName("close")[0];
+
+    var modalAdmin = document.getElementById('myModalAdmin');
+    var btnAdmin = document.getElementById("myBtnAdmin");
+    var spanAdmin = document.getElementsByClassName("close")[0];
+
 
     btn.onclick = function() { // When the user clicks on the button, open the modal
         modal.style.display = "block";
@@ -157,6 +315,15 @@
     span.onclick = function() { // When the user clicks on <span> (x), close the modal
         modal.style.display = "none";
     }
+
+    btnAdmin.onclick = function() { // When the user clicks on the button, open the modal
+        modalAdmin.style.display = "block";
+    }
+    spanAdmin.onclick = function() { // When the user clicks on <spanAdmin> (x), close the modal
+        modalAdmin.style.display = "none";
+    }
+
+
 </script>
 {% endblock %}
 
