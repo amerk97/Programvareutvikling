@@ -53,7 +53,7 @@
 
                 <!-- MAKE ADMIN (VISIBLE FOR OWNER AND ADMINS) AND DELETE BUTTONS (VISIBLE FOR OWNER) -->
                 <div class="col s3"><br><br><br>
-                    {% if user in shopping_list.admins.all or user == shopping_list.owner %}
+                    {% if user == shopping_list.owner %}
                         <a id="myBtnAdmin" class="btn-floating btn-large blue lighten-2">
                             <i class="large material-icons">person</i>
                         </a>
