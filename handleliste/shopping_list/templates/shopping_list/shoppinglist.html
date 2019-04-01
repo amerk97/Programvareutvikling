@@ -198,7 +198,7 @@
                 </div>
 
                 <!-- ADMIN, OWNER AND AUTHOR CAN DELETE COMMENTS -->
-                {% if comment.author == user or user == admin or user == shopping_list.owner %}
+                {% if comment.author == user or user == shopping_list.owner or user in shopping_list.admins.all %}
                     <div class="col s1">
                         <br><br><a href="{% url 'delete-comment' shopping_list.id comment.id %}" style="color:black;"><i class="small material-icons">delete</i></a>
                     </div>
@@ -228,8 +228,8 @@
                     </div>
 
                     <!-- ADMIN, OWNER AND AUTHOR CAN DELETE REPLIES -->
-                    {% if reply.author == user or user == admin or user == shopping_list.owner %}
-                        <div class="col s1">
+                    {% if reply.author == user or user == shopping_list.owner or user in shopping_list.admins.all %}
+                    <div class="col s1">
                             <br><br><a href="{% url 'delete-reply' shopping_list.id reply.id %}" style="color:black;"><i class="small material-icons">delete</i></a>
                         </div>
                     {% endif %}
