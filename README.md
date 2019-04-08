@@ -10,9 +10,9 @@ Man kan opprette handlelister, dele lister med andre, kommunisere ved hjelp av e
 
 ## ScreenShots
 
-Bilde av hovedsiden
+Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
-
+![Alt-Text](ShareShoppingPreview.png)
 
 ## For å komme i gang:
 
