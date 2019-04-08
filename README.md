@@ -1,4 +1,6 @@
 README
+[![build status](https://gitlab.com/fdroid/fdroidclient/badges/master/build.svg)](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3/-/jobs)
+
 
 For å komme i gang:
 - Last ned Python 3.7.2 fra https://www.python.org/downloads/
