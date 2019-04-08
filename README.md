@@ -6,7 +6,8 @@ Man kan opprette handlelister, dele lister med andre, kommunisere ved hjelp av e
 
 ## Build status
 
-[![build status](https://gitlab.com/fdroid/fdroidclient/badges/master/build.svg)](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3/-/jobs)
+[![build status](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3/badges/master/build.svg)](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3/-/jobs)
+
 
 ## Code style
 
@@ -45,14 +46,12 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 ## Administrativt:
 
-- For å logge inn på admin siden bruk:
-username: superuser
-password: superuser
-
-- Sjekk at den fungerer ved å skrive "python" i kommandolinjen.  
-- Last ned package-manageren til python, pip, ved å skrive `curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py`
-    og deretter `python get-pip.py` 
-- Last ned den nyeste ofisielle versjonen av Django ved å skrive 
+1. For å logge inn på admin siden bruk:
+    > username: superuser   -   password: superuser
+2. Sjekk at den fungerer ved å skrive "python" i kommandolinjen.  
+3. Last ned package-manageren til python, pip, ved å skrive `curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py`
+<br> og deretter `python get-pip.py` 
+4. Last ned den nyeste ofisielle versjonen av Django ved å skrive 
     `pip install Django==2.1.5` i kommandolinjen. 
 
 
