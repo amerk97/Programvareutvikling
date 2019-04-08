@@ -4,15 +4,28 @@ ShareShopping er en nettside som skal gjøre det enklere å handle i grupper.
 Man kan opprette handlelister, dele lister med andre, kommunisere ved hjelp av et kommentarfelt og legge til/fjerne varer fre lister.
 
 
-## Build tatus
+## Build status
 
 [![build status](https://gitlab.com/fdroid/fdroidclient/badges/master/build.svg)](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3/-/jobs)
 
-## ScreenShots
+## Code style
+
+Vi brukte Django sine konvensjoner for programmering (PEP8). Se [her](https://docs.djangoproject.com/en/2.2/internals/contributing/writing-code/coding-style/) for mer info.
+
+
+
+## Skjermdump
 
 Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
 ![Alt-Text](ShareShoppingPreview.png)
+
+## Teknologi/rammeverk brukt:
+
+
+Som rammeverk for utvikling av nettsiden brukte vi [Django](https://www.djangoproject.com/).<br>
+Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsmto.github.io/simplebar/) som hjelpemiddel i utformingen av brukergrensesnittet.
+
 
 ## For å komme i gang:
 
@@ -58,5 +71,23 @@ password: superuser
 
 1. Kjør filen auto_start.py og vent noen sekunder mens programmet logger inn gjennom ssh og starter serveren. 
 2. Åpne nettleseren og gå til 74.207.252.20:8000.
+
+## Credits
+
+#### Utviklere
+* [Håkon Fuhre Lia](https://gitlab.stud.idi.ntnu.no/haakofli)
+* [Ellen Zhang Chang](https://gitlab.stud.idi.ntnu.no/ellenzc)
+* [Mads Engja Rindal](https://gitlab.stud.idi.ntnu.no/madseri)
+* [Amer Kalac](https://gitlab.stud.idi.ntnu.no/amerk)
+* [Damir Medakovic](https://gitlab.stud.idi.ntnu.no/damirm)
+* [Silje Leidland](https://gitlab.stud.idi.ntnu.no/siljelei)
+
+#### Produkteier
+* [Jonas Jevnaker Aas](https://gitlab.stud.idi.ntnu.no/jonasjaa)
+
+#### Veileder
+* [Erik Stensrud Larsen](https://gitlab.stud.idi.ntnu.no/eriksla)
+
+
 
 
