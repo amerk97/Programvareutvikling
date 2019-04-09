@@ -97,8 +97,8 @@
                                 <div class="col s6 item-bought">{{ item.name }}</div>
                                 <div class="col s3 item-bought">{{ item.amount }}</div>
 
-                                <!-- DISPLAY DELETE ITEM IF USER IS OWNER OR CREATOR/ADDER OF ITEM -->
-                                {% if shopping_list.owner == user or item.creator == user %}
+                                <!-- DISPLAY DELETE ITEM IF USER IS OWNER, ADMIN OR CREATOR OF ITEM -->
+                                {% if shopping_list.owner == user or item.creator == user or user in shopping_list.admins.all %}
                                     <form action="{% url 'delete-item' item.id shopping_list.id %}" method='POST' class="col s1 offset-s2 button-fix">
                                     {%  csrf_token %}
                                     <button type="submit" class="waves-effect waves-light btn secondary-content">
@@ -112,8 +112,8 @@
                                 <div class="col s6">{{ item.name }} </div>
                                 <div class="col s3">{{ item.amount }}</div>
 
-                                <!-- DISPLAY DELETE ITEM IF USER IS OWNER OR CREATOR/ADDER OF ITEM -->
-                                {% if shopping_list.owner == user or item.creator == user %}
+                                <!-- DISPLAY DELETE ITEM IF USER IS OWNER, ADMIN OR CREATOR OF ITEM -->
+                                {% if shopping_list.owner == user or item.creator == user or user in shopping_list.admins.all %}
                                 <form action="{% url 'delete-item' item.id shopping_list.id %}" method='POST' class="col s1 offset-s2 button-fix">
                                     {%  csrf_token %}
                                     <button type="submit" class="waves-effect waves-light btn secondary-content">
