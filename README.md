@@ -50,7 +50,7 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 ## Tilgang til serveren: 
 
-1. Kjør `ssh dmedakovic@74.207.252.20` i kommandolinjen (i windows må du laste ned PuTTy som lar deg koble deg til servere over internettet på tilsvarende
+1. Kjør `ssh shareshop@74.207.252.20` i kommandolinjen (i windows må du laste ned PuTTy som lar deg koble deg til servere over internettet på tilsvarende
 3. måte. I PuTTy skriver du inn du inn shareshop@74.207.252.20 under *hostname* og trykker *open*. Resten av prosessen er lik for de ulike operativsystemene).
 4. Du vil bli spurt om passord (passord: djangoproject). 
 5. Du er nå i "home" mappen til serveren. Gå til "share_shopping" mappen og deretter til "handleliste" mappen.
