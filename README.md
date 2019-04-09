@@ -51,8 +51,8 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 ## Tilgang til serveren: 
 
 1. Kjør `ssh dmedakovic@74.207.252.20` i kommandolinjen (i windows må du laste ned PuTTy som lar deg koble deg til servere over internettet på tilsvarende
-3. måte. I PuTTy skriver du inn du inn dmedakovic@74.207.252.20 under *hostname* og trykker *open*. Resten av prosessen er lik for de ulike operativsystemene).
-4. Du vil bli spurt om passord (passord: medakovic). 
+3. måte. I PuTTy skriver du inn du inn shareshop@74.207.252.20 under *hostname* og trykker *open*. Resten av prosessen er lik for de ulike operativsystemene).
+4. Du vil bli spurt om passord (passord: djangoproject). 
 5. Du er nå i "home" mappen til serveren. Gå til "share_shopping" mappen og deretter til "handleliste" mappen.
 6. Kjør kommandoen `python3 manage.py runserver 0.0.0.0:8000`
 7. Django serveren kjører nå på IP-adressen til serveren, som er 74.207.252.20:8000. Kjør dette i nettleseren for å se siden. 
