@@ -31,16 +31,14 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 ## For å komme i gang:
 
 1. Last ned Python 3.7.2 fra [https://www.python.org/downloads/](https://www.python.org/downloads/)
-2. Sjekk at den fungerer ved å skrive "python" i kommandolinjen.
-3. Last ned package-manageren til python, pip, ved å skrive `curl https://bootst$` og deretter `python get-pip.py`
-4. Last ned den nyeste ofisielle versjonen av Django ved å skrive `pip install Django==2.1.5` i kommandolinjen.
+2. Last ned package-manageren til python, pip, ved å skrive `curl https://bootst$` og deretter `python get-pip.py`
+3. Last ned den nyeste ofisielle versjonen av Django ved å skrive `pip install Django==2.1.5` i kommandolinjen.
 
 ## Git:
 
-1. Åpne kommandolinjen og naviger til hvor du vil ha filene.
-2. "git clone https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3.$
-3. "git init" inne i mappen hvor filene fra prosjektet ligger.
-4. Du bør nå ha alle filene og kunne adde, committe, pulle og pushe kode.
+1. Kjør "git clone https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3.git" i ønsket mappe.
+2. "git init" inne i mappen hvor filene fra prosjektet ligger.
+3. Du bør nå ha alle filene og kunne adde, committe, pulle og pushe kode.
 
 
 
@@ -48,28 +46,23 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 1. For å logge inn på admin siden bruk:
     > username: superuser   -   password: superuser
-2. Sjekk at den fungerer ved å skrive "python" i kommandolinjen.  
-3. Last ned package-manageren til python, pip, ved å skrive `curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py`
-<br> og deretter `python get-pip.py` 
-4. Last ned den nyeste ofisielle versjonen av Django ved å skrive 
-    `pip install Django==2.1.5` i kommandolinjen. 
 
 
 ## Tilgang til serveren: 
 
-1. Åpne et nytt terminalvindu.
-2. Tast inn `ssh dmedakovic@74.207.252.20` (i windows må du laste ned PuTTy som lar deg koble deg til servere over internettet på tilsvarende
-3. måte. I PuTTy skriver du inn du inn dmedakovic@74.207.252.20 under *hostname* og trykker *open*. Resten av prosessen bør være lik).
+1. Kjør `ssh dmedakovic@74.207.252.20` i kommandolinjen (i windows må du laste ned PuTTy som lar deg koble deg til servere over internettet på tilsvarende
+3. måte. I PuTTy skriver du inn du inn dmedakovic@74.207.252.20 under *hostname* og trykker *open*. Resten av prosessen er lik for de ulike operativsystemene).
 4. Du vil bli spurt om passord (passord: medakovic). 
-5. Du er nå i "home" mappen til serveren. Gå til "gruppe-3" mappen og deretter til "handleliste" mappen ved å bruke cd og dir/ls kommandoene. 
+5. Du er nå i "home" mappen til serveren. Gå til "share_shopping" mappen og deretter til "handleliste" mappen.
 6. Kjør kommandoen `python3 manage.py runserver 0.0.0.0:8000`
-7. Django serveren kjører nå på IP-adressen til serveren, som er 74.207.252.20:8000.
+7. Django serveren kjører nå på IP-adressen til serveren, som er 74.207.252.20:8000. Kjør dette i nettleseren for å se siden. 
 
 
-## For å starte nettsiden: 
+## For enkel start av nettsiden: 
 
-1. Installer python3 og pakken pxssh.  
+1. Installer python3 og python-pakken pxssh.  
 2. Last ned og kjør auto_start_linux.py, auto_start_mac.py eller auto_start_windows.py, avhengig av hvilket operativsystem du bruker.
+3. Vent noen sekunder. Nettleseren din vil åpne programmet for deg. 
 
 
 ## Credits
