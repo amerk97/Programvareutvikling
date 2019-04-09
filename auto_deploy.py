@@ -2,7 +2,6 @@ from pexpect import pxssh
 import getpass
 import time
 
-#dmedakovic@74.207.252.20
 try:
     s = pxssh.pxssh()
 
