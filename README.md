@@ -66,10 +66,11 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 7. Django serveren kjører nå på IP-adressen til serveren, som er 74.207.252.20:8000.
 
 
-## Kjøre serveren: 
+## For å starte nettsiden: 
 
-1. Kjør filen auto_start.py og vent noen sekunder mens programmet logger inn gjennom ssh og starter serveren. 
-2. Åpne nettleseren og gå til 74.207.252.20:8000.
+1. Installer python3 og pakken pxssh.  
+2. Last ned og kjør auto_start_linux.py, auto_start_mac.py eller auto_start_windows.py, avhengig av hvilket operativsystem du bruker.
+
 
 ## Credits
 
