@@ -7,8 +7,8 @@ try:
     s = pxssh.pxssh()
 
     hostname = '74.207.252.20'
-    username = 'dmedakovic'
-    password = 'medakovic'
+    username = 'shareshop'
+    password = 'djangoproject'
     
     s.login(hostname, username, password)
    
