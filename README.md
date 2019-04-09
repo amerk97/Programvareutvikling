@@ -60,7 +60,7 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 ## For enkel start av nettsiden: 
 
-1. Du må installere *pxssh* hvis du er på linux eller mac eller *paramiko* hvis du er på windows. Dette gjøres enkelt ved å kjøre `pip install pxssh`.
+1. Du må installere *pxssh* hvis du er på linux eller mac, og *paramiko* hvis du er på windows. Dette gjøres enkelt ved å kjøre `pip install pxssh`.
    Bytt ut pxssh med paramiko hvis du er på windows. 
 2. Last ned og kjør auto_start_linux.py, auto_start_mac.py eller auto_start_windows.py, avhengig av hvilket operativsystem du bruker.
 3. Vent noen sekunder. Nettleseren din vil åpne programmet for deg. 
