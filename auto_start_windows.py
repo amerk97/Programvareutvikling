@@ -1,5 +1,4 @@
 
-
 import paramiko
 import os
 
@@ -7,7 +6,7 @@ ssh = paramiko.SSHClient()
 
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-ssh.connect("74.207.252.20", username="dmedakovic", password="medakovic")
+ssh.connect("74.207.252.20", username="shareshop", password="djangoproject")
 
 
 print("[+] Successful SSH login.")
