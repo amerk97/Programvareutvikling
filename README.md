@@ -3,6 +3,9 @@
 ShareShopping er en nettside som skal gjøre det enklere å handle i grupper. 
 Man kan opprette handlelister, dele lister med andre, kommunisere ved hjelp av et kommentarfelt og legge til/fjerne varer fre lister.
 
+## Motivasjon
+
+"A short description of the motivation behind the creation and maintenance of the project. This should explain why the project exists."
 
 ## Build status
 
@@ -11,8 +14,8 @@ Man kan opprette handlelister, dele lister med andre, kommunisere ved hjelp av e
 
 ## Code style
 
-Vi brukte Django sine konvensjoner for programmering (PEP8). Se [her](https://docs.djangoproject.com/en/2.2/internals/contributing/writing-code/coding-style/) for mer info.
-
+Vi brukte python sin standard [PEP 8](https://www.python.org/dev/peps/pep-0008/) for koden. <br>
+I tillegg brukte vi Django sine konvensjoner for programmering. Se [her](https://docs.djangoproject.com/en/2.2/internals/contributing/writing-code/coding-style/) for mer info.
 
 
 ## Skjermdump
@@ -21,10 +24,11 @@ Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
 ![Alt-Text](ShareShoppingPreview.png)
 
-## Teknologi/rammeverk brukt:
+## Teknologi og rammeverk:
 
 
-Som rammeverk for utvikling av nettsiden brukte vi [Django](https://www.djangoproject.com/).<br>
+Vi brukte web-rammeverket [Django](https://www.djangoproject.com/) til utvikling av nettsiden.<br>
+
 Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsmto.github.io/simplebar/) som hjelpemiddel i utformingen av brukergrensesnittet.
 
 
@@ -64,6 +68,9 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
    Bytt ut pxssh med paramiko hvis du er på windows. 
 2. Last ned og kjør auto_start_linux.py, auto_start_mac.py eller auto_start_windows.py, avhengig av hvilket operativsystem du bruker.
 3. Vent noen sekunder. Nettleseren din vil åpne programmet for deg. 
+
+## Testing
+"Describe and show how to run the tests with code examples."
 
 
 ## Credits
