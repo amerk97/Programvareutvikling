@@ -35,27 +35,27 @@ Vi brukte web-rammeverket [Django](https://www.djangoproject.com/) til utvikling
 Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsmto.github.io/simplebar/) som hjelpemiddel i utformingen av brukergrensesnittet.
 
 
-## For å komme i gang:
+## For å komme i gang
 
 1. Last ned Python 3.7.2 fra [https://www.python.org/downloads/](https://www.python.org/downloads/)
 2. Last ned package-manageren til python, pip, ved å skrive `curl https://bootst$` og deretter `python get-pip.py`
 3. Last ned den riktige versjonen av Django ved å skrive `pip install Django==2.1.5` i kommandolinjen.
 
-## Git:
+## Git
 
-1. Kjør "git clone https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3.git" i ønsket mappe.
-2. "git init" inne i mappen hvor filene fra prosjektet ligger.
+1. Kjør `git clone https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3.git` i ønsket mappe.
+2. Skriv `git init` inne i mappen hvor filene fra prosjektet ligger.
 3. Du bør nå ha alle filene og kunne adde, committe, pulle og pushe kode.
 
 
 
-## Administrativt:
+## Administrativt
 
 1. For å logge inn på admin siden bruk:
     > username: superuser   -   password: superuser
 
 
-## Tilgang til serveren: 
+## Tilgang til serveren
 
 1. Kjør `ssh shareshop@74.207.252.20` i kommandolinjen (i windows må du laste ned PuTTy som lar deg koble deg til servere over internettet på tilsvarende
 3. måte. I PuTTy skriver du inn du inn shareshop@74.207.252.20 under *hostname* og trykker *open*. Resten av prosessen er lik for de ulike operativsystemene).
@@ -67,8 +67,8 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 ## For enkel start av nettsiden: 
 
-1. Du ha *pxssh* installert hvis du er på linux eller mac, og *paramiko* hvis du er på windows. Installasjon gjøres enkelt ved å skrive inn `pip install pxssh` i kommandolinjen.
-   Bytt ut pxssh med paramiko hvis du er på windows. 
+1. Du må ha *pxssh* installert hvis du er på linux eller mac, og *paramiko* hvis du er på windows. Installasjon gjøres enkelt ved å skrive inn `pip install pxssh` i kommandolinjen.
+   Bytt ut *pxssh* med *paramiko* hvis du er på windows. 
 2. Last ned og kjør auto_start_linux.py, auto_start_mac.py eller auto_start_windows.py, avhengig av hvilket operativsystem du bruker.
 3. Vent noen sekunder. Nettleseren din vil åpne programmet for deg. 
 
