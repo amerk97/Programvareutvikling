@@ -321,9 +321,9 @@ def make_user_admin_of_shopping_list(request, shopping_list_id, username):
         messages.error(request, "You are not a member of the shopping list. " + error_message)
         return redirect('index')
 
-    if not shopping_list.user_has_admin_rights(request.user):
+    if request.user != shopping_list.owner:
         messages.error(request,
-                       "You must an admin/owner of shopping list to promote a participant to an admin. " + error_message)
+                       "You must an owner of shopping list to promote a participant to an admin. " + error_message)
         return redirect('detail', shopping_list_id)
 
     if not shopping_list.user_is_member(user):

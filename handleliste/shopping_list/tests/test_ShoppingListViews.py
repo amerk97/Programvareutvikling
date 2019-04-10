@@ -203,9 +203,9 @@ class ShoppingListViews(TestCase):
         response = self.client.post(make_admin_url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, self.detail_shopping_list1_url)
-        # Check that participant1 is an admin of the shopping list and not a participant anymore
+        # Check that participant1 is not an admin of the shopping list and not a participant anymore
         bool_is_admin = (self.participant1 in self.shopping_list1.admins.all()) and (self.admin not in self.shopping_list1.participants.all())
-        self.assertTrue(bool_is_admin)
+        self.assertFalse(bool_is_admin)
 
         # Promote admin to admin
         make_admin_url = reverse('make-admin', args=[str(self.shopping_list1.id), self.admin])
