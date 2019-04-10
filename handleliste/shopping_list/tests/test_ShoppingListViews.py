@@ -53,7 +53,7 @@ class ShoppingListViews(TestCase):
         }, follow=True)
         # Check if the new shopping list has been created
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed('shopping_list/shoppinglist.html')
+        self.assertTemplateUsed('shopping_list/shopping_list.html')
         detail_shopping_list1_url = reverse('detail', args=str(self.shopping_list1.id))
         self.assertRedirects(response, detail_shopping_list1_url)
         self.assertEquals(response.context['shopping_list'], self.shopping_list1)
@@ -63,21 +63,21 @@ class ShoppingListViews(TestCase):
         # Check if owner of shopping list has access
         response = self.client.post(self.detail_shopping_list1_url)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed('shopping_list/shoppinglist.html')
+        self.assertTemplateUsed('shopping_list/shopping_list.html')
         self.assertEquals(response.context['shopping_list'], self.shopping_list1)
 
         # Check if participant of shopping list has access
         self.client.login(username=self.participant1.username, password=self.password)
         response = self.client.post(self.detail_shopping_list1_url)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed('shopping_list/shoppinglist.html')
+        self.assertTemplateUsed('shopping_list/shopping_list.html')
         self.assertEquals(response.context['shopping_list'], self.shopping_list1)
 
         # Check if admin of shopping list has access
         self.client.login(username=self.admin.username, password=self.password)
         response = self.client.post(self.detail_shopping_list1_url)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed('shopping_list/shoppinglist.html')
+        self.assertTemplateUsed('shopping_list/shopping_list.html')
         self.assertEquals(response.context['shopping_list'], self.shopping_list1)
 
         # Check if outsider does not have access

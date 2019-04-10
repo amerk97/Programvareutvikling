@@ -62,7 +62,7 @@ def shopping_list_details(request, shopping_list_id):
         'reply_form': reply_form
     }
 
-    return render(request, 'shopping_list/shoppinglist.html', context)
+    return render(request, 'shopping_list/shopping_list.html', context)
 
 
 # Add item to a shopping list
