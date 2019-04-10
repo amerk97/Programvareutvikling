@@ -22,7 +22,7 @@ I tillegg brukte vi Django sine konvensjoner for programmering. Se [her](https:/
 
 Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
-![Alt-Text](ShareShoppingPreview.png)
+![Alt-Text](readmeImages/ShareShoppingPreview.png)
 
 ## Teknologi og rammeverk:
 
@@ -78,19 +78,19 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 Tester for views.py finnes under shopping_list > tests:
 
-![alt text](TestFolderHandleliste.png)
+![alt text](readmeImages/TestFolderHandleliste.png)
 
 
 Tester for users finnes under user > tests.py:
 
-![alt text](TestFolderUser.png)
+![alt text](readmeImages/TestFolderUser.png)
 
 
 Django vil automatisk se på alle metoder med navn test_XXX som tester. <br>
 For å kjøre testene, går man i terminalen, bytter directory til mappen med prosjektet, og kjører <br>
 "python manage.py test". Etter litt tid vil du få igjen noe som dette:
 
-![alt text](TestResultPreview.png)
+![alt text](readmeImages/TestResultPreview.png)
 
 
 
