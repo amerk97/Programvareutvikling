@@ -78,7 +78,7 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 Tester for views.py finnes under shopping_list > tests:
 
-![alt text]()
+![alt text](TestFolderHandleliste.png)
 
 
 Tester for users finnes under user > tests.py:
