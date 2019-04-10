@@ -26,6 +26,9 @@ Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
 ## Teknologi og rammeverk:
 
+Back-end: [Python 3.7.2](https://www.python.org/downloads/release/python-372/).<br>
+
+Front-end: HTMl, CSS. <br>
 
 Vi brukte web-rammeverket [Django](https://www.djangoproject.com/) til utvikling av nettsiden.<br>
 
@@ -70,7 +73,25 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 3. Vent noen sekunder. Nettleseren din vil åpne programmet for deg. 
 
 ## Testing
-"Describe and show how to run the tests with code examples."
+
+##### Unit testing i Django ved utvikling:
+
+Tester for views.py finnes under shopping_list > tests:
+
+![alt text]()
+
+
+Tester for users finnes under user > tests.py:
+
+![alt text]()
+
+
+Django vil automatisk se på alle metoder med navn test_XXX som tester. <br>
+For å kjøre testene, går man i terminalen, bytter directory til mappen med prosjektet, og kjører <br>
+"python manage.py test". Etter litt tid vil du få igjen noe som dette:
+
+![alt text]()
+
 
 
 ## Credits
