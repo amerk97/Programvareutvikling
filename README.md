@@ -22,7 +22,7 @@ I tillegg brukte vi Django sine konvensjoner for programmering. Se [her](https:/
 
 Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
-![Alt-Text](ShareShoppingPreview.png)
+![Alt-Text](readmeImages/ShareShoppingPreview.png)
 
 ## Teknologi og rammeverk:
 
@@ -39,7 +39,7 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 1. Last ned Python 3.7.2 fra [https://www.python.org/downloads/](https://www.python.org/downloads/)
 2. Last ned package-manageren til python, pip, ved å skrive `curl https://bootst$` og deretter `python get-pip.py`
-3. Last ned den nyeste ofisielle versjonen av Django ved å skrive `pip install Django==2.1.5` i kommandolinjen.
+3. Last ned den riktige versjonen av Django ved å skrive `pip install Django==2.1.5` i kommandolinjen.
 
 ## Git:
 
@@ -67,7 +67,7 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 ## For enkel start av nettsiden: 
 
-1. Du må installere *pxssh* hvis du er på linux eller mac, og *paramiko* hvis du er på windows. Dette gjøres enkelt ved å kjøre `pip install pxssh`.
+1. Du ha *pxssh* installert hvis du er på linux eller mac, og *paramiko* hvis du er på windows. Installasjon gjøres enkelt ved å skrive inn `pip install pxssh` i kommandolinjen.
    Bytt ut pxssh med paramiko hvis du er på windows. 
 2. Last ned og kjør auto_start_linux.py, auto_start_mac.py eller auto_start_windows.py, avhengig av hvilket operativsystem du bruker.
 3. Vent noen sekunder. Nettleseren din vil åpne programmet for deg. 
@@ -78,19 +78,19 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 
 Tester for views.py finnes under shopping_list > tests:
 
-![alt text](TestFolderHandleliste.png)
+![alt text](readmeImages/TestFolderHandleliste.png)
 
 
 Tester for users finnes under user > tests.py:
 
-![alt text](TestFolderUser.png)
+![alt text](readmeImages/TestFolderUser.png)
 
 
 Django vil automatisk se på alle metoder med navn test_XXX som tester. <br>
 For å kjøre testene, går man i terminalen, bytter directory til mappen med prosjektet, og kjører <br>
 "python manage.py test". Etter litt tid vil du få igjen noe som dette:
 
-![alt text](TestResultPreview.png)
+![alt text](readmeImages/TestResultPreview.png)
 
 
 
