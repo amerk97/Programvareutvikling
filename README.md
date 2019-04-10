@@ -83,14 +83,14 @@ Tester for views.py finnes under shopping_list > tests:
 
 Tester for users finnes under user > tests.py:
 
-![alt text]()
+![alt text](TestFolderUser.png)
 
 
 Django vil automatisk se på alle metoder med navn test_XXX som tester. <br>
 For å kjøre testene, går man i terminalen, bytter directory til mappen med prosjektet, og kjører <br>
 "python manage.py test". Etter litt tid vil du få igjen noe som dette:
 
-![alt text]()
+![alt text](TestResultPreview.png)
 
 
 
