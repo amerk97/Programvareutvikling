@@ -39,12 +39,6 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 2. Last ned package-manageren til python, pip, ved å skrive `curl https://bootst$` og deretter `python get-pip.py`
 3. Last ned den riktige versjonen av Django ved å skrive `pip install Django==2.1.5` i kommandolinjen.
 
-## Git
-
-1. Kjør `git clone https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3.git` i ønsket mappe.
-2. Skriv `git init` inne i mappen hvor filene fra prosjektet ligger.
-3. Du bør nå ha alle filene og kunne adde, committe, pulle og pushe kode.
-
 
 ## Administrativt
 
