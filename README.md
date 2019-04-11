@@ -25,12 +25,10 @@ Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
 ## Technology and framework
 
-Back-end: [Python 3.7.2](https://www.python.org/downloads/release/python-372/).<br>
-
+Back-end: [Python 3.7.2](https://www.python.org/downloads/release/python-372/), SQLite. <br>
 Front-end: HTML, CSS. <br>
 
 Vi brukte rammeverket [Django](https://www.djangoproject.com/) til utvikling av nettsiden.<br>
-
 Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsmto.github.io/simplebar/) til utformingen av brukergrensesnittet.
 
 
@@ -53,7 +51,7 @@ Dersom dette ikke fungerte, se [Manuel oppstart av server](https://gitlab.stud.i
 For å lære om hvordan bruke produktet, se [brukermanualen](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3/wikis/Brukermanual).
 
 ## Testing
-
+Vi skrev unit-tester med Pythons unit-testing rammeverk, [unittest](https://docs.python.org/3/library/unittest.html).
 For å kjøre unit-testene brukes standard metode for Django-testing. <br>
 Django vil automatisk se på alle metoder med navn test_XXX som tester. <br>
 For å kjøre testene må man bruke terminalen til å navigere til `share_shopping`-mappen som inneholder `manage.py`-filen. Skriv deretter
@@ -61,7 +59,9 @@ For å kjøre testene må man bruke terminalen til å navigere til `share_shoppi
 
 ![Screenshot of successfully running tests](images_readme/TestResultPreview.png)
 
-Testene finnes under gruppe-3/share_shopping/shopping_list og gruppe-3/share_shopping/user
+Testene finnes under `gruppe-3/share_shopping/shopping_list` og `gruppe-3/share_shopping/user`
+
+<img src="images_readme/TestsShoppingList.png" width="20%"><img src="images_readme/TestsUser.png" width="20%">
 
 
 ## Starting the server manually
