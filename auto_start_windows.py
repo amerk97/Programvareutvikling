@@ -14,7 +14,7 @@ print("[+] Starting up the Django development server. Please wait.")
 
 name = "share_shopping"
 
-ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("cd share_shopping/handleliste; python3 manage.py runserver 0.0.0.0:8000")
+ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("cd share_shopping/share_shopping; python3 manage.py runserver 0.0.0.0:8000")
 
 print("[+] Django server up and running.")
 
@@ -36,5 +36,5 @@ while True:
 
 print("[+] Shutting down...")
 
-ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("cd share_shopping/handleliste; pkill -f runserver")
+ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("cd share_shopping/share_shopping; pkill -f runserver")
 

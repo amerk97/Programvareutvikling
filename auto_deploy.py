@@ -24,7 +24,7 @@ try:
     s.prompt()
     print(s.before)
 
-    s.sendline(f'cd {name}/handleliste')
+    s.sendline(f'cd {name}/share_shopping')
     s.prompt()
     print(s.before)
     
