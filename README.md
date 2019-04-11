@@ -3,7 +3,7 @@
 ShareShopping er en nettside som gjør det enklere å handle i grupper. 
 Man kan opprette handlelister, dele handlelister med andre, kommunisere ved hjelp av et kommentarfelt og legge til/fjerne varer fra handlelister.
 
-## Motivasjon
+## Motivation
 Prosjektet ble laget fordi det var ønsket å gjøre det enklere å handle selvstendig uten komplikasjoner for andre man samarbeider med.
 
 ## Build status
@@ -16,13 +16,13 @@ Prosjektet ble laget fordi det var ønsket å gjøre det enklere å handle selvs
 Vi brukte Django sine konvensjoner for programmering. Se [her](https://docs.djangoproject.com/en/2.2/internals/contributing/writing-code/coding-style/) for mer info.
 Vi brukte også Pythons kodestandard [PEP 8](https://www.python.org/dev/peps/pep-0008/) for koden. <br>
 
-## Skjermdump
+## Screenshots
 
 Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
 ![Alt-Text](readmeImages/ShareShoppingPreview.png)
 
-## Teknologi og rammeverk:
+## Technology and framework
 
 Back-end: [Python 3.7.2](https://www.python.org/downloads/release/python-372/).<br>
 
@@ -33,11 +33,9 @@ Vi brukte rammeverket [Django](https://www.djangoproject.com/) til utvikling av 
 Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsmto.github.io/simplebar/) som hjelpemiddel i utformingen av brukergrensesnittet.
 
 
-## For å komme i gang
-
-1. Last ned Python 3.7.2 fra [https://www.python.org/downloads/](https://www.python.org/downloads/)
-2. Last ned package-manageren til python, pip, ved å skrive `curl https://bootst$` og deretter `python get-pip.py`
-3. Last ned den riktige versjonen av Django ved å skrive `pip install Django==2.1.5` i kommandolinjen.
+## Requirements
+- Django 2.1.5
+- Python 3.7.2
 
 
 ## Administrativt
@@ -80,14 +78,19 @@ For å kjøre testene må man bruke terminalen til å navigere til `handleliste`
 ![alt text](readmeImages/TestResultPreview.png)
 
 
-## Manuel oppstart av server
+## Starting the server manually
+Du må først logge inn til serveren:
 
-1. Kjør `ssh shareshop@74.207.252.20` i kommandolinjen (i windows må du laste ned PuTTy som lar deg koble deg til servere over internettet på tilsvarende
-3. måte. I PuTTy skriver du inn du inn shareshop@74.207.252.20 under *hostname* og trykker *open*. Resten av prosessen er lik for de ulike operativsystemene).
-4. Du vil bli spurt om passord (passord: djangoproject). 
-5. Du er nå i "home" mappen til serveren. Gå til "share_shopping" mappen og deretter til "handleliste" mappen.
-6. Kjør kommandoen `python3 manage.py runserver 0.0.0.0:8000`
-7. Django serveren kjører nå på IP-adressen til serveren, som er 74.207.252.20:8000. Kjør dette i nettleseren for å se siden. 
+1. Kjør `ssh shareshop@74.207.252.20` i kommandolinjen. I windows kreves PuTTy for å bruke ssh-protokoll.
+2. I PuTTy skriver du inn du inn shareshop@74.207.252.20 under *hostname* og trykker *open*. Resten av prosessen er lik for de ulike operativsystemene).
+3. Når du blir spurt om passord, tast inn `djangoproject`.
+4. Nå er du inne på serveren. 
+
+For å kjøre prosjektet og nettsiden:
+
+1. Gå til "share_shopping/share_shopping" mappen.
+2. Kjør kommandoen `python3 manage.py runserver 0.0.0.0:8000`
+3. Django serveren kjører nå på IP-adressen til serveren, som er 74.207.252.20:8000. Kjør dette i nettleseren for å se siden. 
 
 
 ## Credits
