@@ -30,18 +30,12 @@ Front-end: HTML, CSS. <br>
 
 Vi brukte rammeverket [Django](https://www.djangoproject.com/) til utvikling av nettsiden.<br>
 
-Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsmto.github.io/simplebar/) som hjelpemiddel i utformingen av brukergrensesnittet.
+Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsmto.github.io/simplebar/) til utformingen av brukergrensesnittet.
 
 
 ## Requirements
 - Django 2.1.5
 - Python 3.7.2
-
-
-## Administrativt
-
-1. For å logge inn på admin siden bruk:
-    > username: superuser   -   password: superuser
 
 
 ## Installation
@@ -69,7 +63,6 @@ For å kjøre testene må man bruke terminalen til å navigere til `share_shoppi
 Testene finnes under gruppe-3/share_shopping/shopping_list og gruppe-3/share_shopping/user
 
 
-
 ## Starting the server manually
 Du må først logge inn til serveren:
 
@@ -86,9 +79,10 @@ For å kjøre prosjektet og nettsiden:
 
 
 ## Features
-- lage, endre og dele handlelister
-- eier, admin og deltaker-roller med ulike rettigheter
-- kommentarfelt
+- Brukere kan lage, endre og dele handlelister
+- Brukere kan forlate og slette handlelister
+- Handlelister har eier, admin og deltaker-roller med ulike rettigheter
+- Handlelister har kommentarfelt
 
 
 ## Contributing
