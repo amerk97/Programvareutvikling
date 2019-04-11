@@ -4,7 +4,7 @@ ShareShopping er en nettside som gjør det enklere å handle i grupper.
 Man kan opprette handlelister, dele handlelister med andre, kommunisere ved hjelp av et kommentarfelt og legge til/fjerne varer fra handlelister.
 
 ## Motivation
-Prosjektet ble laget fordi det var ønsket å gjøre det enklere å handle selvstendig uten komplikasjoner for andre man samarbeider med.
+Prosjektet ble laget fordi det var ønsket å gjøre det enklere å handle uten komplikasjoner for andre man samarbeider med.
 
 ## Build status
 
