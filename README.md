@@ -61,7 +61,7 @@ For å kjøre testene må man bruke terminalen til å navigere til `share_shoppi
 
 Testene finnes under `gruppe-3/share_shopping/shopping_list` og `gruppe-3/share_shopping/user`
 
-<img src="images_readme/TestsShoppingList.png" width="20%"><img src="images_readme/TestsUser.png" width="20%">
+<img src="images_readme/TestsShoppingList.png" width="35%"><img src="images_readme/TestsUser.png" width="35%">
 
 
 ## Starting the server manually
