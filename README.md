@@ -87,7 +87,7 @@ For å kjøre prosjektet og nettsiden:
 
 
 ## Contributing
-Vi tar imot forslag og krav til produktet på e-post: tips@shareshopping.com
+Vi tar imot forslag og krav til produktet på e-post: tips@shareshopping.com <br>
 Vi tar gjerne imot hjelp og forslag fra andre utviklere. Vi følger "fork-and-pull" Git arbeidsflyt.
 1. **Fork** repositorien på GitLab
 2. **Clone** prosjektet til din egen maskin
