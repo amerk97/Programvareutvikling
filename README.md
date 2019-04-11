@@ -25,7 +25,7 @@ Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
 ## Technology and framework
 
-Back-end: [Python 3.7.2](https://www.python.org/downloads/release/python-372/), SQLite. <br>
+Back-end: [Python 3.7.2](https://www.python.org/downloads/release/python-372/), Django 2.1.5, SQLite. <br>
 Front-end: HTML, CSS. <br>
 
 Vi brukte rammeverket [Django](https://www.djangoproject.com/) til utvikling av nettsiden.<br>
@@ -44,7 +44,7 @@ For å starte serveren gjør følgende:
 2. Last ned og kjør `auto_start_linux.py`, `auto_start_mac.py` eller `auto_start_windows.py`, avhengig av hvilket operativsystem du bruker.
 3. Vent noen sekunder. Nettleseren din vil åpne programmet for deg.
 
-Dersom dette ikke fungerte, se [Starting the server manually](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3#starting-the-server-manually)
+Dersom dette ikke fungerte, se [Starting the server manually](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3#starting-the-server-manually).
 
 
 ## How to use
@@ -59,7 +59,7 @@ For å kjøre testene må man bruke terminalen til å navigere til `share_shoppi
 
 ![Screenshot of successfully running tests](images_readme/TestResultPreview.png)
 
-Testene finnes under `gruppe-3/share_shopping/shopping_list` og `gruppe-3/share_shopping/user`
+Testene finnes under `gruppe-3/share_shopping/shopping_list` og `gruppe-3/share_shopping/user`.
 
 <img src="images_readme/TestsShoppingList.png" width="35%"><img src="images_readme/TestsUser.png" width="35%">
 
@@ -87,7 +87,7 @@ For å kjøre prosjektet og nettsiden:
 
 
 ## Contributing
-Vi tar imot forslag og krav til produktet på e-post: tips@shareshopping.com <br>
+Vi tar imot forslag og krav til produktet på e-post: tips@shareshopping.com. <br>
 Vi tar gjerne imot hjelp og forslag fra andre utviklere. Vi følger "fork-and-pull" Git arbeidsflyt.
 1. **Fork** repositorien på GitLab
 2. **Clone** prosjektet til din egen maskin
