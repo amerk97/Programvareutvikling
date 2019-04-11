@@ -20,7 +20,8 @@ Vi brukte også Pythons kodestandard [PEP 8](https://www.python.org/dev/peps/pep
 
 Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
-![Alt-Text](images_readme/ShareShoppingPreview.png)
+![Preview of ShareShopping](images_readme/ShareShoppingPreview.png)
+
 
 ## Technology and framework
 
@@ -58,7 +59,7 @@ Django vil automatisk se på alle metoder med navn test_XXX som tester. <br>
 For å kjøre testene må man bruke terminalen til å navigere til `share_shopping`-mappen som inneholder `manage.py`-filen. Skriv deretter
 `python manage.py test` i terminalen. Etter litt tid vil du få igjen noe som dette:
 
-![alt text](images_readme/TestResultPreview.png)
+![Screenshot of successfully running tests](images_readme/TestResultPreview.png)
 
 Testene finnes under gruppe-3/share_shopping/shopping_list og gruppe-3/share_shopping/user
 
