@@ -59,23 +59,15 @@ For å lære om hvordan bruke produktet, se [brukermanualen](https://gitlab.stud
 
 ## Testing
 
-##### Unit testing i Django ved utvikling:
-
-Tester for views.py finnes under shopping_list > tests:
-
-![alt text](readmeImages/TestFolderHandleliste.png)
-
-
-Tester for users finnes under user > tests.py:
-
-![alt text](readmeImages/TestFolderUser.png)
-
-
+For å kjøre unit-testene brukes standard metode for Django-testing. <br>
 Django vil automatisk se på alle metoder med navn test_XXX som tester. <br>
-For å kjøre testene må man bruke terminalen til å navigere til `handleliste`-mappen som inneholder `manage.py`-filen. Skriv deretter
-`python manage.py test`. Etter litt tid vil du få igjen noe som dette:
+For å kjøre testene må man bruke terminalen til å navigere til `share_shopping`-mappen som inneholder `manage.py`-filen. Skriv deretter
+`python manage.py test` i terminalen. Etter litt tid vil du få igjen noe som dette:
 
 ![alt text](readmeImages/TestResultPreview.png)
+
+Testene finnes under gruppe-3/share_shopping/shopping_list og gruppe-3/share_shopping/user
+
 
 
 ## Starting the server manually
@@ -88,9 +80,24 @@ Du må først logge inn til serveren:
 
 For å kjøre prosjektet og nettsiden:
 
-1. Gå til "share_shopping/share_shopping" mappen.
+1. Gå til `share_shopping/share_shopping` mappen.
 2. Kjør kommandoen `python3 manage.py runserver 0.0.0.0:8000`
 3. Django serveren kjører nå på IP-adressen til serveren, som er 74.207.252.20:8000. Kjør dette i nettleseren for å se siden. 
+
+
+## Features
+- lage, endre og dele handlelister
+- eier, admin og deltaker-roller med ulike rettigheter
+- kommentarfelt
+
+
+## Contributing
+Vi tar gjerne imot hjelp og forslag fra andre utviklere. Vi følger "fork-and-pull" Git arbeidsflyt.
+1. **Fork** repositorien på GitLab
+2. **Clone** prosjektet til din egen maskin
+3. **Commit** endringer til din egen branch
+4. **Push** ditt arbeid til din fork
+5. Lag en **Pull request** slik at vi kan vurdere dine endringer
 
 
 ## Credits
