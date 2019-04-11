@@ -42,7 +42,7 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 ## Installation
 
 1. Du må ha *pxssh* installert hvis du er på linux eller mac, og *paramiko* hvis du er på windows. Installasjon gjøres enkelt ved å skrive inn `pip install pxssh` i kommandolinjen.
-   Bytt ut *pxssh* med *paramiko* hvis du er på windows. 
+   Bytt ut *pxssh* med *paramiko* hvis du er på windows. Dersom du aldri har brukt pip før, se [her](https://pypi.org/project/pip/).
 2. Last ned og kjør `auto_start_linux.py`, `auto_start_mac.py` eller `auto_start_windows.py`, avhengig av hvilket operativsystem du bruker.
 3. Vent noen sekunder. Nettleseren din vil åpne programmet for deg.
 
@@ -87,6 +87,7 @@ For å kjøre prosjektet og nettsiden:
 
 
 ## Contributing
+Vi tar imot forslag og krav til produktet på e-post: tips@shareshopping.com
 Vi tar gjerne imot hjelp og forslag fra andre utviklere. Vi følger "fork-and-pull" Git arbeidsflyt.
 1. **Fork** repositorien på GitLab
 2. **Clone** prosjektet til din egen maskin
