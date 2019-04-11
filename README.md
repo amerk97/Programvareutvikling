@@ -13,8 +13,8 @@ Prosjektet ble laget fordi det var ønsket å gjøre det enklere å handle selvs
 
 ## Code style
 
-Vi brukte Django sine konvensjoner for programmering. Se [her](https://docs.djangoproject.com/en/2.2/internals/contributing/writing-code/coding-style/) for mer info.
-Vi brukte også Pythons kodestandard [PEP 8](https://www.python.org/dev/peps/pep-0008/) for koden. <br>
+Vi brukte [Django sine konvensjoner for programmering](https://docs.djangoproject.com/en/2.2/internals/contributing/writing-code/coding-style/).
+Vi brukte også Pythons kodestandard [PEP 8](https://www.python.org/dev/peps/pep-0008/). <br>
 
 ## Screenshots
 
