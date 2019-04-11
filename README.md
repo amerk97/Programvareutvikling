@@ -59,7 +59,7 @@ Vi brukte [Materialize](https://materializecss.com/) og [SimpleBar](https://grsm
 2. Last ned og kjør `auto_start_linux.py`, `auto_start_mac.py` eller `auto_start_windows.py`, avhengig av hvilket operativsystem du bruker.
 3. Vent noen sekunder. Nettleseren din vil åpne programmet for deg.
 
-Dersom dette ikke fungerte, se [Manuel oppstart av server](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3#manuel-oppstart-av-serveren)
+Dersom dette ikke fungerte, se [Manuel oppstart av server](https://gitlab.stud.idi.ntnu.no/programvareutvikling-v19/gruppe-3#manuel-oppstart-av-server)
 
 
 ## How to use
