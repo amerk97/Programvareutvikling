@@ -25,7 +25,7 @@ Eksempel på hvordan nettsiden kan se ut når den er i bruk.
 
 ## Technology and framework
 
-Back-end: [Python 3.7.2](https://www.python.org/downloads/release/python-372/), Django 2.1.5, SQLite. <br>
+Back-end: [Python 3.7.2](https://www.python.org/downloads/release/python-372/), SQLite. <br>
 Front-end: HTML, CSS. <br>
 
 Vi brukte rammeverket [Django](https://www.djangoproject.com/) til utvikling av nettsiden.<br>
